@@ -76,7 +76,7 @@ export default function Example() {
                                                 src=""
                                                 alt="Imagen Perfil Usuario" />
                                         </Menu.Button>
-                                    </div>
+                                    </div> 
                                     <Transition
                                         as={Fragment}
                                         enter="transition ease-out duration-100"
