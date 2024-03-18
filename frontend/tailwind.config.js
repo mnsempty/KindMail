@@ -12,10 +12,10 @@ module.exports = {
     extend: {
       colors: {
         azul: "#3878A4",
-        rosa: "#E3919D2",
+        rosa: "#E3919D",
         azulclaro: "#D8EFFF",
         negro: "#060606",
-        blanco: "FBFBFB"
+        blanco: "#FBFBFB"
       }
     },
   },
