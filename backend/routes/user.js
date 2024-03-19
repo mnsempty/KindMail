@@ -1,8 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const  {createClient}  = require("redis");
+const { createClient } = require("redis");
 // Token de seguridad.
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+// Encriptación
+const bcrypt = require("bcrypt");
 
 const client = createClient({
   password: "admin",
@@ -26,18 +28,19 @@ router.use(express.json());
 // Ruta para crear un usuario
 router.post("/", async (req, res) => {
   try {
-    const { name,surname, email,birthday,role, password } = req.body;
+    const { name, surname, email, birthday, role, password } = req.body;
     // Verificar si el usuario existe antes de crearlo
     const existingUser = await client.hGet("users", email);
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
     // Almacenar el nuevo usuario en Redis Cloud
     await client.hSet(
       "users",
       email,
-      JSON.stringify({name,surname, email,birthday,role, password })
+      JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
     );
 
     res.status(201).json({ message: "Usuario creado correctamente" });
@@ -74,17 +77,19 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Verificar si el usuario existe en la base de datos
-    const existingUser = await client.hGet('users', email);
+    const existingUser = JSON.parse(await client.hGet("users", email));
     if (!existingUser) {
-      return res.status(404).json({ message: 'Usuario no encontrado' });
+      return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Convertir a objeto
-    const user = JSON.parse(existingUser);
-
-    // Verificar si la contraseña coincide
-    if (user.password !== password) {
-      return res.status(401).json({ message: 'Credenciales incorrectas' });
+    const passwordMatch = await bcrypt.compare(
+      password,
+      existingUser.hashedPassword
+    );
+    if (!passwordMatch) {
+      return res
+        .status(401)
+        .json({ message: "Usuario no encontrado o credenciales incorrectas" });
     }
 
     // Si las credenciales son correctas, devolver los datos del usuario.
@@ -92,13 +97,12 @@ router.post("/login", async (req, res) => {
     // payload = jwt.decode(token);
     // En payload estan los datos del usuario de esta forma
     // const { email, nombre, rol } = payload;
-    const token = jwt.sign({ email });
-    res.status(200).json({token});
+    const token = jwt.sign({ email }, "admin ");
+    res.status(200).json({ token });
   } catch (error) {
-    console.error('Error en inicio de sesión:', error);
-    res.status(500).json({ message: 'Error interno del servidor' });
+    console.error("Error en inicio de sesión:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 });
-
 
 module.exports = router;
