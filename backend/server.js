@@ -1,40 +1,39 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
+const express = require("express");
+const dotenv = require("dotenv").config();
+const cors = require("cors");
 
-import { Redis } from "ioredis";
+const { Server } = require("socket.io");
+const { createServer } = require("http");
 
-import { Server } from "socket.io";
-import { createServer } from "node:http";
+const userRoutes = require('./routes/user');
 
-dotenv.config();//* note dotenv.config({ path: '/ruta/absoluta/a/tu/.env' }); en caso de que tengamos un .env general
-
-
-const port = process.env.PORT ?? 5000;
+const port = process.env.PORT || 5000;
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   connectionStateRecovery: {},
   cors: {
-    //todo with .env
-     origin: 'http://localhost:3000',
-     methods: ["GET", "POST"],
-     allowedHeaders: ["my-custom-header"],
-     credentials: true
-  }
- });
+    // todo with .env
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["my-custom-header"],
+    credentials: true,
+  },
+});
 
-app.use(cors({
-  //todo with .env
-  origin: 'http://localhost:3000'
- })); 
+app.use(
+  cors({
+    // todo with .env
+    origin: "http://localhost:3000",
+  })
+);
 
-// const db = new Redis({
-//   password: process.env.TOKEN,
-//   host: process.env.HOST,
-//   port: process.env.DBPORT,
-// });
+
+
+app.use('/api/user', userRoutes);
+
+
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
