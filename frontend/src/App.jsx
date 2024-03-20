@@ -10,7 +10,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 import LandingPage from "./pages/LandingPage";
-import Chat from "./pages/Chat";
 import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
 import HomeAdmin from "./pages/Admin/HomeAdmin";
@@ -46,7 +45,6 @@ function App() {
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/register" element={<Register></Register>}></Route>
           <Route path="/landing-page" element={<LandingPage></LandingPage>}></Route>
-          <Route path="/chat" element={<Chat></Chat>}></Route>
           <Route path="/first-message" element={<FirstMessage></FirstMessage>}></Route>
           <Route path="/profile" element={<Profile></Profile>}></Route>
           {/* Admin */}
