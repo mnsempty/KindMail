@@ -7,11 +7,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const client = createClient({
-  password: "admin",
-  socket: {
-    host: "redis-19192.c322.us-east-1-2.ec2.cloud.redislabs.com",
-    port: 19192,
-  },
+    password: 'admin',
+    socket: {
+        host: 'redis-11927.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+        port: 11927
+    }
 });
 
 client.on("error", (error) => {
