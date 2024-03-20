@@ -3,6 +3,7 @@ import NavBarAdmin from "./components/NavBarAdmin";
 import NavBarUser from "./components/NavBarUser";
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 
 //pages
 import Home from "./pages/Home";
@@ -33,7 +34,7 @@ function getByRole(role) {
 function App() {
 
   /*Para ir probando, después esta constante se borrará*/
-  const role = "user";
+  const role = "kk";
 
   return (
     <div className="bg-blanco min-h-screen">
@@ -57,6 +58,7 @@ function App() {
           {/* Error - resto de url */}
           <Route path="*" element={<NotFound></NotFound>}></Route>
         </Routes>
+        <Toaster />
       </Layout>
     </div>
   )

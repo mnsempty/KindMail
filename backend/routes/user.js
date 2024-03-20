@@ -35,6 +35,11 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
 
+    //Verificar que proporciona todos los datos
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Por favor, proporcione todos los datos necesarios" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     // Almacenar el nuevo usuario en Redis Cloud
     await client.hSet(
