@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
     await client.hSet(
       "users",
       email,
-      JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
+      JSON.stringify({ name, surname, email, birthday, role: "user", hashedPassword })
     );
 
     res.status(201).json({ message: "Usuario creado correctamente" });

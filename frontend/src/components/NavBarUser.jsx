@@ -2,14 +2,14 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Logo from '../assets/logoblanco.png';
-
-//Links
 import { Link, NavLink } from "react-router-dom";
+import useLogOut from '../hooks/useLogOut';
 
 export default function NavBarUser() {
 
     const btnNavBarLink = "text-white hover:bg-azulclaro hover:text-azul px-3 rounded-md py-2 text-sm mt-2 font-medium";
     const btnNavBarLinkCollapse = "text-gray-300 hover:bg-azulclaro hover:text-azul block px-3 py-2 text-base font-medium";
+    const { loading, logout } = useLogOut();
 
     return (
         <Disclosure as="nav" className="bg-azul">
@@ -81,7 +81,9 @@ export default function NavBarUser() {
                                             </Menu.Item>
                                             <Menu.Item>
                                                 {({ active }) => (
-                                                    <a href="#" className={(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-negro')}>
+                                                    <a href="#"
+                                                        className={(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-negro')}
+                                                        onClick={logout}>
                                                         Cerrar Sesión</a>
                                                 )}
                                             </Menu.Item>

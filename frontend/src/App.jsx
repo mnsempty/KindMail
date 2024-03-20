@@ -4,13 +4,13 @@ import NavBarUser from "./components/NavBarUser";
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { Navigate } from "react-router-dom";
 
 //pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import LandingPage from "./pages/LandingPage";
 import Chat from "./pages/Chat";
 import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
@@ -34,23 +34,19 @@ function getByRole(role) {
 
 function App() {
 
-  /*Para ir probando, después esta constante se borrará*/
-  const role = "kk";
-
   const { authUser } = useAuthContext();
 
   return (
     <div className="bg-blanco min-h-screen">
 
-      {getByRole(role)}
+      {getByRole(authUser ? authUser.role : null)}
 
       <Layout>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/landing-page" element={<LandingPage />}></Route>
+          <Route path="/" element={authUser ? <Home /> : <Navigate to={"/login"} />}></Route>
           <Route path="/chat" element={<Chat />}></Route>
+          <Route path="/login" element={authUser ? <Navigate to="/chat" /> : <Login />}></Route>
+          <Route path="/register" element={authUser ? <Navigate to="/chat" /> : <Register />}></Route>
           <Route path="/first-message" element={<FirstMessage />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
           {/* Admin */}
