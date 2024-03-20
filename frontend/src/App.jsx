@@ -5,20 +5,20 @@ import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { Navigate } from "react-router-dom";
+import { useAuthContext } from "./context/AuthContext";
 
 //pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import Chat from "./pages/Chat";
 import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
+import LandingPage from "./pages/LandingPage";
 import HomeAdmin from "./pages/Admin/HomeAdmin";
 import Messages from "./pages/Admin/Messages";
 import User from "./pages/Admin/User";
 import ChatAdmin from "./pages/Admin/ChatAdmin";
-import { useAuthContext } from "./context/AuthContext";
 
 //Si eres usuario te mostrará unos datos y si eres administrador te mostrará otros
 function getByRole(role) {
@@ -43,10 +43,10 @@ function App() {
 
       <Layout>
         <Routes>
-          <Route path="/" element={authUser ? <Home /> : <Navigate to={"/login"} />}></Route>
-          <Route path="/chat" element={<Chat />}></Route>
-          <Route path="/login" element={authUser ? <Navigate to="/chat" /> : <Login />}></Route>
-          <Route path="/register" element={authUser ? <Navigate to="/chat" /> : <Register />}></Route>
+          <Route path="/" element={authUser ? <LandingPage /> : <Navigate to={"/login"} />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="/login" element={authUser ? <Navigate to="/home" /> : <Login />}></Route>
+          <Route path="/register" element={authUser ? <Navigate to="/home" /> : <Register />}></Route>
           <Route path="/first-message" element={<FirstMessage />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
           {/* Admin */}

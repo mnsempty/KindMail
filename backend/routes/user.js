@@ -13,11 +13,11 @@ const bcrypt = require("bcrypt");
   *port: 11927
  */
 const client = createClient({
-    password: 'admin',
-    socket: {
-        host: `${process.env.HOST}`,
-        port: process.env.DBPORT
-    }
+  password: 'admin',
+  socket: {
+    host: `${process.env.HOST}`,
+    port: process.env.DBPORT
+  }
 });
 
 client.on("error", (error) => {
@@ -41,17 +41,12 @@ router.post("/", async (req, res) => {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
 
-    //Verificar que proporciona todos los datos
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Por favor, proporcione todos los datos necesarios" });
-    }
-
     const hashedPassword = await bcrypt.hash(password, 10);
     // Almacenar el nuevo usuario en Redis Cloud
     await client.hSet(
       "users",
       email,
-      JSON.stringify({ name, surname, email, birthday, role: "user", hashedPassword })
+      JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
     );
 
     res.status(201).json({ message: "Usuario creado correctamente" });
