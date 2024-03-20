@@ -19,6 +19,8 @@ const useLogin = () => {
             if (data.error) {
                 throw new Error(data.error);
             }
+
+            
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -26,20 +28,15 @@ const useLogin = () => {
         }
     }
 
-    return { loading, signup };
+    return { loading, login };
 
 }
 
-export default useLogin();
+export default useLogin;
 
 function handleInputErrors({ password, email }) {
     if (!password || !email) {
         toast.error("Por favor, completa todos los campos.");
-        return false;
-    }
-
-    if (password < 8) {
-        toast.error("La contraseña debe tener al menos 8 caracteres.")
         return false;
     }
 

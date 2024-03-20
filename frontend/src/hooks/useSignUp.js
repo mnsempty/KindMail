@@ -1,9 +1,11 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useAuthContext } from "../context/AuthContext";
 
 const useSignUp = () => {
 
     const [loading, setLoading] = useState(false);
+    const { authUser, setAuthUser } = useAuthContext();
 
     const signup = async ({ name, password, email }) => {
         // if (!success) return;
@@ -15,9 +17,16 @@ const useSignUp = () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, password, email })
             })
-            console.log(res);
             const data = await res.json();
-            console.log(data);
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            //localstorage
+            localStorage.setItem("chat-user", JSON.stringify(data));
+            //context
+            setAuthUser(data);
+
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -37,7 +46,7 @@ function handleInputErrors({ name, password, email }) {
         return false;
     }
 
-    if (password < 8) {
+    if (password.length < 8) {
         toast.error("La contraseña debe tener al menos 8 caracteres.")
         return false;
     }

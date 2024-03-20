@@ -14,7 +14,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await Login(email, password);
+        await login(email, password);
     }
 
     return (
@@ -38,7 +38,7 @@ const Login = () => {
                             </div>
                         </div>
                         <div className="flex flex-col items-center">
-                            <form>
+                            <form onSubmit={handleSubmit}>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <FaRegEnvelope className="text-gray-400 m-2"></FaRegEnvelope>
                                     <input type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1"></input>

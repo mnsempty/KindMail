@@ -18,6 +18,7 @@ import HomeAdmin from "./pages/Admin/HomeAdmin";
 import Messages from "./pages/Admin/Messages";
 import User from "./pages/Admin/User";
 import ChatAdmin from "./pages/Admin/ChatAdmin";
+import { useAuthContext } from "./context/AuthContext";
 
 //Si eres usuario te mostrará unos datos y si eres administrador te mostrará otros
 function getByRole(role) {
@@ -36,6 +37,8 @@ function App() {
   /*Para ir probando, después esta constante se borrará*/
   const role = "kk";
 
+  const { authUser } = useAuthContext();
+
   return (
     <div className="bg-blanco min-h-screen">
 
@@ -43,20 +46,20 @@ function App() {
 
       <Layout>
         <Routes>
-          <Route path="/" element={<Home></Home>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/register" element={<Register></Register>}></Route>
-          <Route path="/landing-page" element={<LandingPage></LandingPage>}></Route>
-          <Route path="/chat" element={<Chat></Chat>}></Route>
-          <Route path="/first-message" element={<FirstMessage></FirstMessage>}></Route>
-          <Route path="/profile" element={<Profile></Profile>}></Route>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
+          <Route path="/landing-page" element={<LandingPage />}></Route>
+          <Route path="/chat" element={<Chat />}></Route>
+          <Route path="/first-message" element={<FirstMessage />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
           {/* Admin */}
-          <Route path="/home-admin" element={<HomeAdmin></HomeAdmin>}></Route>
-          <Route path="/messages-admin" element={<Messages></Messages>}></Route>
-          <Route path="/user-admin" element={<User></User>}></Route>
-          <Route path="/chat-admin" element={<ChatAdmin></ChatAdmin>}></Route>
+          <Route path="/home-admin" element={<HomeAdmin />}></Route>
+          <Route path="/messages-admin" element={<Messages />}></Route>
+          <Route path="/user-admin" element={<User />}></Route>
+          <Route path="/chat-admin" element={<ChatAdmin />}></Route>
           {/* Error - resto de url */}
-          <Route path="*" element={<NotFound></NotFound>}></Route>
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
         <Toaster />
       </Layout>
