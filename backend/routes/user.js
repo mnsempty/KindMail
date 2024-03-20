@@ -1,16 +1,22 @@
 const express = require("express");
 const router = express.Router();
+require("dotenv").config();
+
 const { createClient } = require("redis");
 // Token de seguridad.
 const jwt = require("jsonwebtoken");
 // Encriptación
 const bcrypt = require("bcrypt");
 
+/**
+ * host: 'redis-11927.c135.eu-central-1-1.ec2.cloud.redislabs.com',
+  *port: 11927
+ */
 const client = createClient({
     password: 'admin',
     socket: {
-        host: 'redis-11927.c135.eu-central-1-1.ec2.cloud.redislabs.com',
-        port: 11927
+        host: `${process.env.HOST}`,
+        port: process.env.DBPORT
     }
 });
 
