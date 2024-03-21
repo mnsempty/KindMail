@@ -25,8 +25,14 @@ client.on("error", (error) => {
 });
 
 async function connectDB() {
-  await client.connect();
+  try {
+    await client.connect();
+    console.log("Conexión exitosa a la base de datos Redis");
+  } catch (error) {
+    console.error("Error al conectar a la base de datos Redis:", error);
+  }
 }
+
 connectDB();
 
 router.use(express.json());
@@ -49,8 +55,10 @@ router.post("/", async (req, res) => {
       JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
     );
 
+    console.log("funciona back")
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
+    console.log("Fallo back")
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
@@ -114,6 +122,9 @@ router.post("/login", async (req, res) => {
 // Ruta logout
 router.post("/logout", async (req, res) => {
   try {
+    // Limpiar el token de autenticación del cliente
+    res.clearCookie("jwt");
+    res.status(200).json({ message: "Sesión cerrada" });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });

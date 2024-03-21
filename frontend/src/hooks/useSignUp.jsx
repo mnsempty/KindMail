@@ -8,7 +8,6 @@ const useSignUp = () => {
     const { authUser, setAuthUser } = useAuthContext();
 
     const signup = async ({ name, password, email }) => {
-        // if (!success) return;
 
         setLoading(true);
         try {
@@ -22,6 +21,7 @@ const useSignUp = () => {
                 throw new Error(data.error);
             }
 
+            console.log("funciona front")
             //localstorage
             localStorage.setItem("chat-user", JSON.stringify(data));
             //context
@@ -29,6 +29,7 @@ const useSignUp = () => {
 
         } catch (error) {
             toast.error(error.message);
+            console.log("no funciona front")
         } finally {
             setLoading(false);
         }

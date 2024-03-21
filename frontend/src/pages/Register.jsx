@@ -1,7 +1,7 @@
 import { FaFacebookF, FaLinkedin, FaGoogle, FaRegEnvelope, FaUser } from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { useState } from "react";
-import useSignUp from "../hooks/useSignUp";
+import useSignUp from "../hooks/useSignUp.jsx";
 
 //Links
 import { Link, NavLink } from "react-router-dom";

@@ -3,7 +3,7 @@ import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Logo from '../assets/logoblanco.png';
 import { Link, NavLink } from "react-router-dom";
-import useLogOut from '../hooks/useLogOut';
+import useLogOut from '../hooks/useLogOut.jsx';
 
 export default function NavBarUser() {
 
@@ -80,7 +80,7 @@ export default function NavBarUser() {
                                                     </Link>
                                                 </Menu.Item>
                                                 <Menu.Item>
-                                                    <p className="block px-4 py-2 text-sm text-negro" onClick={logout}>
+                                                    <p className="block px-4 py-2 text-sm text-negro cursor-pointer" onClick={logout}>
                                                         Cerrar Sesión
                                                     </p>
                                                 </Menu.Item>

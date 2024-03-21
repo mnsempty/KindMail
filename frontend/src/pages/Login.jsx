@@ -1,7 +1,7 @@
 import { FaFacebookF, FaLinkedin, FaGoogle, FaRegEnvelope } from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { useState } from "react";
-import useLogin from "../hooks/useLogin";
+import useLogin from "../hooks/useLogin.jsx";
 
 const Login = () => {
 
@@ -41,11 +41,11 @@ const Login = () => {
                             <form onSubmit={handleSubmit}>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <FaRegEnvelope className="text-gray-400 m-2"></FaRegEnvelope>
-                                    <input type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1"></input>
+                                    <input type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1" value={email} onChange={(e) => setEmail(e.target.value)}></input>
                                 </div>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <MdLockOutline className="text-gray-400 m-2"></MdLockOutline>
-                                    <input type="password" name="password" placeholder="Contraseña" className="bg-gray-100 outline-none text-sm flex-1"></input>
+                                    <input type="password" name="password" placeholder="Contraseña" className="bg-gray-100 outline-none text-sm flex-1" value={password} onChange={(e) => setPassword(e.target.value)}></input>
                                 </div>
                                 <div className="flex justify-between w-96 mb-5 text-blanco">
                                     <label className="flex items-center text-xs">
