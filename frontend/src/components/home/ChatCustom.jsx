@@ -24,17 +24,22 @@ export default function ChatCustom() {
         socket.off('chat message'); // Desconectar el listener para evitar fugas de memoria
       };
     }
- }, [selectedUserId]); // Dependencia en selectedUserId para recargar mensajes cuando cambie
-
+ }, [selectedUserId]); // se recarga el use effect cada vez que se modifica la variable/se escoge otro user to chat
+ // al "enviar un mensaje"
  const handleSendMessage = () => {
   console.log("click!");
   console.log("msg: "+newMessage);
   console.log("user selected: "+selectedUserId);
+  // cogemos el input para vaciarlo al enviarlo
+  let inputText = document.querySelector('#msgInput');
+  console.log("input: "+ inputText.value);
   if (newMessage.trim() && selectedUserId) {
     console.log(`Sending message: ${newMessage} from ${senderId} to ${selectedUserId}`);
     socket.emit('chat message', newMessage, senderId, selectedUserId);
     setNewMessage('');
+
   }
+  inputText.value=''
 };
 
  return (
@@ -49,6 +54,7 @@ export default function ChatCustom() {
       </div>
       <div className="border-t border-gray-200 p-4">
         <input
+          id="msgInput"
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
