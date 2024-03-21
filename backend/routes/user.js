@@ -13,11 +13,11 @@ const bcrypt = require("bcrypt");
   *port: 11927
  */
 const client = createClient({
-    password: 'admin',
-    socket: {
-        host: `${process.env.HOST}`,
-        port: process.env.DBPORT
-    }
+  password: 'admin',
+  socket: {
+    host: `${process.env.HOST}`,
+    port: process.env.DBPORT
+  }
 });
 
 client.on("error", (error) => {

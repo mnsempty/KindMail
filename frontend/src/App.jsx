@@ -3,15 +3,18 @@ import NavBarAdmin from "./components/NavBarAdmin";
 import NavBarUser from "./components/NavBarUser";
 import Layout from "./components/Layout";
 import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { Navigate } from "react-router-dom";
+import { useAuthContext } from "./context/AuthContext";
 
 //pages
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
-import LandingPage from "./pages/LandingPage";
 import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
+import LandingPage from "./pages/LandingPage";
 import HomeAdmin from "./pages/Admin/HomeAdmin";
 import Messages from "./pages/Admin/Messages";
 import User from "./pages/Admin/User";
@@ -31,30 +34,30 @@ function getByRole(role) {
 
 function App() {
 
-  /*Para ir probando, después esta constante se borrará*/
-  const role = "user";
+  const { authUser } = useAuthContext();
 
   return (
     <div className="bg-blanco min-h-screen">
 
-      {getByRole(role)}
+      {getByRole(authUser ? authUser.role : null)}
 
       <Layout>
         <Routes>
-          <Route path="/" element={<Home></Home>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/register" element={<Register></Register>}></Route>
-          <Route path="/landing-page" element={<LandingPage></LandingPage>}></Route>
-          <Route path="/first-message" element={<FirstMessage></FirstMessage>}></Route>
-          <Route path="/profile" element={<Profile></Profile>}></Route>
+          <Route path="/" element={authUser ? <LandingPage /> : <Navigate to={"/login"} />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="/login" element={authUser ? <Navigate to="/home" /> : <Login />}></Route>
+          <Route path="/register" element={authUser ? <Navigate to="/home" /> : <Register />}></Route>
+          <Route path="/first-message" element={<FirstMessage />}></Route>
+          <Route path="/profile" element={<Profile />}></Route>
           {/* Admin */}
-          <Route path="/home-admin" element={<HomeAdmin></HomeAdmin>}></Route>
-          <Route path="/messages-admin" element={<Messages></Messages>}></Route>
-          <Route path="/user-admin" element={<User></User>}></Route>
-          <Route path="/chat-admin" element={<ChatAdmin></ChatAdmin>}></Route>
+          <Route path="/home-admin" element={<HomeAdmin />}></Route>
+          <Route path="/messages-admin" element={<Messages />}></Route>
+          <Route path="/user-admin" element={<User />}></Route>
+          <Route path="/chat-admin" element={<ChatAdmin />}></Route>
           {/* Error - resto de url */}
-          <Route path="*" element={<NotFound></NotFound>}></Route>
+          <Route path="*" element={<NotFound />}></Route>
         </Routes>
+        <Toaster />
       </Layout>
     </div>
   )

@@ -5,14 +5,14 @@ import GlobalStateContext from './GlobalStateContext';
 export default function ChatCustom() {
   const { selectedUserId } = useContext(GlobalStateContext);
   const [messages, setMessages] = useState([]);
- const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState('');
 
- // Recoger el ID del usuario que envía el mensaje del almacenamiento local
+  // Recoger el ID del usuario que envía el mensaje del almacenamiento local
 
- const senderId = localStorage.getItem('userId');
+  const senderId = localStorage.getItem('userId');
 
- useEffect(() => {
-  console.log("user selected:" + selectedUserId);
+  useEffect(() => {
+    console.log("user selected:" + selectedUserId);
     if (selectedUserId) {
       // Escuchar mensajes del servidor
       socket.on('chat message', (msg, username) => {
@@ -42,7 +42,7 @@ export default function ChatCustom() {
   inputText.value=''
 };
 
- return (
+  return (
     <div className="flex flex-col w-full rounded-lg bg-slate-950	 m-4 justify-end min-h-100 max-h-100">
       <div className="overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
@@ -69,5 +69,5 @@ export default function ChatCustom() {
         </button>
       </div>
     </div>
- );
+  );
 }
