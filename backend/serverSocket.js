@@ -18,6 +18,20 @@ const setupSocket = (io) => {
         console.log(`msg: ${message}, space: ${space}`);
         io.to(space).emit('chat', message);
      });
+     /*
+       if (!socket.recovered) {
+    try {
+      const messages = await db.lrange("chat_messages", 0, -1);
+      const reversedMessages = messages.reverse();
+      reversedMessages.forEach((message) => {
+        const { msg, senderId, receiverId } = JSON.parse(message);
+        socket.emit("chat message", msg, senderId, receiverId);
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+     */
   });
  };
  
