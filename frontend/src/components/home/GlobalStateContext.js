@@ -1,9 +1,8 @@
-// GlobalStateContext.js
-import React from 'react';
+import React from "react";
 
 const GlobalStateContext = React.createContext({
-    selectedUserId: null,
-    setSelectedUserId: () => { },
+  selectedChatId: null,
+  setSelectedChatId: () => {},
 });
 
 export default GlobalStateContext;

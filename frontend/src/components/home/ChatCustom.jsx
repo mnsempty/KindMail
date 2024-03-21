@@ -1,46 +1,50 @@
-import { useContext, useEffect, useState } from 'react';
-import { socket } from '../../socket'; // Asegúrate de ajustar la ruta de importación
-import GlobalStateContext from './GlobalStateContext';
+import { useContext, useEffect, useState } from "react";
+import { socket } from "../../socket";
+import GlobalStateContext from "./GlobalStateContext";
 
 export default function ChatCustom() {
-  const { selectedUserId } = useContext(GlobalStateContext);
+  const { selectedChatId } = useContext(GlobalStateContext);
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
 
   // Recoger el ID del usuario que envía el mensaje del almacenamiento local
 
-  const senderId = localStorage.getItem('userId');
+  const senderId = localStorage.getItem("userId");
 
   useEffect(() => {
-    console.log("user selected:" + selectedUserId);
-    if (selectedUserId) {
+    console.log("chat selected:" + selectedChatId);
+    if (selectedChatId) {
       // Escuchar mensajes del servidor
-      socket.on('chat message', (msg, username) => {
+      socket.on("chat message", (msg, username) => {
         setMessages((prevMessages) => [...prevMessages, { msg, username }]);
       });
 
       // Limpiar al desmontar el componente
       return () => {
-        socket.off('chat message'); // Desconectar el listener para evitar fugas de memoria
+        
+        console.log("disconnect");
+        socket.disconnect(); // Desconectar el listener para evitar fugas de memoria
       };
     }
- }, [selectedUserId]); // se recarga el use effect cada vez que se modifica la variable/se escoge otro user to chat
- // al "enviar un mensaje"
- const handleSendMessage = () => {
-  console.log("click!");
-  console.log("msg: "+newMessage);
-  console.log("user selected: "+selectedUserId);
-  // cogemos el input para vaciarlo al enviarlo
-  let inputText = document.querySelector('#msgInput');
-  console.log("input: "+ inputText.value);
-  if (newMessage.trim() && selectedUserId) {
-    console.log(`Sending message: ${newMessage} from ${senderId} to ${selectedUserId}`);
-    socket.emit('chat message', newMessage, senderId, selectedUserId);
-    setNewMessage('');
-
-  }
-  inputText.value=''
-};
+  }, [selectedChatId]); // se recarga el use effect cada vez que se modifica la variable/se escoge otro user to chat
+  
+  // al "enviar un mensaje"
+  const handleSendMessage = () => {
+    console.log("click!");
+    console.log("msg: " + newMessage);
+    console.log("user selected: " + selectedChatId);
+    // cogemos el input para vaciarlo al enviarlo
+    let inputText = document.querySelector("#msgInput");
+    console.log("input: " + inputText.value);
+    if (newMessage.trim() && selectedChatId) {
+      console.log(
+        `Sending message: ${newMessage} from ${senderId} to ${selectedChatId}`
+      );
+      socket.emit("chat message", newMessage, senderId, selectedChatId);
+      setNewMessage("");
+    }
+    inputText.value = "";
+  };
 
   return (
     <div className="flex flex-col w-full rounded-lg bg-slate-950	 m-4 justify-end min-h-100 max-h-100">
@@ -52,18 +56,18 @@ export default function ChatCustom() {
           </div>
         ))}
       </div>
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 p-4 ">
         <input
           id="msgInput"
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="w-90 p-2 rounded border border-gray-300"
+          className="p-2 rounded border border-gray-300"
           placeholder="Escribe un mensaje..."
         />
         <button
           onClick={handleSendMessage}
-          className="mt-2 p-2 rounded bg-blue-500 text-white"
+          className="mt-2 ms-2 p-2 rounded bg-blue-500 text-white"
         >
           Enviar
         </button>

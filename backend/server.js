@@ -5,7 +5,7 @@ const cors = require("cors");
 const { Server } = require("socket.io");
 const { createServer } = require("http");
 
-const userRoutes = require('./routes/user');
+const userRoutes = require("./routes/user");
 
 const port = process.env.PORT || 5000;
 
@@ -21,7 +21,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
+// link a la parte de los sockets
+setupSocket(io);
 app.use(
   cors({
     // todo with .env
@@ -29,11 +30,7 @@ app.use(
   })
 );
 
-
-
-app.use('/api/user', userRoutes);
-
-
+app.use("/api/user", userRoutes);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);

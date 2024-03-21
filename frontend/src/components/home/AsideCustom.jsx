@@ -1,10 +1,10 @@
 import { useContext } from 'react';
 import { Avatar, Listbox, ListboxItem } from '@nextui-org/react';
 import { users } from '../../fakeData/userData';
-import GlobalStateContext from './GlobalStateContext'; // Asegúrate de ajustar la ruta de importación
+import GlobalStateContext from './GlobalStateContext';
 
 export default function CustomAside() {
-  const { setSelectedUserId } = useContext(GlobalStateContext);
+  const { setSelectedChatId } = useContext(GlobalStateContext);
 
   return (
     <aside className="bg-dark border-2 rounded-lg border-primary text-foreground w-64 p-4">
@@ -19,8 +19,8 @@ export default function CustomAside() {
       >
         {users.map(user => (
           <ListboxItem key={user.id} onClick={() => {
-            console.log(`Seleccionado usuario con ID: ${user.id}`);
-            setSelectedUserId(user.id); // Actualiza el estado en el contexto
+            console.log(`Seleccionado chat con ID: ${user.id}`);
+            setSelectedChatId(user.id); // Actualiza el estado en el contexto
           }} textValue={user.name}>
             <div className="flex gap-2 items-center">
               <Avatar alt={user.name} className="flex-shrink-0" size="sm" src={user.avatar} />
