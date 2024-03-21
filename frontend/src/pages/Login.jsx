@@ -54,9 +54,8 @@ const Login = () => {
                                     <a href="#" className="text-xs">¿Has olvidado tu contraseña?</a>
                                 </div>
                                 <button
-                                    className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro hover:text-azul mb-10"
-                                    disabled={loading}>
-                                    {loading ? <span className="loading loading-spinner"></span> : "Acceder"}
+                                    className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro hover:text-azul mb-10">
+                                    Acceder
                                 </button>
                             </form>
                         </div>

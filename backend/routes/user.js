@@ -111,4 +111,14 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Ruta logout
+router.post("/logout", async (req, res) => {
+  try {
+  } catch (error) {
+    console.error("Error al crear usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+});
+
+
 module.exports = router;
