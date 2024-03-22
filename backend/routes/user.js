@@ -55,10 +55,8 @@ router.post("/", async (req, res) => {
       JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
     );
 
-    console.log("funciona back")
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
-    console.log("Fallo back")
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
@@ -96,6 +94,7 @@ router.post("/login", async (req, res) => {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
+    //Comparar contraseñas
     const passwordMatch = await bcrypt.compare(
       password,
       existingUser.hashedPassword

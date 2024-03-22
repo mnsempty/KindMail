@@ -2,6 +2,7 @@ import { FaFacebookF, FaLinkedin, FaGoogle, FaRegEnvelope, FaUser } from "react-
 import { MdLockOutline } from "react-icons/md";
 import { useState } from "react";
 import useSignUp from "../hooks/useSignUp.jsx";
+import { useNavigate } from "react-router-dom";
 
 //Links
 import { Link, NavLink } from "react-router-dom";
@@ -10,13 +11,15 @@ const Register = () => {
 
     const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro hover:text-azul";
 
-    const { loading, signup } = useSignUp();
+    const navigate = useNavigate();
+    const { loading, signup } = useSignUp((path) => navigate(path));
 
     const [inputs, setInputs] = useState({
         name: "",
         email: "",
         password: "",
     });
+
 
     const handleSummit = async (e) => {
         e.preventDefault();

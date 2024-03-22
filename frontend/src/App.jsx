@@ -64,7 +64,7 @@ function App() {
         <Routes>
           <Route path="/" element={authUser ? <Navigate to={"/landingPage"} /> : <Home />}></Route>
           <Route path="/home" element={authUser ? <Home /> : <Navigate to={"/landingPage"} />}></Route>
-          <Route path="/login" element={authUser ? <Login /> : <Navigate to={"/home"} />}></Route>
+          <Route path="/login" element={<Login />}></Route>
           <Route path="/register" element={<Register />}></Route>
           <Route path="/landingPage" element={<LandingPage />}></Route>
           <Route path="/first-message" element={authUser ? <FirstMessage /> : <Navigate to={"/landingPage"} />}></Route>
