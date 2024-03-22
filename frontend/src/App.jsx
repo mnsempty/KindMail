@@ -62,7 +62,7 @@ function App() {
 
       <Layout>
         <Routes>
-          <Route path="/" element={authUser ? <Home /> : <Navigate to={"/landingPage"} />}></Route>
+          <Route path="/" element={authUser ? <Navigate to={"/landingPage"} /> : <Home />}></Route>
           <Route path="/home" element={authUser ? <Home /> : <Navigate to={"/landingPage"} />}></Route>
           <Route path="/login" element={authUser ? <Login /> : <Navigate to={"/home"} />}></Route>
           <Route path="/register" element={<Register />}></Route>
