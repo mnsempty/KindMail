@@ -1,39 +1,10 @@
 const express = require("express");
 const router = express.Router();
 require("dotenv").config();
+const bcrypt=require("bcrypt");
+const jwt=require("jsonwebtoken");
 
-const { createClient } = require("redis");
-// Token de seguridad.
-const jwt = require("jsonwebtoken");
-// Encriptación
-const bcrypt = require("bcrypt");
-
-/**
- * host: 'redis-11927.c135.eu-central-1-1.ec2.cloud.redislabs.com',
-  *port: 11927
- */
-const client = createClient({
-  password: 'admin',
-  socket: {
-    host: `${process.env.HOST}`,
-    port: process.env.DBPORT
-  }
-});
-
-client.on("error", (error) => {
-  console.error("Error en el cliente Redis:", error);
-});
-
-async function connectDB() {
-  try {
-    await client.connect();
-    console.log("Conexión exitosa a la base de datos Redis");
-  } catch (error) {
-    console.error("Error al conectar a la base de datos Redis:", error);
-  }
-}
-
-connectDB();
+const client=require("../Database/RedisClient");
 
 router.use(express.json());
 
