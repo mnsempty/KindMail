@@ -57,7 +57,11 @@ router.get("/", async (req, res) => {
 // Ruta para abrir un chat en especifico y devolver mensajes, avatares e id de los users.
 router.post("/openChat", async (req, res) => {
   try {
-    const { index } = req.body;
+    const { chat_ID } = req.body;
+
+    const messagesFromChat = await chatController.getMessagesFromChat(chat_ID);
+
+    res.status(200).json({ messagesFromChat });
   } catch (err) {
     res.status(500).json({ message: "Error interno del servidor" });
     console.log("Error al traer el chat del usuario:", err);
@@ -67,13 +71,12 @@ router.post("/openChat", async (req, res) => {
 // Ruta para enviar mensajes.
 router.post("/sendMessage", async (req, res) => {
   try {
-    const { sender, receiver, content } = req.body;
+    const { sender, receiver, content,chat_ID } = req.body;
 
-    const messageData = { sender, receiver, content };
+    const messageData = { sender, receiver, content,chat_ID };
     await chatController.sendMessage(messageData); // Guardar el mensaje en la bbdd.
 
-    res.status(201).json({message:"Mensaje enviado correctamente"})
-
+    res.status(201).json({ message: "Mensaje enviado correctamente" });
   } catch (err) {
     res.status(500).json({ message: "Error interno del servidor" });
     console.log("Error al enviar mensaje:", err);

@@ -49,9 +49,7 @@ async function getUserChats(user_ID) {
   }
 
   return allUserChats.length !== 0 ? allUserChats : null;
-
 }
-
 
 // Función para guardar mensajes
 async function sendMessage(message) {
@@ -67,4 +65,33 @@ async function sendMessage(message) {
   });
 }
 
-module.exports = { findChatByUserIDs, addChatToList, getUserChats,sendMessage };
+//Funcion para recoger los mensajes de un chat
+async function getMessagesFromChat(chat_ID) {
+
+  const allMessages = await client.lRange("messages_list", 0, -1);
+  console.log(allMessages);
+
+  const messagesFromChat = [];
+
+
+  for (const messageJSON of allMessages) {
+    console.log(messageJSON);
+    const message = JSON.parse(messageJSON);
+    console.log(message);
+
+    console.log(message.chat_ID+ " "+ chat_ID);
+    if (message.chat_ID == chat_ID) {
+      messagesFromChat.push(message);
+    }
+  }
+
+  return messagesFromChat.length !== 0 ? messagesFromChat : null;
+}
+
+module.exports = {
+  findChatByUserIDs,
+  addChatToList,
+  getUserChats,
+  sendMessage,
+  getMessagesFromChat,
+};
