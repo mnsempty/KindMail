@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-require("dotenv").config();
-const bcrypt=require("bcrypt");
-const jwt=require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-const client=require("../Database/RedisClient");
+const client = require("../Database/RedisClient");
+
+const userController = require("../controllers/UserController");
 
 router.use(express.json());
 
@@ -13,23 +14,19 @@ router.post("/", async (req, res) => {
   try {
     const { name, surname, email, birthday, role, password } = req.body;
     // Verificar si el usuario existe antes de crearlo
-    const existingUser = await client.hGet("users", email);
+    const existingUser = await userController.findUser(email);
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // Almacenar el nuevo usuario en Redis Cloud
-    await client.hSet(
-      "users",
-      email,
-      JSON.stringify({ name, surname, email, birthday, role, hashedPassword })
-    );
+    const userData = { name, surname, email, birthday, role, password };
 
-    console.log("funciona back")
+    userController.saveUser(userData);
+
+    console.log("funciona back");
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
-    console.log("Fallo back")
+    console.log("Fallo back");
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
@@ -41,13 +38,13 @@ router.delete("/", async (req, res) => {
     const { email } = req.body;
 
     // Verificar si el usuario existe antes de eliminarlo
-    const existingUser = await client.hGet("users", email);
+    const existingUser = await userController.findUser(email);
     if (!existingUser) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
     // Eliminar el usuario de la base de datos
-    await client.hDel("users", email);
+    userController.delUser(email)
 
     res.status(200).json({ message: "Usuario eliminado correctamente" });
   } catch (error) {
@@ -62,7 +59,7 @@ router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     // Verificar si el usuario existe en la base de datos
-    const existingUser = JSON.parse(await client.hGet("users", email));
+    const existingUser = await userController.findUser(email);
     if (!existingUser) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -101,6 +98,5 @@ router.post("/logout", async (req, res) => {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 });
-
 
 module.exports = router;
