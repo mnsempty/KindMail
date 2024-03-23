@@ -23,10 +23,10 @@ router.post("/create", async (req, res) => {
         .json({ message: "Los usuarios ya están en una sala de chat juntos" });
     }
 
-    
-
     if (!user1_ID || !user2_ID) {
-      return res.status(400).json({ message: "user1_ID y user2_ID son obligatorios" });
+      return res
+        .status(400)
+        .json({ message: "user1_ID y user2_ID son obligatorios" });
     }
 
     // Crear la sala de chat
@@ -42,7 +42,17 @@ router.post("/create", async (req, res) => {
 });
 
 // Ruta para coger los chats de un usuario en la pagina home.
-router.get("/", async (req, res) => {});
+router.get("/", async (req, res) => {
+  try {
+    const { user_ID } = req.body;
+
+    const userChats = await chatController.getUserChats(user_ID);
+
+    res.status(200).json({ userChats });
+  } catch (err) {
+    console.log("Error al traer los chats del usuario:", err);
+  }
+});
 
 // Ruta para abrir un chat en especifico y devolver mensajes, avatares e id de los users.
 router.post("/openChat", async (req, res) => {});
