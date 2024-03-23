@@ -52,4 +52,19 @@ async function getUserChats(user_ID) {
 
 }
 
-module.exports = { findChatByUserIDs, addChatToList, getUserChats };
+
+// Función para guardar mensajes
+async function sendMessage(message) {
+  const messageJSON = JSON.stringify(message);
+
+  // Agregar el chat al final de la lista
+  await client.rPush("messages_list", messageJSON, (err, reply) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(reply);
+    }
+  });
+}
+
+module.exports = { findChatByUserIDs, addChatToList, getUserChats,sendMessage };

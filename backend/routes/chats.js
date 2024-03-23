@@ -30,10 +30,9 @@ router.post("/create", async (req, res) => {
     }
 
     // Crear la sala de chat
-    const chatData = { user1_ID, user2_ID }; // Agregar chat_ID al objeto de chat
+    const chatData = { user1_ID, user2_ID };
     await chatController.addChatToList(chatData); // Llamar a la función para agregar chat a la lista
 
-    console.log("funciona back");
     res.status(201).json({ message: "Chat creado correctamente" });
   } catch (error) {
     console.error("Error al crear chat:", error);
@@ -50,11 +49,35 @@ router.get("/", async (req, res) => {
 
     res.status(200).json({ userChats });
   } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
     console.log("Error al traer los chats del usuario:", err);
   }
 });
 
 // Ruta para abrir un chat en especifico y devolver mensajes, avatares e id de los users.
-router.post("/openChat", async (req, res) => {});
+router.post("/openChat", async (req, res) => {
+  try {
+    const { index } = req.body;
+  } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.log("Error al traer el chat del usuario:", err);
+  }
+});
+
+// Ruta para enviar mensajes.
+router.post("/sendMessage", async (req, res) => {
+  try {
+    const { sender, receiver, content } = req.body;
+
+    const messageData = { sender, receiver, content };
+    await chatController.sendMessage(messageData); // Guardar el mensaje en la bbdd.
+
+    res.status(201).json({message:"Mensaje enviado correctamente"})
+
+  } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.log("Error al enviar mensaje:", err);
+  }
+});
 
 module.exports = router;
