@@ -6,6 +6,7 @@ const { Server } = require("socket.io");
 const { createServer } = require("http");
 
 const userRoutes = require('./routes/user');
+const chatRoutes = require('./routes/chats');
 
 const port = process.env.PORT || 5000;
 
@@ -32,6 +33,7 @@ app.use(
 
 
 app.use('/api/user', userRoutes);
+app.use('/api/chats', chatRoutes);
 
 
 
