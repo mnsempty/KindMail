@@ -2,10 +2,14 @@ const client = require("../Database/RedisClient");
 const bcrypt = require("bcrypt");
 
 async function findUser(email) {
-  
-    return await client.hGet("users", email);
-  
+  const userData = await client.hGet("users", email);
+  if (userData) {
+    return JSON.parse(userData);
+  } else {
+    return null; // Usuario no encontrado
+  }
 }
+
 
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
