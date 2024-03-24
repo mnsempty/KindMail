@@ -2,7 +2,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
-const useSignUp = () => {
+const useSignUp = (redirect) => {
 
     const [loading, setLoading] = useState(false);
     const { authUser, setAuthUser } = useAuthContext();
@@ -21,15 +21,15 @@ const useSignUp = () => {
                 throw new Error(data.error);
             }
 
-            console.log("funciona front")
             //localstorage
             localStorage.setItem("chat-user", JSON.stringify(data));
             //context
             setAuthUser(data);
+            console.log("entro");
+            redirect("/home");
 
         } catch (error) {
             toast.error(error.message);
-            console.log("no funciona front")
         } finally {
             setLoading(false);
         }

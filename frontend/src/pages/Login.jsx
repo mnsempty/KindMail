@@ -2,19 +2,23 @@ import { FaFacebookF, FaLinkedin, FaGoogle, FaRegEnvelope } from "react-icons/fa
 import { MdLockOutline } from "react-icons/md";
 import { useState } from "react";
 import useLogin from "../hooks/useLogin.jsx";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
 
     const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro hover:text-azul";
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [inputs, setInputs] = useState({
+        email: "",
+        password: "",
+    });
 
-    const { loading, login } = useLogin();
+    const navigate = useNavigate();
+    const { loading, login } = useLogin((path) => navigate(path));
 
-    const handleSubmit = async (e) => {
+    const handleSummit = async (e) => {
         e.preventDefault();
-        await login(email, password);
+        await login(inputs);
     }
 
     return (
@@ -38,14 +42,14 @@ const Login = () => {
                             </div>
                         </div>
                         <div className="flex flex-col items-center">
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={handleSummit}>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <FaRegEnvelope className="text-gray-400 m-2"></FaRegEnvelope>
-                                    <input type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1" value={email} onChange={(e) => setEmail(e.target.value)}></input>
+                                    <input type="email" name="email" placeholder="Email" className="bg-gray-100 outline-none text-sm flex-1" value={inputs.email} onChange={(e) => setInputs({ ...inputs, email: e.target.value })}></input>
                                 </div>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <MdLockOutline className="text-gray-400 m-2"></MdLockOutline>
-                                    <input type="password" name="password" placeholder="Contraseña" className="bg-gray-100 outline-none text-sm flex-1" value={password} onChange={(e) => setPassword(e.target.value)}></input>
+                                    <input type="password" name="password" placeholder="Contraseña" className="bg-gray-100 outline-none text-sm flex-1" value={inputs.password} onChange={(e) => setInputs({ ...inputs, password: e.target.value })}></input>
                                 </div>
                                 <div className="flex justify-between w-96 mb-5 text-blanco">
                                     <label className="flex items-center text-xs">
