@@ -1,11 +1,15 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+console.log("si");
 
 const { Server } = require("socket.io");
 const {createServer}  = require("node:http");
 
 const setupSocket  = require ("./serverSocket.js");
+
+//import js con socket parte backend
+const setupSocket = require('./serverSocket');
 
 const userRoutes = require('./routes/user');
 const chatRoutes = require('./routes/chats');

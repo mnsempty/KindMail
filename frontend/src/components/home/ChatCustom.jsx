@@ -52,7 +52,7 @@ export default function ChatCustom() {
   };
 
   return (
-    <div className="flex flex-col w-full rounded-lg bg-slate-950	 m-4 justify-end min-h-100 max-h-100">
+    <div className="flex flex-col w-full rounded-lg bg-slate-600 m-4 justify-end min-h-100 max-h-100">
       <div className="overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div key={index} className="p-2 rounded bg-gray-200">
@@ -61,18 +61,18 @@ export default function ChatCustom() {
           </div>
         ))}
       </div>
-      <div className="border-t border-gray-200 p-4 ">
+      <div className="border-t border-gray-200 p-4 flex">
         <input
           id="msgInput"
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="p-2 rounded border border-gray-300"
+          className="p-2 rounded border border-gray-300 flex-auto"
           placeholder="Escribe un mensaje..."
         />
         <button
           onClick={handleSendMessage}
-          className="mt-2 ms-2 p-2 rounded bg-blue-500 text-white"
+          className="ms-2 p-2 rounded bg-blue-500 text-white"
         >
           Enviar
         </button>
