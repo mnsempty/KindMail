@@ -2,6 +2,9 @@ import { useContext, useEffect, useState } from "react";
 import { socket } from "../../socket";
 import GlobalStateContext from "./GlobalStateContext";
 
+import {jwtDecode} from 'jwt-decode';
+
+
 export default function ChatCustom() {
   const { selectedChatId } = useContext(GlobalStateContext);
   const [messages, setMessages] = useState([]);
@@ -9,8 +12,10 @@ export default function ChatCustom() {
 
   // Recoger el ID del usuario que envía el mensaje del almacenamiento local
 
-  const senderId = localStorage.getItem("userId");
-
+  let senderId = localStorage.getItem("chat-user");
+  senderId=JSON.parse(senderId)
+  senderId = jwtDecode(senderId.token);
+  console.log(senderId.userData.email);
   useEffect(() => {
     console.log("chat selected:" + selectedChatId);
     if (selectedChatId) {

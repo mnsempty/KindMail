@@ -2,9 +2,12 @@ const client = require("../Database/RedisClient");
 const bcrypt = require("bcrypt");
 
 async function findUser(email) {
-  
-    return await client.hGet("users", email);
-  
+  const userJson = await client.hGet("users", email); // Verificar si se encontró un usuario
+  if (!userJson) {
+    return null; // Devuelve null si no se encuentra el usuario
+  }
+  const user = JSON.parse(userJson);
+  return user;
 }
 
 async function saveUser(userData) {
@@ -37,5 +40,6 @@ async function delUser(email) {
 
 module.exports = {
   findUser,
-  saveUser, delUser
+  saveUser,
+  delUser,
 };
