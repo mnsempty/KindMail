@@ -23,10 +23,8 @@ router.post("/", async (req, res) => {
 
     userController.saveUser(userData);
 
-    console.log("funciona back")
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
-    console.log("Fallo back")
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
