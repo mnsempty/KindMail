@@ -1,5 +1,3 @@
-// serverSocket.js
-
 const setupSocket = (io) => {
   // al crearse la conexión
   io.on('connection', (socket) => {

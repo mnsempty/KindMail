@@ -1,27 +1,28 @@
 import { useState } from 'react';
 
-const useGetChatMessages = () => {
+const useGetChatDetails = () => {
     const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState([]);
+    const [chatDetails, setChatDetails] = useState([]);
 
-    const getChatMessages = async (chat_ID) => {
+    const getChatDetails = async (user_ID) => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:5000/api/openChat", {
+            const res = await fetch("http://localhost:5000/api/chats", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ chat_ID })
+                body: JSON.stringify({ user_ID })
             });
-
+            
             if (!res.ok) {
                 // Si la respuesta no es exitosa, lanzar un error con el mensaje del backend
                 const errorData = await res.json();
-                throw new Error(errorData.message || "Error al obtener los mensajes del chat");
+                throw new Error(errorData.message || "Error al obtener los detalles del chat");
             }
 
             const data = await res.json();
-            // Si la respuesta es exitosa, almacenar los mensajes del chat
-            setMessages(data.messagesFromChat);
+            console.log("Data fetch"+JSON.stringify(data.userChats));
+            // Si la respuesta es exitosa, almacenar los detalles del chat
+            setChatDetails(data.userChats);
         } catch (error) {
             // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje de error al usuario
             console.error(error.message);
@@ -30,7 +31,7 @@ const useGetChatMessages = () => {
         }
     }
 
-    return { loading, messages, getChatMessages };
+    return { loading, chatDetails, getChatDetails };
 }
 
-export default useGetChatMessages;
+export default useGetChatDetails;

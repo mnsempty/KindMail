@@ -41,7 +41,7 @@ router.post("/create", async (req, res) => {
 });
 
 // Ruta para coger los chats de un usuario en la pagina home.
-router.get("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const { user_ID } = req.body;
 
