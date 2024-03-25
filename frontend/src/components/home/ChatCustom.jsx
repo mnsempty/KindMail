@@ -11,8 +11,6 @@ export default function ChatCustom() {
  senderId = senderId.userData.email;
  //guardamos los mensajes del socket que luego mostramos
  const [messages, setMessages] = useState([]);
- //guardamos los mensajes que se acaban de "escribir por nosotros" para enviar en el socket
- const [newMessage, setNewMessage] = useState('');
  // Obtener el chatId del contexto global en lugar de localStorage
  const { selectedChatId } = useContext(GlobalStateContext);
 
@@ -35,14 +33,14 @@ export default function ChatCustom() {
 
  const handleSendMessage = () => {
     // Actualizar el estado newMessage con el valor actual del campo de entrada
-    setNewMessage(document.getElementById('messageInput').value);
+    const currentMessage = document.getElementById('messageInput').value;
     // dejamos en el state el mensaje que luego cogemos "sin espacios" y lo enviamos al socket
     // junto con el nombre de usuario,despues dejamos el username en blanco
-    if (newMessage.trim() && selectedChatId) {
-      sendMessage(selectedChatId, { message: newMessage, senderName: senderId });
-      setNewMessage(''); // Limpiar el campo de entrada después de enviar el mensaje
+    if (currentMessage.trim() && selectedChatId) {
+      sendMessage(selectedChatId, { message: currentMessage, senderName: senderId });
+      document.getElementById('messageInput').value = '';
+      // Actualizar el estado newMessage para reflejar el cambio en la UI
     }
-    document.getElementById('messageInput').value = ''
  };
 
  return (

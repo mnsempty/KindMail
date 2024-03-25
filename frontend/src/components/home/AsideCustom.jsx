@@ -30,6 +30,8 @@ export default function CustomAside() {
  if (userEmail) {
     getChatDetails(`${userEmail}`);
  }
+ //warning React Hook useEffect has a missing dependency: 'getChatDetails'. Either include it or remove the dependency array.
+ // a pesar de que salga warning no nos interesa la dependencia del fetch
  }, [UserInfo]); // Este useEffect se ejecuta cuando UserInfo cambia
 
  useEffect(() => {
@@ -40,10 +42,11 @@ export default function CustomAside() {
       // Selecciona los datos del otro usuario
       const otherUser = isUser1 ? chat.user2Details : chat.user1Details;
       // Devuelve un objeto con los datos del otro usuario y el índice del chat
-      return { ...otherUser, index: chat.index };
+      return { ...otherUser, chat_id: chat.chat_id, index: chat.index };
     });
     setFilteredChats(filtered);
  }
+
  }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
  if (loading) {
@@ -64,8 +67,8 @@ export default function CustomAside() {
         {filteredChats.map((chat, index) => {
           return (
             <ListboxItem key={index} onClick={() => {
-              console.log(`Seleccionado chat con ID: ${chat.email}`);
-              setSelectedChatId(chat.email); // Actualiza el estado en el contexto
+              console.log(`Seleccionado chat con ID: ${chat.chat_id}`);
+              setSelectedChatId(chat.chat_id); // Actualiza el estado en el contexto
             }} textValue={chat.name}>
               <div className="flex gap-2 items-center">
                 <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.avatar} />
