@@ -4,7 +4,7 @@ const cors = require("cors");
 console.log("------KindMail------");
 
 const { Server } = require("socket.io");
-const {createServer}  = require("node:http");
+const { createServer }  = require("node:http");
 
 //import js con socket parte backend
 const setupSocket = require('./serverSocket');
