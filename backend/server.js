@@ -1,12 +1,10 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
-console.log("si");
+console.log("---------KindMail---------");
 
 const { Server } = require("socket.io");
-const {createServer}  = require("node:http");
-
-const setupSocket  = require ("./serverSocket.js");
+const { createServer }  = require("node:http");
 
 //import js con socket parte backend
 const setupSocket = require('./serverSocket');
