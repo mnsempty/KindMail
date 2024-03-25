@@ -23,7 +23,7 @@ router.post("/user/logout",userController.logout)
 // Ruta para crear un chat
 router.post("/chats/create",chatController.create);
 // Ruta para traer los chats del user
-router.get("/chats",chatController.getChatsFromUser);
+router.post("/chats",chatController.getChatsFromUser);
 // Ruta para abrir una sala de chat
 router.post("/chats/openChat",chatController.openChat);
 // Ruta para enviar mensajes
