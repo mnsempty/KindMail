@@ -122,6 +122,23 @@ async function getUserChats(user_ID) {
     const chat = JSON.parse(allChats[i]);
 
     if (chat.user1_ID === user_ID || chat.user2_ID === user_ID) {
+      // Obtener los detalles de los usuarios
+      const user1Details = await client.hGet("users", chat.user1_ID);
+      const user2Details = await client.hGet("users", chat.user2_ID);
+      // Eliminar el campo hashedPassword de los detalles de los usuarios
+      const user1DetailsClean = {
+        ...JSON.parse(user1Details),
+        hashedPassword: undefined,
+      };
+      const user2DetailsClean = {
+        ...JSON.parse(user2Details),
+        hashedPassword: undefined,
+      };
+
+      // Añadir los detalles de los usuarios al objeto chat
+      chat.user1Details = user1DetailsClean;
+      chat.user2Details = user2DetailsClean;
+
       chat.index = i;
       allUserChats.push(chat);
     }
