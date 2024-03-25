@@ -9,8 +9,8 @@ const {createServer}  = require("node:http");
 //import js con socket parte backend
 const setupSocket = require('./serverSocket');
 
-const userRoutes = require('./routes/user');
-const chatRoutes = require('./routes/chats');
+const web = require('./routes/web');
+
 
 const port = process.env.PORT || 5000;
 
@@ -35,8 +35,8 @@ app.use(
   })
 );
 
-app.use('/api/user', userRoutes);
-app.use('/api/chats', chatRoutes);
+app.use('/api', web);
+
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
