@@ -4,10 +4,10 @@ import ChatCustom from "../components/home/ChatCustom";
 import GlobalStateContext from "../components/home/GlobalStateContext";
 
 const Home = () => {
-    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [selectedChatId, setSelectedChatId] = useState(null);
 
     return (
-        <GlobalStateContext.Provider value={{ selectedUserId, setSelectedUserId }}>
+        <GlobalStateContext.Provider value={{ selectedChatId, setSelectedChatId }}>
             <>
                 <div className="flex">
                     <CustomAside />

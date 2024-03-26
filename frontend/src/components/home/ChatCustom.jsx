@@ -1,58 +1,63 @@
-import { useContext, useEffect, useState } from 'react';
-import { socket } from '../../socket'; // Asegúrate de ajustar la ruta de importación
-import GlobalStateContext from './GlobalStateContext';
+import { useContext, useEffect, useState } from "react";
+import { iniciateSocket, startChat, sendMessage } from "../../socket";
+import GlobalStateContext from "./GlobalStateContext";
+
+import {jwtDecode} from 'jwt-decode';
 
 export default function ChatCustom() {
-  const { selectedUserId } = useContext(GlobalStateContext);
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+ let senderId = localStorage.getItem("chat-user");
+ senderId = JSON.parse(senderId);
+ senderId = jwtDecode(senderId.token);
+ senderId = senderId.userData.email;
+ //guardamos los mensajes del socket que luego mostramos
+ const [messages, setMessages] = useState([]);
+ // Obtener el chatId del contexto global en lugar de localStorage
+ const { selectedChatId } = useContext(GlobalStateContext);
 
-  // Recoger el ID del usuario que envía el mensaje del almacenamiento local
-
-  const senderId = localStorage.getItem('userId');
-
-  useEffect(() => {
-    console.log("user selected:" + selectedUserId);
-    if (selectedUserId) {
-      // Escuchar mensajes del servidor
-      socket.on('chat message', (msg, username) => {
-        setMessages((prevMessages) => [...prevMessages, { msg, username }]);
+ useEffect(() => {
+    // si hay chat/id seleccionado
+    if (selectedChatId) {
+      //iniciamos el socket
+      iniciateSocket(selectedChatId);
+      //recibimos los mensajes del servidor, manejando los errores
+      startChat((err, msg) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        // guardamos el mensaje y el sender en la base de datos
+        setMessages((prevMessages) => [...prevMessages, { msg: msg.message, sender: msg.senderName }]);
       });
-
-      // Limpiar al desmontar el componente
-      return () => {
-        socket.off('chat message'); // Desconectar el listener para evitar fugas de memoria
-      };
     }
-  }, [selectedUserId]); // Dependencia en selectedUserId para recargar mensajes cuando cambie
+ }, [selectedChatId]); // Asegúrate de que el efecto dependa de selectedChatId
 
-  const handleSendMessage = () => {
-    console.log("click!");
-    console.log("msg: " + newMessage);
-    console.log("user selected: " + selectedUserId);
-    if (newMessage.trim() && selectedUserId) {
-      console.log(`Sending message: ${newMessage} from ${senderId} to ${selectedUserId}`);
-      socket.emit('chat message', newMessage, senderId, selectedUserId);
-      setNewMessage('');
+ const handleSendMessage = () => {
+    // Actualizar el estado newMessage con el valor actual del campo de entrada
+    const currentMessage = document.getElementById('messageInput').value;
+    // dejamos en el state el mensaje que luego cogemos "sin espacios" y lo enviamos al socket
+    // junto con el nombre de usuario,despues dejamos el username en blanco
+    if (currentMessage.trim() && selectedChatId) {
+      sendMessage(selectedChatId, { message: currentMessage, senderName: senderId });
+      document.getElementById('messageInput').value = '';
+      // Actualizar el estado newMessage para reflejar el cambio en la UI
     }
-  };
+ };
 
-  return (
-    <div className="flex flex-col w-full rounded-lg bg-slate-950	 m-4 justify-end min-h-100 max-h-100">
+ return (
+    <div className="flex flex-col w-full rounded-lg bg-gray-500 m-4 justify-end max-h-100">
       <div className="overflow-y-auto p-4 space-y-4">
         {messages.map((message, index) => (
           <div key={index} className="p-2 rounded bg-gray-200">
-            <strong>{message.username}: </strong>
+            <strong>{message.sender}: </strong>
             <span>{message.msg}</span>
           </div>
         ))}
       </div>
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-gray-200 p-4 flex">
         <input
+          id="messageInput"
           type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          className="w-90 p-2 rounded border border-gray-300"
+          className="w-90 p-2 rounded border border-gray-300 flex-auto"
           placeholder="Escribe un mensaje..."
         />
         <button
@@ -63,5 +68,5 @@ export default function ChatCustom() {
         </button>
       </div>
     </div>
-  );
+ );
 }

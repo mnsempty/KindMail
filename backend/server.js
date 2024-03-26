@@ -1,12 +1,16 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+console.log("------KindMail------");
 
 const { Server } = require("socket.io");
-const { createServer } = require("http");
+const { createServer }  = require("node:http");
 
-const userRoutes = require('./routes/user');
-const chatRoutes = require('./routes/chats');
+//import js con socket parte backend
+const setupSocket = require('./serverSocket');
+
+const web = require('./routes/web');
+
 
 const port = process.env.PORT || 5000;
 
@@ -22,7 +26,8 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
+// link a la parte de los sockets
+setupSocket(io);
 app.use(
   cors({
     // todo with .env
@@ -30,11 +35,7 @@ app.use(
   })
 );
 
-
-
-app.use('/api/user', userRoutes);
-app.use('/api/chats', chatRoutes);
-
+app.use('/api', web);
 
 
 server.listen(port, () => {
