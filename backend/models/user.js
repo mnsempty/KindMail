@@ -56,7 +56,7 @@ const userSchema = new Schema({
         type: String,
         required: false,
         default: 'online',
-        enum: ['online', 'offline']
+        enum: ['online', 'offline', 'busy']
     },
     image: {
         type: String,

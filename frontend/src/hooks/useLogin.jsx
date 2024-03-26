@@ -22,7 +22,6 @@ const useLogin = (redirect) => {
             }
 
             const data = await res.json();
-            console.log(email, password);
             // Si la respuesta es exitosa, almacenar los datos del usuario y redirigir al usuario
             localStorage.setItem("chat-user", JSON.stringify(data));
             setAuthUser(data);

@@ -136,6 +136,42 @@ async function delUser(email) {
   }
 }
 
+async function setBusy(req, res) {
+  try {
+    const { busy } = req.body;
+    const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+    const payload = jwt.decode(token); // Decodificar el token
+
+    // Obtener el correo electrónico del usuario desde la información decodificada
+    const email = payload.userData.email;
+
+    // Obtener el usuario existente de Redis Cloud utilizando el correo electrónico
+    const existingUserString = await client.hGet("users", email);
+    const existingUser = JSON.parse(existingUserString);
+
+    if (!existingUserString) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar el estado ocupado del usuario
+    existingUser.state = busy;
+
+    // Actualizar el usuario en Redis Cloud
+    await client.hSet(
+      "users",
+      email,
+      JSON.stringify(existingUser) // Convertir a JSON antes de almacenar en Redis
+    );
+
+    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+  } catch (error) {
+    console.error("Error al actualizar el estado del usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
+
+
 module.exports = {
-  createUser, deleteUser, login, logout
+  createUser, deleteUser, login, logout, setBusy
 };

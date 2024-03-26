@@ -5,10 +5,20 @@ import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
 import Logo from '../assets/logoblanco.png';
 import { Link } from "react-router-dom";
 import useLogOut from '../hooks/useLogOut.jsx';
+import useBusy from '../hooks/useBusy.jsx';
 
 export default function NavBarUser() {
 
     const { loading, logout } = useLogOut();
+    const { busy } = useBusy();
+    const handleBusy = async () => {
+        try {
+            // Llama a la función busy para actualizar el estado del usuario a "busy"
+            await busy();
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
 
     return (
         <Disclosure as="nav" className="bg-azul">
@@ -36,6 +46,8 @@ export default function NavBarUser() {
                                 </Disclosure.Button>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                                {/* Estado dropdown */}
+
                                 <Link to="/home"><button
                                     type="button"
                                     className="relative text-blanco hover:bg-azulclaro hover:text-azul rounded-md px-3 py-2 text-sm font-medium">
@@ -69,6 +81,11 @@ export default function NavBarUser() {
                                                 <Link to="/profile" className="block px-4 py-2 text-sm text-negro">
                                                     Perfil
                                                 </Link>
+                                            </Menu.Item>
+                                            <Menu.Item>
+                                                <p className="block px-4 py-2 text-sm text-negro cursor-pointer" onClick={handleBusy}>
+                                                    Ocupado
+                                                </p>
                                             </Menu.Item>
                                             <Menu.Item>
                                                 <p className="block px-4 py-2 text-sm text-negro cursor-pointer" onClick={logout}>
