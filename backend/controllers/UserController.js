@@ -1,15 +1,26 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const client = require("../Database/RedisClient");
 
 async function createUser(req, res) {
   try {
-    const { name, surname, email, birthday, role, password } = req.body; // Verificar si el usuario existe antes de crearlo
+    const { name, surname, email, birthday, role, password, state } = req.body; // Verificar si el usuario existe antes de crearlo
     const existingUser = await findUser(email);
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
-    const userData = { name, surname, email, birthday, role, password };
+
+    const userData = new User({
+      name,
+      surname,
+      email,
+      birthday,
+      role,
+      password,
+      state
+    });
+
     await saveUser(userData);
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
@@ -35,7 +46,7 @@ async function deleteUser(req, res) {
 }
 
 
-async function login(req,res){
+async function login(req, res) {
   try {
     let { email, password } = req.body; // Verificar si el usuario existe en la base de datos
     const existingUser = await findUser(email);
@@ -56,7 +67,9 @@ async function login(req,res){
     let userData = {
       // id: existingUser.id,
       name: existingUser.name,
+      // surname: existingUser.surname,
       email: existingUser.email,
+      // state: existingUser.state
       // photo: existingUser.photo
     };
     // Si las credenciales son correctas, devolver los datos del usuario.
@@ -72,7 +85,7 @@ async function login(req,res){
   }
 }
 
-async function logout(req,res){
+async function logout(req, res) {
   try {
     // Limpiar el token de autenticación del cliente
     res.clearCookie("jwt");
@@ -103,6 +116,8 @@ async function saveUser(userData) {
       name: userData.name,
       surname: userData.surname,
       email: userData.email,
+      role: userData.role,
+      state: userData.state,
       birthday: userData.birthday,
       role: userData.role,
       hashedPassword: hashedPassword,
@@ -122,5 +137,5 @@ async function delUser(email) {
 }
 
 module.exports = {
-  createUser, deleteUser,login,logout
+  createUser, deleteUser, login, logout
 };
