@@ -1,15 +1,26 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 const client = require("../Database/RedisClient");
 
 async function createUser(req, res) {
   try {
-    const { name, surname, email, birthday, role, password } = req.body; // Verificar si el usuario existe antes de crearlo
+    const { name, surname, email, birthday, role, password, state } = req.body; // Verificar si el usuario existe antes de crearlo
     const existingUser = await findUser(email);
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
-    const userData = { name, surname, email, birthday, role, password };
+
+    const userData = new User({
+      name,
+      surname,
+      email,
+      birthday,
+      role,
+      password,
+      state
+    });
+
     await saveUser(userData);
     res.status(201).json({ message: "Usuario creado correctamente" });
   } catch (error) {
@@ -35,7 +46,7 @@ async function deleteUser(req, res) {
 }
 
 
-async function login(req,res){
+async function login(req, res) {
   try {
     let { email, password } = req.body; // Verificar si el usuario existe en la base de datos
     const existingUser = await findUser(email);
@@ -56,7 +67,9 @@ async function login(req,res){
     let userData = {
       // id: existingUser.id,
       name: existingUser.name,
+      // surname: existingUser.surname,
       email: existingUser.email,
+      // state: existingUser.state
       // photo: existingUser.photo
     };
     // Si las credenciales son correctas, devolver los datos del usuario.
@@ -72,7 +85,7 @@ async function login(req,res){
   }
 }
 
-async function logout(req,res){
+async function logout(req, res) {
   try {
     // Limpiar el token de autenticación del cliente
     res.clearCookie("jwt");
@@ -92,6 +105,7 @@ async function findUser(email) {
   return user;
 }
 
+
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   // Almacenar el nuevo usuario en Redis Cloud
@@ -102,6 +116,8 @@ async function saveUser(userData) {
       name: userData.name,
       surname: userData.surname,
       email: userData.email,
+      role: userData.role,
+      state: userData.state,
       birthday: userData.birthday,
       role: userData.role,
       hashedPassword: hashedPassword,
@@ -120,6 +136,42 @@ async function delUser(email) {
   }
 }
 
+async function setBusy(req, res) {
+  try {
+    const { busy } = req.body;
+    const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+    const payload = jwt.decode(token); // Decodificar el token
+
+    // Obtener el correo electrónico del usuario desde la información decodificada
+    const email = payload.userData.email;
+
+    // Obtener el usuario existente de Redis Cloud utilizando el correo electrónico
+    const existingUserString = await client.hGet("users", email);
+    const existingUser = JSON.parse(existingUserString);
+
+    if (!existingUserString) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar el estado ocupado del usuario
+    existingUser.state = busy;
+
+    // Actualizar el usuario en Redis Cloud
+    await client.hSet(
+      "users",
+      email,
+      JSON.stringify(existingUser) // Convertir a JSON antes de almacenar en Redis
+    );
+
+    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+  } catch (error) {
+    console.error("Error al actualizar el estado del usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
+
+
 module.exports = {
-  createUser, deleteUser,login,logout
+  createUser, deleteUser, login, logout, setBusy
 };

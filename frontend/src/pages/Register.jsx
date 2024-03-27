@@ -21,7 +21,7 @@ const Register = () => {
     });
 
 
-    const handleSummit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         await signup(inputs);
     }
@@ -47,7 +47,7 @@ const Register = () => {
                             </div>
                         </div>
                         <div className="flex flex-col items-center">
-                            <form onSubmit={handleSummit}>
+                            <form onSubmit={handleSubmit}>
                                 <div className="bg-gray-100 w-96 p-2 flex items-center rounded-md mb-3">
                                     <FaUser className="text-gray-400 m-2"></FaUser>
                                     <input type="text" name="name" placeholder="Nombre" className="bg-gray-100 outline-none text-sm flex-1" value={inputs.name} onChange={(e) => setInputs({ ...inputs, name: e.target.value })}></input>
