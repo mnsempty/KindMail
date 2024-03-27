@@ -20,8 +20,6 @@ export default function CustomAside() {
   return decodedUserInfo.userData.email;
   };
  
-
-
  useEffect(() => {
  const userEmail = getUserEmailFromLocalStorage();
  console.log("userEmail"+userEmail);
