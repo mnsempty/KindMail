@@ -9,7 +9,7 @@ const Home = () => {
     return (
         <GlobalStateContext.Provider value={{ selectedChatId, setSelectedChatId }}>
             <>
-                <div className="flex">
+                <div className="flex gap-8 mb-8">
                     <CustomAside />
                     <ChatCustom />
                 </div>
