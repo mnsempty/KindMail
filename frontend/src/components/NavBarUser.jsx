@@ -1,20 +1,31 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from '../assets/logoblanco.png';
 import { Link } from "react-router-dom";
 import useLogOut from '../hooks/useLogOut.jsx';
 import useBusy from '../hooks/useBusy.jsx';
+import useOnline from '../hooks/useOnline.jsx';
 
 export default function NavBarUser() {
 
     const { loading, logout } = useLogOut();
     const { busy } = useBusy();
+    const { online } = useOnline();
+
     const handleBusy = async () => {
         try {
             // Llama a la función busy para actualizar el estado del usuario a "busy"
             await busy();
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
+    const handleOnline = async () => {
+        try {
+            // Llama a la función busy para actualizar el estado del usuario a "busy"
+            await online();
         } catch (error) {
             toast.error(error.message);
         }
@@ -46,7 +57,6 @@ export default function NavBarUser() {
                                 </Disclosure.Button>
                             </div>
                             <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                {/* Estado dropdown */}
 
                                 <Link to="/home"><button
                                     type="button"
@@ -54,6 +64,14 @@ export default function NavBarUser() {
                                     <span className="absolute -inset-1.5" />
                                     <span className="sr-only">Ver notificaciones</span>
                                     <ChatBubbleLeftRightIcon className="h-6 w-6" aria-hidden="true" />
+                                </button></Link>
+
+                                <Link to="/profile"><button
+                                    type="button"
+                                    className="relative text-blanco hover:bg-azulclaro hover:text-azul rounded-md px-3 py-2 text-sm font-medium">
+                                    <span className="absolute -inset-1.5" />
+                                    <span className="sr-only">Ver notificaciones</span>
+                                    <UserCircleIcon className="h-7 w-7" aria-hidden="true" />
                                 </button></Link>
 
                                 {/* Perfil dropdown */}
@@ -78,9 +96,9 @@ export default function NavBarUser() {
                                         leaveTo="transform opacity-0 scale-95">
                                         <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                             <Menu.Item>
-                                                <Link to="/profile" className="block px-4 py-2 text-sm text-negro">
-                                                    Perfil
-                                                </Link>
+                                                <p className="block px-4 py-2 text-sm text-negro cursor-pointer" onClick={handleOnline}>
+                                                    Online
+                                                </p>
                                             </Menu.Item>
                                             <Menu.Item>
                                                 <p className="block px-4 py-2 text-sm text-negro cursor-pointer" onClick={handleBusy}>

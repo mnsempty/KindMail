@@ -2,6 +2,19 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const client = require("../Database/RedisClient");
+// const multer = require("multer");
+
+// //Configurar Multer para guardar las imágenes del formulario
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/images"); // Directorio donde se guardarán las imágenes
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + "-" + file.originalname); // Nombre del archivo: marca de tiempo + nombre original
+//   },
+// });
+
+// const upload = multer({ storage: storage });
 
 async function createUser(req, res) {
   try {
@@ -11,6 +24,9 @@ async function createUser(req, res) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
 
+    //Imagen
+    // const image = req.file;
+
     const userData = new User({
       name,
       surname,
@@ -18,7 +34,8 @@ async function createUser(req, res) {
       birthday,
       role,
       password,
-      state
+      state,
+      // image: image.filename 
     });
 
     await saveUser(userData);
@@ -142,13 +159,9 @@ async function setBusy(req, res) {
     const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
     const payload = jwt.decode(token); // Decodificar el token
 
-    // Obtener el correo electrónico del usuario desde la información decodificada
     const email = payload.userData.email;
-
-    // Obtener el usuario existente de Redis Cloud utilizando el correo electrónico
     const existingUserString = await client.hGet("users", email);
     const existingUser = JSON.parse(existingUserString);
-
     if (!existingUserString) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -160,7 +173,7 @@ async function setBusy(req, res) {
     await client.hSet(
       "users",
       email,
-      JSON.stringify(existingUser) // Convertir a JSON antes de almacenar en Redis
+      JSON.stringify(existingUser)
     );
 
     res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
@@ -170,8 +183,36 @@ async function setBusy(req, res) {
   }
 }
 
+async function setOnline(req, res) {
+  try {
+    const { online } = req.body;
+    const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+    const payload = jwt.decode(token); // Decodificar el token
 
+    const email = payload.userData.email;
+    const existingUserString = await client.hGet("users", email);
+    const existingUser = JSON.parse(existingUserString);
+    if (!existingUserString) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar el estado ocupado del usuario
+    existingUser.state = online;
+
+    // Actualizar el usuario en Redis Cloud
+    await client.hSet(
+      "users",
+      email,
+      JSON.stringify(existingUser)
+    );
+
+    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+  } catch (error) {
+    console.error("Error al actualizar el estado del usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
 
 module.exports = {
-  createUser, deleteUser, login, logout, setBusy
+  createUser, deleteUser, login, logout, setBusy, setOnline
 };
