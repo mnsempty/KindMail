@@ -10,7 +10,7 @@ async function createUser(req, res) {
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
-
+    //no funca because mongoose
     const userData = new User({
       name,
       surname,
