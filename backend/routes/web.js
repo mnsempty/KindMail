@@ -19,6 +19,8 @@ router.post("/user/login", userController.login);
 router.post("/user/logout", userController.logout)
 // Ruta cambiar a ocupado
 router.put("/user/set-busy", userController.setBusy)
+// Ruta para obtener datos del perfil
+router.post("/user/profile",userController.profile);
 
 // ------ Rutas de chats ------
 

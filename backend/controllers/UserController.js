@@ -11,15 +11,17 @@ async function createUser(req, res) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
     //no funca because mongoose
-    const userData = new User({
-      name,
-      surname,
-      email,
-      birthday,
-      role,
-      password,
-      state
-    });
+    // const userData = new User({
+    //   name,
+    //   surname,
+    //   email,
+    //   birthday,
+    //   role,
+    //   password,
+    //   state,
+    // });
+
+    const userData = { name, surname, email, birthday, role, password };
 
     await saveUser(userData);
     res.status(201).json({ message: "Usuario creado correctamente" });
@@ -27,6 +29,7 @@ async function createUser(req, res) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
+
 }
 
 async function deleteUser(req, res) {
@@ -44,7 +47,6 @@ async function deleteUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
 
 async function login(req, res) {
   try {
@@ -105,7 +107,6 @@ async function findUser(email) {
   return user;
 }
 
-
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   // Almacenar el nuevo usuario en Redis Cloud
@@ -163,15 +164,83 @@ async function setBusy(req, res) {
       JSON.stringify(existingUser) // Convertir a JSON antes de almacenar en Redis
     );
 
-    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+    res.status(200).json({
+      message: "Estado del usuario actualizado correctamente",
+      user: existingUser,
+    });
   } catch (error) {
     console.error("Error al actualizar el estado del usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
 
+async function profile(req, res) {
+  try {
+    const { userName, password, newPassword } = req.body;
 
+    const auth = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+    const payload = jwt.decode(auth); // Decodificar el token
+
+    // Obtener el correo electrónico del usuario desde la información decodificada
+    const email = payload.userData.email;
+    let userJSON = await client.hGet("users", email);
+
+    if (!userJSON) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    const user = JSON.parse(userJSON);
+
+    
+    if (password && newPassword) {
+      console.log(user);
+
+      const isMatch = await bcrypt.compare(password, user.hashedPassword);
+
+      if (isMatch) {
+        return res.status(400).json({ message: "La contraseña es la misma" });
+      }
+
+      console.log(newPassword);
+
+      user.hashedPassword = bcrypt.hash(newPassword,10); // Actualiza la contraseña
+
+      console.log(user.hashedPassword);
+    }
+
+    // Actualizar el nombre de usuario si se proporcionó uno nuevo
+    if (userName) {
+      user.name = userName;
+    }
+
+    let userData = {
+      // id: existingUser.id,
+      name: user.name,
+      // surname: existingUser.surname,
+      email: user.email,
+      // state: existingUser.state
+      // photo: existingUser.photo
+    };
+
+    // Convertir el objeto del usuario a una cadena JSON para guardarlo en Redis
+    const updatedUserJSON = JSON.stringify(user);
+
+    // Guardar el usuario actualizado en Redis
+    await client.hSet("users", email, updatedUserJSON);
+
+    const token = jwt.sign({ userData }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+    res.json(token);
+  } catch (error) {
+    console.error("Error al actualizar los datos del usuario", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
 
 module.exports = {
-  createUser, deleteUser, login, logout, setBusy
+  createUser,
+  deleteUser,
+  login,
+  logout,
+  setBusy,
+  profile,
 };
