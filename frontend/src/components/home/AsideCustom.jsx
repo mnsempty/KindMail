@@ -40,7 +40,7 @@ export default function CustomAside() {
         // Selecciona los datos del otro usuario
         const otherUser = isUser1 ? chat.user2Details : chat.user1Details;
         // Devuelve un objeto con los datos del otro usuario y el índice del chat
-        return { ...otherUser, chat_id: chat.chat_id, index: chat.index };
+        return { ...otherUser, chat_ID: chat.chat_ID, index: chat.index };
       });
       setFilteredChats(filtered);
     }
@@ -73,11 +73,11 @@ export default function CustomAside() {
 
           {filteredChats.map((chat, index) => (
             <ListboxItem key={index} onClick={() => {
-              console.log(`Seleccionado chat con ID: ${chat.chat_id}`);
-              setSelectedChatId(chat.chat_id);
+              console.log(`Seleccionado chat con ID: ${chat.chat_ID}`);
+              setSelectedChatId(chat.chat_ID);
             }}
             textValue={chat.name}
-            className={chat.chat_id === selectedChatId ? 'bg-primary-700' : ''}
+            className={chat.chat_ID === selectedChatId ? 'bg-primary-700' : ''}
 
             >
               <div className="flex gap-2 items-center">

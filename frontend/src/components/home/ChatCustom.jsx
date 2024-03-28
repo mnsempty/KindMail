@@ -26,7 +26,7 @@ export default function ChatCustom() {
           return;
         }
         // guardamos el mensaje y el sender en la base de datos
-        setMessages((prevMessages) => [...prevMessages, { msg: msg.message, sender: msg.senderName }]);
+        setMessages((prevMessages) => [...prevMessages, { msg: msg.content, sender: msg.sender }]);
       });
     }
   }, [selectedChatId]); // Asegúrate de que el efecto dependa de selectedChatId
@@ -37,17 +37,18 @@ export default function ChatCustom() {
     // dejamos en el state el mensaje que luego cogemos "sin espacios" y lo enviamos al socket
     // junto con el nombre de usuario,despues dejamos el username en blanco
     if (currentMessage.trim() && selectedChatId) {
-      sendMessage(selectedChatId, { message: currentMessage, senderName: senderId });
+      sendMessage(selectedChatId, { content: currentMessage, sender: senderId });
       document.getElementById('messageInput').value = '';
       // Actualizar el estado newMessage para reflejar el cambio en la UI
     }
   };
   console.log("sci: " + selectedChatId);
   return (
-    <div className={`flex flex-col w-full rounded-lg bg-gray-500  justify-end max-h-100 min-h-[calc(90vh-2.7rem)]`}>
+    <div className={`flex flex-col w-full rounded-lg bg-gray-500  justify-end h-[calc(90vh-2.7rem)]`}>
       {selectedChatId ? (
         <>
           <div className="overflow-y-auto p-4 space-y-4">
+            {/* sender == senderid? */}
             {messages.map((message, index) => (
               <div key={index} className="p-2 rounded bg-gray-200">
                 <strong>{message.sender}: </strong>
