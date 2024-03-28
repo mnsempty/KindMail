@@ -4,8 +4,6 @@ import Logo from "../assets/logoblanco.png";
 
 export default function App() {
 
-    const btnNavBarLink = "text-white hover:bg-azulclaro hover:text-azul px-3 rounded-md py-2 text-sm font-medium";
-
     return (
         <Navbar shouldHideOnScroll className="bg-azul">
             <NavbarBrand>
@@ -16,10 +14,10 @@ export default function App() {
 
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <a href="/login" className={btnNavBarLink}>Login</a>
+                    <a href="/login" className="text-blanco px-3 py-2 text-sm font-medium">Login</a>
                 </NavbarItem>
                 <NavbarItem>
-                    <a href="/register" className={btnNavBarLink}>Sing Up</a>
+                    <a href="/register" className="text-blanco hover:bg-azulclaro hover:text-azul px-3 border rounded-md py-2 text-sm font-medium">Sing Up</a>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
