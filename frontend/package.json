@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.18",
     "@heroicons/react": "^2.1.1",
     "@nextui-org/react": "^2.2.10",
     "axios": "^1.6.8",
