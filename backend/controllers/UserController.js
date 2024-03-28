@@ -1,6 +1,5 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
 const client = require("../Database/RedisClient");
 // const multer = require("multer");
 
@@ -27,16 +26,46 @@ async function createUser(req, res) {
     //Imagen
     // const image = req.file;
 
-    const userData = new User({
+    // Establecer valores predeterminados 
+    const userRole = role || 'user';
+    const userState = state || 'online';
+
+    function validateName(name) {
+      const regex = /^[a-zA-Z\s]+$/;
+      return regex.test(name);
+    }
+
+    function validateEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length >= 8;
+    }
+
+    // Realizar las validaciones
+    if (!validateName(name)) {
+      return res.status(400).json({ message: "Nombre inválido" });
+    }
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Correo electrónico inválido" });
+    }
+    if (!validatePassword(password)) {
+      return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres" });
+    }
+
+    const userData = {
       name,
       surname,
       email,
       birthday,
-      role,
+      role: userRole,
       password,
-      state,
-      // image: image.filename 
-    });
+      state: userState,
+      // image: req.file ? req.file.filename : undefined
+    };
 
     await saveUser(userData);
     res.status(201).json({ message: "Usuario creado correctamente" });

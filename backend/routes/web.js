@@ -10,7 +10,8 @@ router.use(express.json());
 // ----- Rutas de usuario ------
 
 // Ruta para crear un usuario
-router.post("/user", upload.single('image'), userController.createUser);
+// router.post("/user", upload.single('image'), userController.createUser);
+router.post("/user", userController.createUser);
 // Ruta para eliminar un usuario
 router.delete("/user", userController.deleteUser);
 // Ruta login
