@@ -8,8 +8,8 @@ import useGetChatDetails from '../../hooks/FetchChat';
 export default function CustomAside() {
   const { selectedChatId, setSelectedChatId } = useContext(GlobalStateContext);
   const { loading, chatDetails, getChatDetails } = useGetChatDetails(); // Utiliza el hook para obtener los datos de los chats
-  const [filteredChats, setFilteredChats] = useState([]);
-  const [UserInfo, setUserInfo] = useState(null); // Estado para almacenar el email del usuario actual
+  const [filteredChats, setFilteredChats] = useState(null);
+  const [UserInfo, setUserInfo] = useState(null); // state para almacenar el email del usuario actual
 
   //sacar email del localstorage
   const getUserEmailFromLocalStorage = () => {
@@ -33,7 +33,7 @@ export default function CustomAside() {
   }, [UserInfo]); // Este useEffect se ejecuta cuando UserInfo cambia
 
   useEffect(() => {
-    if (UserInfo && chatDetails.length > 0) {
+    if (UserInfo && chatDetails) {
       const filtered = chatDetails.map(chat => {
         // Para cada chat, determina si el usuario actual es user1 o user2
         const isUser1 = chat.user1_ID === UserInfo;
@@ -43,8 +43,9 @@ export default function CustomAside() {
         return { ...otherUser, chat_ID: chat.chat_ID, index: chat.index };
       });
       setFilteredChats(filtered);
+    } else {
+      setFilteredChats(null);
     }
-
   }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
   return (
@@ -70,30 +71,35 @@ export default function CustomAside() {
           color={'primary'}
           variant={'bordered'}
         >
-
-          {filteredChats.map((chat, index) => (
-            <ListboxItem key={index} onClick={() => {
-              console.log(`Seleccionado chat con ID: ${chat.chat_ID}`);
-              setSelectedChatId(chat.chat_ID);
-            }}
-            textValue={chat.name}
-            className={chat.chat_ID === selectedChatId ? 'bg-primary-700' : ''}
-
+          {filteredChats === null ? (
+            <ListboxItem
+              textValue={"no chats"}
             >
-              <div className="flex gap-2 items-center">
-                {chat.photo ? (
-                  <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
-                ) : (
-                  <Avatar name={chat.name.charAt(0).toUpperCase() + chat.name.slice(1)} />
-                )}
-                <div className="flex flex-col text-left">
-                  <span className="text-small">{chat.name}</span>
-                  <span className="text-tiny text-default-400">{chat.email}</span>
-                </div>
-              </div>
+              <div className="p-4 text-center">0 chats encontrados</div>
             </ListboxItem>
-          ))}
-
+          ) : (
+            filteredChats.map((chat, index) => (
+              <ListboxItem key={index} onClick={() => {
+                console.log(`Seleccionado chat con ID: ${chat.chat_ID}`);
+                setSelectedChatId(chat.chat_ID);
+              }}
+                textValue={chat.name}
+                className={chat.chat_ID === selectedChatId ? 'bg-primary-700' : ''}
+              >
+                <div className="flex gap-2 items-center">
+                  {chat.photo ? (
+                    <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
+                  ) : (
+                    <Avatar name={chat.name.charAt(0).toUpperCase() + chat.name.slice(1)} />
+                  )}
+                  <div className="flex flex-col text-left">
+                    <span className="text-small">{chat.name}</span>
+                    <span className="text-tiny text-default-400">{chat.email}</span>
+                  </div>
+                </div>
+              </ListboxItem>
+            ))
+          )}
         </Listbox>
       )}
     </aside>

@@ -23,6 +23,7 @@ const setupSocket = (io) => {
           });
         })
         .catch(console.error);
+      
     });
     // "chat como tal, que contiene mensajes y el space en que se encuentra"
     socket.on("chat", (data) => {
@@ -33,7 +34,7 @@ const setupSocket = (io) => {
 
       //data a enviar
       const requestBody = {
-        sender: message.senderName,
+        sender: message.sender,
         content: message.content,
         chat_ID: space,
       };
@@ -42,22 +43,18 @@ const setupSocket = (io) => {
     });
     //  en caso de que vuelvan a conectarse al socket enviamos los mensajes
     // if (!socket.recovered && socketSpace) {
-    //   try {
-    //      getMessageFromChat(socketSpace)
-    //        .then(data => {
-    //          console.log("message from chat:" + data);
-    //          // Accede al array messagesFromChat dentro del objeto data
-    //          const messages = data.messagesFromChat;
-    //          messages.forEach((message) => {
-    //           console.log(message);
-    //            // Emite el evento "chat message" para cada mensaje
-    //            io.to(socketSpace).emit("chat", message);
-    //          });
-    //        })
-    //        .catch(console.error);
-    //   } catch (e) {
-    //      console.error(e);
-    //   }
+    // getMessageFromChat(socketSpace)
+    //   .then((data) => {
+    //     console.log("message from chat:" + data);
+    //     // Accede al array messagesFromChat dentro del objeto data
+    //     const messages = data.messagesFromChat;
+    //     messages.forEach((message) => {
+    //       console.log(message);
+    //       // Emite el evento "chat" para cada mensaje
+    //       io.to(space).emit("chat", message);
+    //     });
+    //   })
+    //   .catch(console.error);
     //  }
   });
 };
