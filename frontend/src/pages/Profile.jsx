@@ -35,95 +35,107 @@ const Profile = () => {
 
     const handleSubmit = async () => {
         try {
-            await fetchData({ userName, password, newPassword });
+            const updatedUserData = await fetchData({ userName, password, newPassword });
+
+            const updatedDecodedUserData = jwtDecode(updatedUserData.token);
+            
+            setUserInfo(updatedDecodedUserData.userData);
+
+            // Limpiar los campos después de una actualización exitosa
+            setUserName('');
+            setPassword('');
+            setNewPassword('');
+
+
         } catch (error) {
             console.error(error);
         }
     }
-        return (
-            <div className="flex justify-center items-center">
-                <Card className="w-full md:w-1/2 lg:w-1/3 xl:w-1/3">
-                    <CardHeader className="flex gap-3">
-                        <Image
-                            alt="nextui logo"
-                            height={80}
-                            radius="sm"
-                            // src={userInfo.profilePhoto}
-                            src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-                            width={80}
-                        />
-                        <div className="flex flex-col">
-                            {/* Renderiza los datos del usuario si están disponibles */}
-                            {userInfo && (
+
+    return (
+        <div className="flex justify-center items-center">
+            <Card className="w-full md:w-1/2 lg:w-1/3 xl:w-1/3">
+                <CardHeader className="flex gap-3">
+                    <Image
+                        alt="nextui logo"
+                        height={80}
+                        radius="sm"
+                        // src={userInfo.profilePhoto}
+                        src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
+                        width={80}
+                    />
+                    <div className="flex flex-col">
+                        {/* Renderiza los datos del usuario si están disponibles */}
+                        {userInfo && (
+                            <>
+                                <p className="text-xl">{userInfo.name}</p>
+                                <p className="text-md text-default-500">{userInfo.email}</p>
+                            </>
+                        )}
+                    </div>
+                </CardHeader>
+                <Divider />
+                <CardBody>
+                    <p>Estado</p>
+                </CardBody>
+                <Divider />
+                <CardFooter>
+                    <Button onPress={onOpen} color="primary">Cambiar datos</Button>
+                    <Modal
+                        backdrop="blur"
+                        isOpen={isOpen}
+                        onOpenChange={onOpenChange}
+                        placement="top-center"
+                    >
+                        <ModalContent>
+                            {(onClose) => (
                                 <>
-                                    <p className="text-xl">{userInfo.name}</p>
-                                    <p className="text-md text-default-500">{userInfo.email}</p>
+                                    <ModalHeader className="flex flex-col gap-1">Cambiar datos</ModalHeader>
+                                    <ModalBody>
+                                        <Input
+                                            autoFocus
+                                            label="Nuevo nombre de usuario"
+                                            placeholder={userInfo.name}
+                                            variant="bordered"
+                                            value={userName}
+                                            onChange={(e) => setUserName(e.target.value)}
+                                        />
+                                        <Input
+
+                                            label="Contraseña"
+                                            placeholder="Introduce tu contraseña actual"
+                                            type="password"
+                                            variant="bordered"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                        />
+                                        <Input
+
+                                            label="Nueva contraseña"
+                                            placeholder="Introduce la nueva contraseña"
+                                            type="password"
+                                            variant="bordered"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+
+                                    </ModalBody>
+                                    <ModalFooter>
+                                        <Button color="danger" variant="flat" onPress={onClose}>
+                                            Cerrar
+                                        </Button>
+                                        <Button color="primary" onPress={() => { handleSubmit(); onClose(); }}>
+                                            Confirmar
+                                        </Button>
+                                    </ModalFooter>
                                 </>
                             )}
-                        </div>
-                    </CardHeader>
-                    <Divider />
-                    <CardBody>
-                        <p>Estado</p>
-                    </CardBody>
-                    <Divider />
-                    <CardFooter>
-                        <Button onPress={onOpen} color="primary">Open Modal</Button>
-                        <Modal
-                            backdrop="blur"
-                            isOpen={isOpen}
-                            onOpenChange={onOpenChange}
-                            placement="top-center"
-                        >
-                            <ModalContent>
-                                {(onClose) => (
-                                    <>
-                                        <ModalHeader className="flex flex-col gap-1">Cambiar datos</ModalHeader>
-                                        <ModalBody>
-                                            <Input
-                                                autoFocus
-                                                label="Nuevo nombre de usuario"
-                                                placeholder={userInfo.name}
-                                                variant="bordered"
-                                                value={userName}
-                                                onChange={(e) => setUserName(e.target.value)}
-                                            />
-                                            <Input
-
-                                                label="Contraseña"
-                                                placeholder="Introduce tu contraseña actual"
-                                                type="password"
-                                                variant="bordered"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
-                                            <Input
-
-                                                label="Nueva contraseña"
-                                                placeholder="Introduce la nueva contraseña"
-                                                type="password"
-                                                variant="bordered"
-                                                value={newPassword}
-                                                onChange={(e) => setNewPassword(e.target.value)}
-                                            />
-
-                                        </ModalBody>
-                                        <ModalFooter>
-                                            <Button color="danger" variant="flat" onPress={onClose}>
-                                                Cerrar
-                                            </Button>
-                                            <Button color="primary" onPress={handleSubmit}>
-                                                Confirmar
-                                            </Button>
-                                        </ModalFooter>
-                                    </>
-                                )}
-                            </ModalContent>
-                        </Modal>
-                    </CardFooter>
-                </Card>
-            </div>
-        )
-    }
+                        </ModalContent>
+                    </Modal>
+                </CardFooter>
+            </Card>
+        </div>
+    )
+}
 
 export default Profile;

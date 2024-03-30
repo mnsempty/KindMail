@@ -29,7 +29,6 @@ async function createUser(req, res) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
-
 }
 
 async function deleteUser(req, res) {
@@ -190,22 +189,18 @@ async function profile(req, res) {
     }
 
     const user = JSON.parse(userJSON);
+    console.log(user);
 
-    
     if (password && newPassword) {
       console.log(user);
 
-      const isMatch = await bcrypt.compare(password, user.hashedPassword);
+      const isMatch = await bcrypt.compare(newPassword, user.hashedPassword);
 
       if (isMatch) {
         return res.status(400).json({ message: "La contraseña es la misma" });
       }
 
-      console.log(newPassword);
-
-      user.hashedPassword = bcrypt.hash(newPassword,10); // Actualiza la contraseña
-
-      console.log(user.hashedPassword);
+      user.hashedPassword = await bcrypt.hash(newPassword, 10); // Actualiza la contraseña
     }
 
     // Actualizar el nombre de usuario si se proporcionó uno nuevo
@@ -229,7 +224,7 @@ async function profile(req, res) {
     await client.hSet("users", email, updatedUserJSON);
 
     const token = jwt.sign({ userData }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
-    res.json(token);
+    res.status(200).json({ token });
   } catch (error) {
     console.error("Error al actualizar los datos del usuario", error);
     res.status(500).json({ message: "Error interno del servidor" });

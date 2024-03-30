@@ -9,6 +9,8 @@ const useChangeProfile = () => {
         setIsLoading(true);
 
         try {
+            console.log("Localstorage: "+localStorage.getItem("chat-user")); 
+
             const res = await fetch("http://localhost:5000/api/user/profile", {
                 method: "POST",
                 headers: {
@@ -17,16 +19,20 @@ const useChangeProfile = () => {
                 },
                 body: JSON.stringify({ email: authUser.email, userName, password, newPassword })
             });
-    
+
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(errorData.message || "Error en inicio de sesión");
             }
-    
+
             const data = await res.json();
+
             
-            setAuthUser(data.user);
-    
+
+            await setAuthUser(data);
+
+            return data;
+
         } catch (error) {
             console.log(error);
         } finally {
