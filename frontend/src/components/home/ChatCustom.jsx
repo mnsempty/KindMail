@@ -12,14 +12,16 @@ export default function ChatCustom() {
   //guardamos los mensajes del socket que luego mostramos
   const [messages, setMessages] = useState([]);
   // Obtener el chatId del contexto global en lugar de localStorage
-  const { selectedChatId } = useContext(GlobalStateContext);
+  const { ChatIds  } = useContext(GlobalStateContext);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false); // Nuevo estado
 
   useEffect(() => {
+    setMessages([]);
+
     // si hay chat/id seleccionado
-    if (selectedChatId) {
+    if (ChatIds.current) {
       //iniciamos el socket
-      iniciateSocket(selectedChatId);
+      iniciateSocket(ChatIds.current);
       //recibimos los mensajes del servidor, manejando los errores
       startChat((err, msg) => {
         if (err) {
@@ -38,7 +40,7 @@ export default function ChatCustom() {
         setShouldScrollToBottom(true); // Indicamos que se debe desplazar al final
       });
     }
-  }, [selectedChatId]);// useEffect se activa de nuevo si el valor cambia
+  },[ChatIds] );// useEffect se activa de nuevo si el valor cambia
 
   useEffect(() => {
     if (shouldScrollToBottom) {
@@ -60,8 +62,8 @@ export default function ChatCustom() {
     const currentMessage = document.getElementById('messageInput').value;
     // dejamos en el state el mensaje que luego cogemos "sin espacios" y lo enviamos al socket
     // junto con el nombre de usuario,despues dejamos el username en blanco
-    if (currentMessage.trim() && selectedChatId) {
-      sendMessage(selectedChatId, { content: currentMessage, sender: senderId });
+    if (currentMessage.trim() && ChatIds.current) {
+      sendMessage(ChatIds.current, { content: currentMessage, sender: senderId });
       document.getElementById('messageInput').value = '';
       setShouldScrollToBottom(true); // Indicamos que se debe desplazar al final después de enviar un mensaje
     }
@@ -69,7 +71,7 @@ export default function ChatCustom() {
 
   return (
     <div className={`flex flex-col w-full rounded-lg bg-gray-500 justify-end h-[calc(90vh-2.7rem)]`}>
-      {selectedChatId ? (
+      {ChatIds.current ? (
         <>
           <div id="chatContainer" className="overflow-y-auto p-4 space-y-4">
             {messages.map((message, index) => (
@@ -85,12 +87,12 @@ export default function ChatCustom() {
               type="text"
               className="w-full md:w-90 p-2 rounded border border-gray-300 flex-auto"
               placeholder="Escribe un mensaje..."
-              disabled={!selectedChatId}
+              disabled={!ChatIds.current}
             />
             <button
               onClick={handleSendMessage}
               className="ms-2.5 p-2 rounded bg-blue-500 text-white "
-              disabled={!selectedChatId}
+              disabled={!ChatIds.current}
             >
               Enviar
             </button>

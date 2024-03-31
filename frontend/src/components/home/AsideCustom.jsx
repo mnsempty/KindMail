@@ -4,9 +4,10 @@ import { jwtDecode } from 'jwt-decode';
 
 import GlobalStateContext from './GlobalStateContext';
 import useGetChatDetails from '../../hooks/FetchChat';
+import { switchChat } from "../../socket";
 
 export default function CustomAside() {
-  const { selectedChatId, setSelectedChatId } = useContext(GlobalStateContext);
+  const { ChatIds, setSelectedChatId } = useContext(GlobalStateContext);
   const { loading, chatDetails, getChatDetails } = useGetChatDetails(); // Utiliza el hook para obtener los datos de los chats
   const [filteredChats, setFilteredChats] = useState(null);
   const [UserInfo, setUserInfo] = useState(null); // state para almacenar el email del usuario actual
@@ -48,6 +49,15 @@ export default function CustomAside() {
     }
   }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
+  const handleSelectedChat = (id) => {
+      console.log(`Seleccionado chat con ID: ${id}`);
+      console.log("chatIds Data: "+ JSON.stringify(ChatIds));
+      if (ChatIds.previous !== null && ChatIds.previous !== undefined) {
+        // Si no es el primer chat, llama a switchChat(prevChat,nextChat)
+        switchChat(ChatIds.current, id);
+     }
+      setSelectedChatId(id);
+    }
   return (
     <aside className="bg-dark border-2 rounded-lg border-primary text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
       {loading ? (
@@ -79,12 +89,11 @@ export default function CustomAside() {
             </ListboxItem>
           ) : (
             filteredChats.map((chat, index) => (
-              <ListboxItem key={index} onClick={() => {
-                console.log(`Seleccionado chat con ID: ${chat.chat_ID}`);
-                setSelectedChatId(chat.chat_ID);
-              }}
+              <ListboxItem
+                key={index}
+                onClick={() => handleSelectedChat(chat.chat_ID)}
                 textValue={chat.name}
-                className={chat.chat_ID === selectedChatId ? 'bg-primary-700' : ''}
+                className={chat.chat_ID === ChatIds.current ? 'bg-primary-700' : ''}
               >
                 <div className="flex gap-2 items-center">
                   {chat.photo ? (

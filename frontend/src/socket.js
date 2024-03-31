@@ -27,6 +27,6 @@ export const sendMessage = (space, message) => {
 //? not sure if needed cambiar de un chat a otro
 export const switchChat = (prevChat, nextChat) => {
   socket
-    ? socket.emit("switch chat", { prevChat, nextChat })
+    ? socket.emit("switch chat", { prevSpace: prevChat, nextSpace: nextChat })
     : console.log("error en (switchChat)");
 };

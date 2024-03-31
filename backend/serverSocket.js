@@ -41,6 +41,13 @@ const setupSocket = (io) => {
       // Llamar a la función asíncrona "/api/chats/sendMessage"
       sendMessageToAPI(requestBody);
     });
+    socket.on('switch chat', (data) => {
+      const { prevSpace, nextSpace } = data;
+      console.log("data of switch: " + prevSpace, nextSpace);
+      if (prevSpace) socket.leave(prevSpace);
+      if (nextSpace) socket.join(nextSpace);
+      socketSpace = nextSpace;
+    });
     //  en caso de que vuelvan a conectarse al socket enviamos los mensajes
     // if (!socket.recovered && socketSpace) {
     // getMessageFromChat(socketSpace)
