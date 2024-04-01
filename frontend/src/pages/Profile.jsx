@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; // Importa la librería para decodificar JWT
 import { Card, CardHeader, CardBody, CardFooter, Divider, Button, Image } from "@nextui-org/react";
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Checkbox, Input, Link } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
 import useChangeProfile from '../hooks/changeProfile'; // Importa el hook personalizado
-
-
 
 const Profile = () => {
     const { fetchData } = useChangeProfile(); // Usa el hook personalizado para obtener fetchData
@@ -13,6 +11,7 @@ const Profile = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [profilePhoto, setProfilePhoto] = useState('');
 
     // Función para obtener la información del usuario del localStorage
     const getUserDataLocalStorage = () => {
@@ -30,7 +29,6 @@ const Profile = () => {
         setUserInfo(userData);
     }, []); // Este useEffect se ejecuta una vez al cargar el componente
 
-
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const handleSubmit = async () => {
@@ -38,7 +36,7 @@ const Profile = () => {
             const updatedUserData = await fetchData({ userName, password, newPassword });
 
             const updatedDecodedUserData = jwtDecode(updatedUserData.token);
-            
+
             setUserInfo(updatedDecodedUserData.userData);
 
             // Limpiar los campos después de una actualización exitosa
@@ -46,11 +44,14 @@ const Profile = () => {
             setPassword('');
             setNewPassword('');
 
-
         } catch (error) {
             console.error(error);
         }
     }
+
+    const handleImageChange = (file) => {
+
+    };
 
     return (
         <div className="flex justify-center items-center">
@@ -101,7 +102,6 @@ const Profile = () => {
                                             onChange={(e) => setUserName(e.target.value)}
                                         />
                                         <Input
-
                                             label="Contraseña"
                                             placeholder="Introduce tu contraseña actual"
                                             type="password"
@@ -110,7 +110,6 @@ const Profile = () => {
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
                                         <Input
-
                                             label="Nueva contraseña"
                                             placeholder="Introduce la nueva contraseña"
                                             type="password"
@@ -118,7 +117,15 @@ const Profile = () => {
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                         />
-
+                                        <Input
+                                            label="Seleccionar imagen de perfil"
+                                            type="file"
+                                            name="profilePhoto"
+                                            accept="image/*"
+                                            onChange={(e) => {
+                                                setProfilePhoto(e.target.files[0])
+                                            }}
+                                        />
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button color="danger" variant="flat" onPress={onClose}>

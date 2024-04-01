@@ -1,16 +1,28 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require("cors");
+
+// Para subir imagenes
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Directorio donde se guardarán los archivos
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname); // Nombre único del archivo
+  },
+});
+const upload = multer({ storage: storage });
+
 console.log("------KindMail------");
 
 const { Server } = require("socket.io");
-const { createServer }  = require("node:http");
+const { createServer } = require("node:http");
 
 //import js con socket parte backend
-const setupSocket = require('./serverSocket');
+const setupSocket = require("./serverSocket");
 
-const web = require('./routes/web');
-
+const web = require("./routes/web");
 
 const port = process.env.PORT || 5000;
 
@@ -35,8 +47,7 @@ app.use(
   })
 );
 
-app.use('/api', web);
-
+app.use("/api", web);
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);

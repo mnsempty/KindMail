@@ -1,19 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../Database/RedisClient");
-// const multer = require("multer");
-
-// //Configurar Multer para guardar las imágenes del formulario
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, "./public/images"); // Directorio donde se guardarán las imágenes
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, Date.now() + "-" + file.originalname); // Nombre del archivo: marca de tiempo + nombre original
-//   },
-// });
-
-// const upload = multer({ storage: storage });
+const upload = require("../upload");
 
 async function createUser(req, res) {
   try {
@@ -26,9 +14,9 @@ async function createUser(req, res) {
     //Imagen
     // const image = req.file;
 
-    // Establecer valores predeterminados 
-    const userRole = role || 'user';
-    const userState = state || 'online';
+    // Establecer valores predeterminados
+    const userRole = role || "user";
+    const userState = state || "online";
 
     function validateName(name) {
       const regex = /^[a-zA-Z\s]+$/;
@@ -53,7 +41,9 @@ async function createUser(req, res) {
       return res.status(400).json({ message: "Correo electrónico inválido" });
     }
     if (!validatePassword(password)) {
-      return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres" });
+      return res
+        .status(400)
+        .json({ message: "La contraseña debe tener al menos 8 caracteres" });
     }
 
     const userData = {
@@ -197,11 +187,7 @@ async function setBusy(req, res) {
     existingUser.state = busy;
 
     // Actualizar el usuario en Redis Cloud
-    await client.hSet(
-      "users",
-      email,
-      JSON.stringify(existingUser)
-    );
+    await client.hSet("users", email, JSON.stringify(existingUser));
 
     res.status(200).json({
       message: "Estado del usuario actualizado correctamente",
@@ -230,18 +216,18 @@ async function setOnline(req, res) {
     existingUser.state = online;
 
     // Actualizar el usuario en Redis Cloud
-    await client.hSet(
-      "users",
-      email,
-      JSON.stringify(existingUser)
-    );
+    await client.hSet("users", email, JSON.stringify(existingUser));
 
-    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+    res.status(200).json({
+      message: "Estado del usuario actualizado correctamente",
+      user: existingUser,
+    });
   } catch (error) {
     console.error("Error al actualizar el estado del usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
-}async function profile(req, res) {
+}
+async function profile(req, res) {
   try {
     const { userName, password, newPassword } = req.body;
 
@@ -276,6 +262,19 @@ async function setOnline(req, res) {
       user.name = userName;
     }
 
+  
+    // Subir la imagen de perfil si se proporciona un archivo
+    if (req.file) {
+      console.log("Hay foto");
+      upload.single("profilePhoto")(req, res, (err) => {
+        if (err) {
+          console.error("Error al subir la imagen:", err);
+          return res
+            .status(500)
+            .json({ message: "Error interno del servidor al subir la imagen" });
+        }
+      });
+    }
     let userData = {
       // id: existingUser.id,
       name: user.name,
@@ -304,6 +303,7 @@ module.exports = {
   deleteUser,
   login,
   logout,
-  setBusy, setOnline,
+  setBusy,
+  setOnline,
   profile,
 };
