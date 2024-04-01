@@ -1,5 +1,6 @@
 import { useAuthContext } from "../context/AuthContext";
 import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 const useChangeProfile = () => {
     const { authUser, setAuthUser } = useAuthContext();
@@ -9,7 +10,7 @@ const useChangeProfile = () => {
         setIsLoading(true);
 
         try {
-            console.log("Localstorage: "+localStorage.getItem("chat-user")); 
+            console.log("Localstorage: " + localStorage.getItem("chat-user"));
 
             const res = await fetch("http://localhost:5000/api/user/profile", {
                 method: "POST",
@@ -27,9 +28,10 @@ const useChangeProfile = () => {
 
             const data = await res.json();
 
-            
+
 
             await setAuthUser(data);
+            localStorage.setItem("chat-user", JSON.stringify(data));    
 
             return data;
 
