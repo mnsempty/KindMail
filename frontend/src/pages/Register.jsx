@@ -66,6 +66,7 @@ const Register = () => {
                                     </label>
                                     <Link to="/login" className="text-xs">¿Ya tienes una cuenta?</Link>
                                 </div>
+                                {/* <input type="file" name="image" /> */}
                                 <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro hover:text-azul mb-10">Enviar</button>
                             </form>
                         </div>

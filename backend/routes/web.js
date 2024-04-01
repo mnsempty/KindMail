@@ -10,6 +10,7 @@ router.use(express.json());
 // ----- Rutas de usuario ------
 
 // Ruta para crear un usuario
+// router.post("/user", upload.single('image'), userController.createUser);
 router.post("/user", userController.createUser);
 // Ruta para eliminar un usuario
 router.delete("/user", userController.deleteUser);
@@ -19,6 +20,8 @@ router.post("/user/login", userController.login);
 router.post("/user/logout", userController.logout)
 // Ruta cambiar a ocupado
 router.put("/user/set-busy", userController.setBusy)
+// Ruta cambiar a online
+router.put("/user/set-online", userController.setOnline)
 // Ruta para obtener datos del perfil
 router.post("/user/profile",userController.profile);
 

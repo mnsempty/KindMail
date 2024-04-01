@@ -32,15 +32,16 @@ export const iniciateSocket = (space) => {
   if (socket && space) socket.emit("join chat", space);
   console.log("Socket conectado");
 };
-// cuando se actualiza cada vez que recibe un mensaje (useEffect)
+// se actualiza cada vez que recibe un mensaje (useEffect)
 export const startChat = (cb) => {
   socket.on("chat", (msg) => {
-    console.log("msg recibido");
+    console.log("msg recibido:========================= " +JSON.stringify(msg));
     return cb(null, msg);
   });
 };
-// enviar mensajes como tal
+// enviar mensajes como tal, pasamos space y message(message,senderName)
 export const sendMessage = (space, message) => {
+  console.log("space " + space + "" +JSON.stringify(message));
   socket
     ? socket.emit("chat", { message, space })
     : console.log("error en (sendMessage)");

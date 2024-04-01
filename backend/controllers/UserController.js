@@ -1,7 +1,19 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
 const client = require("../Database/RedisClient");
+// const multer = require("multer");
+
+// //Configurar Multer para guardar las imágenes del formulario
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/images"); // Directorio donde se guardarán las imágenes
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + "-" + file.originalname); // Nombre del archivo: marca de tiempo + nombre original
+//   },
+// });
+
+// const upload = multer({ storage: storage });
 
 async function createUser(req, res) {
   try {
@@ -10,18 +22,50 @@ async function createUser(req, res) {
     if (existingUser) {
       return res.status(404).json({ message: "Usuario ya existente" });
     }
-    //no funca because mongoose
-    // const userData = new User({
-    //   name,
-    //   surname,
-    //   email,
-    //   birthday,
-    //   role,
-    //   password,
-    //   state,
-    // });
 
-    const userData = { name, surname, email, birthday, role, password };
+    //Imagen
+    // const image = req.file;
+
+    // Establecer valores predeterminados 
+    const userRole = role || 'user';
+    const userState = state || 'online';
+
+    function validateName(name) {
+      const regex = /^[a-zA-Z\s]+$/;
+      return regex.test(name);
+    }
+
+    function validateEmail(email) {
+      const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return regex.test(email);
+    }
+
+    function validatePassword(password) {
+      return password.length >= 8;
+    }
+
+    // Realizar las validaciones
+    if (!validateName(name)) {
+      return res.status(400).json({ message: "Nombre inválido" });
+    }
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Correo electrónico inválido" });
+    }
+    if (!validatePassword(password)) {
+      return res.status(400).json({ message: "La contraseña debe tener al menos 8 caracteres" });
+    }
+
+    const userData = {
+      name,
+      surname,
+      email,
+      birthday,
+      role: userRole,
+      password,
+      state: userState,
+      // image: req.file ? req.file.filename : undefined
+    };
 
     await saveUser(userData);
     res.status(201).json({ message: "Usuario creado correctamente" });
@@ -142,13 +186,9 @@ async function setBusy(req, res) {
     const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
     const payload = jwt.decode(token); // Decodificar el token
 
-    // Obtener el correo electrónico del usuario desde la información decodificada
     const email = payload.userData.email;
-
-    // Obtener el usuario existente de Redis Cloud utilizando el correo electrónico
     const existingUserString = await client.hGet("users", email);
     const existingUser = JSON.parse(existingUserString);
-
     if (!existingUserString) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -160,7 +200,7 @@ async function setBusy(req, res) {
     await client.hSet(
       "users",
       email,
-      JSON.stringify(existingUser) // Convertir a JSON antes de almacenar en Redis
+      JSON.stringify(existingUser)
     );
 
     res.status(200).json({
@@ -173,7 +213,35 @@ async function setBusy(req, res) {
   }
 }
 
-async function profile(req, res) {
+async function setOnline(req, res) {
+  try {
+    const { online } = req.body;
+    const token = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+    const payload = jwt.decode(token); // Decodificar el token
+
+    const email = payload.userData.email;
+    const existingUserString = await client.hGet("users", email);
+    const existingUser = JSON.parse(existingUserString);
+    if (!existingUserString) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Actualizar el estado ocupado del usuario
+    existingUser.state = online;
+
+    // Actualizar el usuario en Redis Cloud
+    await client.hSet(
+      "users",
+      email,
+      JSON.stringify(existingUser)
+    );
+
+    res.status(200).json({ message: "Estado del usuario actualizado correctamente", user: existingUser });
+  } catch (error) {
+    console.error("Error al actualizar el estado del usuario:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}async function profile(req, res) {
   try {
     const { userName, password, newPassword } = req.body;
 
@@ -236,6 +304,6 @@ module.exports = {
   deleteUser,
   login,
   logout,
-  setBusy,
+  setBusy, setOnline,
   profile,
 };

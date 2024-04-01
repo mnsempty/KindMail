@@ -1,84 +1,101 @@
 import { useContext, useEffect, useState } from 'react';
-import { Avatar, Listbox, ListboxItem } from '@nextui-org/react';
-import {jwtDecode} from 'jwt-decode';
+import { Avatar, Listbox, ListboxItem, Skeleton } from '@nextui-org/react';
+import { jwtDecode } from 'jwt-decode';
 
 import GlobalStateContext from './GlobalStateContext';
 import useGetChatDetails from '../../hooks/FetchChat';
 
 export default function CustomAside() {
- const { setSelectedChatId } = useContext(GlobalStateContext);
- const { loading, chatDetails , getChatDetails } = useGetChatDetails(); // Utiliza el hook para obtener los datos de los chats
- const [filteredChats, setFilteredChats] = useState([]);
- const [UserInfo, setUserInfo] = useState(null); // Estado para almacenar el email del usuario actual
+  const { selectedChatId, setSelectedChatId } = useContext(GlobalStateContext);
+  const { loading, chatDetails, getChatDetails } = useGetChatDetails(); // Utiliza el hook para obtener los datos de los chats
+  const [filteredChats, setFilteredChats] = useState([]);
+  const [UserInfo, setUserInfo] = useState(null); // Estado para almacenar el email del usuario actual
 
- //sacar email del localstorage
- const getUserEmailFromLocalStorage = () => {
-  const userInfo = localStorage.getItem('chat-user');
-  if (!userInfo) return null;
-  
-  const decodedUserInfo = jwtDecode(userInfo);
-  return decodedUserInfo.userData.email;
+  //sacar email del localstorage
+  const getUserEmailFromLocalStorage = () => {
+    const userInfo = localStorage.getItem('chat-user');
+    if (!userInfo) return null;
+
+    const decodedUserInfo = jwtDecode(userInfo);
+    return decodedUserInfo.userData.email;
   };
- 
- useEffect(() => {
- const userEmail = getUserEmailFromLocalStorage();
- console.log("userEmail"+userEmail);
- setUserInfo(userEmail); // Actualiza el estado con el email del usuario
 
- if (userEmail) {
-    getChatDetails(`${userEmail}`);
- }
- //warning React Hook useEffect has a missing dependency: 'getChatDetails'. Either include it or remove the dependency array.
- // a pesar de que salga warning no nos interesa la dependencia del fetch
- }, [UserInfo]); // Este useEffect se ejecuta cuando UserInfo cambia
+  useEffect(() => {
+    const userEmail = getUserEmailFromLocalStorage();
+    console.log("userEmail" + userEmail);
+    setUserInfo(userEmail); // Actualiza el estado con el email del usuario
 
- useEffect(() => {
- if (UserInfo && chatDetails.length > 0) {
-    const filtered = chatDetails.map(chat => {
-      // Para cada chat, determina si el usuario actual es user1 o user2
-      const isUser1 = chat.user1_ID === UserInfo;
-      // Selecciona los datos del otro usuario
-      const otherUser = isUser1 ? chat.user2Details : chat.user1Details;
-      // Devuelve un objeto con los datos del otro usuario y el índice del chat
-      return { ...otherUser, chat_id: chat.chat_id, index: chat.index };
-    });
-    setFilteredChats(filtered);
- }
+    if (userEmail) {
+      getChatDetails(`${userEmail}`);
+    }
+    //warning React Hook useEffect has a missing dependency: 'getChatDetails'. Either include it or remove the dependency array.
+    // a pesar de que salga warning no nos interesa la dependencia del fetch
+  }, [UserInfo]); // Este useEffect se ejecuta cuando UserInfo cambia
 
- }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
+  useEffect(() => {
+    if (UserInfo && chatDetails.length > 0) {
+      const filtered = chatDetails.map(chat => {
+        // Para cada chat, determina si el usuario actual es user1 o user2
+        const isUser1 = chat.user1_ID === UserInfo;
+        // Selecciona los datos del otro usuario
+        const otherUser = isUser1 ? chat.user2Details : chat.user1Details;
+        // Devuelve un objeto con los datos del otro usuario y el índice del chat
+        return { ...otherUser, chat_ID: chat.chat_ID, index: chat.index };
+      });
+      setFilteredChats(filtered);
+    }
 
- if (loading) {
-  return <div>Cargando...</div>; // Muestra un mensaje de carga mientras los datos se están obteniendo
-}
+  }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
- return (
-    <aside className="bg-dark border-2 rounded-lg border-primary text-foreground w-64 p-4">
-      <Listbox
-        classNames={{
-          base: "max-w-xs",
-          list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
-        }}
-        aria-label="Users to chat list"
-        color={'primary'}
-        variant={'bordered'}
-      >
-        {filteredChats.map((chat, index) => {
-          return (
+  return (
+    <aside className="bg-dark border-2 rounded-lg border-primary text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
+      {loading ? (
+        <div className="flex gap-3 p-1 items-center min-w-full">
+          <div>
+            <Skeleton className="flex rounded-full w-10 h-10" />
+          </div>
+          <div className="w-full flex flex-col gap-2">
+            <Skeleton className="h-3 w-3/5 rounded-lg" />
+            <Skeleton className="h-3 w-5/6 rounded-lg" />
+          </div>
+        </div>
+      ) : (
+        <Listbox
+          emptyContent
+          classNames={{
+            base: "max-w-xs",
+            list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
+          }}
+          aria-label="Users to chat list"
+          color={'primary'}
+          variant={'bordered'}
+        >
+
+          {filteredChats.map((chat, index) => (
             <ListboxItem key={index} onClick={() => {
-              console.log(`Seleccionado chat con ID: ${chat.chat_id}`);
-              setSelectedChatId(chat.chat_id); // Actualiza el estado en el contexto
-            }} textValue={chat.name}>
+              console.log(`Seleccionado chat con ID: ${chat.chat_ID}`);
+              setSelectedChatId(chat.chat_ID);
+            }}
+            textValue={chat.name}
+            className={chat.chat_ID === selectedChatId ? 'bg-primary-700' : ''}
+
+            >
               <div className="flex gap-2 items-center">
-                <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.avatar} />
+                {chat.photo ? (
+                  <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
+                ) : (
+                  <Avatar name={chat.name.charAt(0).toUpperCase() + chat.name.slice(1)} />
+                )}
                 <div className="flex flex-col text-left">
-                 <span className="text-small">{chat.name}</span>
-                 <span className="text-tiny text-default-400">{chat.email}</span>
+                  <span className="text-small">{chat.name}</span>
+                  <span className="text-tiny text-default-400">{chat.email}</span>
                 </div>
               </div>
             </ListboxItem>
-          );
-        })}
-      </Listbox>
+          ))}
+
+        </Listbox>
+      )}
     </aside>
- );
+  );
 }

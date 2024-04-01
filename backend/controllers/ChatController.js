@@ -45,7 +45,7 @@ async function getChatsFromUser(req, res) {
 async function openChat(req, res) {
   try {
     const { chat_ID } = req.body;
-
+    console.log("chat id func sad"+chat_ID);
     const messagesFromChat = await getMessagesFromChat(chat_ID);
 
     res.status(200).json({ messagesFromChat });
@@ -57,9 +57,9 @@ async function openChat(req, res) {
 
 async function sendMessage(req, res) {
   try {
-    const { sender, receiver, content, chat_ID } = req.body;
+    const { sender, content, chat_ID } = req.body;
 
-    const messageData = { sender, receiver, content, chat_ID };
+    const messageData = { sender, content, chat_ID };
 
     const messageJSON = JSON.stringify(messageData);
 
@@ -150,18 +150,14 @@ async function getUserChats(user_ID) {
 //Funcion para recoger los mensajes de un chat
 async function getMessagesFromChat(chat_ID) {
   const allMessages = await client.lRange("messages_list", 0, -1);
-
   const messagesFromChat = [];
 
   for (const messageJSON of allMessages) {
     const message = JSON.parse(messageJSON);
-
-    console.log(message.chat_ID + " " + chat_ID);
     if (message.chat_ID == chat_ID) {
       messagesFromChat.push(message);
     }
   }
-
   return messagesFromChat.length !== 0 ? messagesFromChat : null;
 }
 
