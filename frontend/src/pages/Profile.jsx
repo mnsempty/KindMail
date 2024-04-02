@@ -5,13 +5,14 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure
 import useChangeProfile from '../hooks/changeProfile'; // Importa el hook personalizado
 
 const Profile = () => {
-    const { fetchData } = useChangeProfile(); // Usa el hook personalizado para obtener fetchData
+    const { fetchData, changeProfileImage } = useChangeProfile(); // Usa el hook personalizado para obtener fetchData
 
     const [userInfo, setUserInfo] = useState(null); // Estado para almacenar la información del usuario actual
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState('');
+    const [profilePhoto, setProfilePhoto] = useState(null); 
+    const [showImageModal, setShowImageModal] = useState(false); // Estado para controlar la visibilidad de la ventana modal de la imagen
 
     // Función para obtener la información del usuario del localStorage
     const getUserDataLocalStorage = () => {
@@ -43,28 +44,64 @@ const Profile = () => {
             setUserName('');
             setPassword('');
             setNewPassword('');
-
         } catch (error) {
             console.error(error);
         }
     }
 
-    const handleImageChange = (file) => {
+    // Cuando se inserta la imagen se guarda lista para enviar al servidor
+    const handleImageChange = (e) => {
+        try {
+            const file = e.target.files[0];
+            setProfilePhoto(file);
+        } catch (e) {
+            console.error(e);
+        }
+
 
     };
+
+    // Llama al hook para cambiar la foto de perfil
+    const changeProfilePhoto = async () => {
+        try {
+            if (!profilePhoto) {
+                console.error("No se proporcionó ninguna imagen");
+                return;
+            }
+
+            const updatedUserData = await changeProfileImage(profilePhoto);
+
+            const updatedDecodedUserData = jwtDecode(updatedUserData.token);
+
+            setUserInfo(updatedDecodedUserData.userData);
+            setProfilePhoto(updatedDecodedUserData.userData.profilePhoto);
+
+            // Limpiar los campos después de una actualización exitosa
+            setUserName('');
+            setPassword('');
+            setNewPassword('');
+            setProfilePhoto(null);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
 
     return (
         <div className="flex justify-center items-center">
             <Card className="w-full md:w-1/2 lg:w-1/3 xl:w-1/3">
                 <CardHeader className="flex gap-3">
-                    <Image
-                        alt="nextui logo"
-                        height={80}
-                        radius="sm"
-                        // src={userInfo.profilePhoto}
-                        src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-                        width={80}
-                    />
+                    {/* Boton para el modal de la imagen */}
+                    <Button onClick={() => setShowImageModal(true)} className="p-0 bg-transparent border-none w-16 h-16" >
+                        <Image
+                            alt="nextui logo"
+                            radius="sm"
+                            //! Cambiar ruta userInfo.profilePhoto, solo es para comprobar
+                            src={userInfo ? 'http://localhost:5000' + userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                            className='w-16 h-16'
+                        />
+                    </Button>
                     <div className="flex flex-col">
                         {/* Renderiza los datos del usuario si están disponibles */}
                         {userInfo && (
@@ -81,6 +118,7 @@ const Profile = () => {
                 </CardBody>
                 <Divider />
                 <CardFooter>
+                    {/* Modal del cambio de datos (nombre y contraseña) */}
                     <Button onPress={onOpen} color="primary">Cambiar datos</Button>
                     <Modal
                         backdrop="blur"
@@ -117,15 +155,6 @@ const Profile = () => {
                                             value={newPassword}
                                             onChange={(e) => setNewPassword(e.target.value)}
                                         />
-                                        <Input
-                                            label="Seleccionar imagen de perfil"
-                                            type="file"
-                                            name="profilePhoto"
-                                            accept="image/*"
-                                            onChange={(e) => {
-                                                setProfilePhoto(e.target.files[0])
-                                            }}
-                                        />
                                     </ModalBody>
                                     <ModalFooter>
                                         <Button color="danger" variant="flat" onPress={onClose}>
@@ -141,6 +170,34 @@ const Profile = () => {
                     </Modal>
                 </CardFooter>
             </Card>
+            {/* Modal de la imagen */}
+            <Modal
+                backdrop="blur"
+                isOpen={showImageModal}
+                onOpenChange={() => setShowImageModal(false)}
+                placement="center"
+            >
+                <ModalContent>
+                    <ModalHeader>Imagen de perfil</ModalHeader>
+                    <ModalBody>
+                        <Image
+                            alt="nextui logo"
+                            src={userInfo ? userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                            width="100%"
+                        />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Input
+                            label="Cambiar la foto de perfil"
+                            placeholder='Nueva foto de perfil'
+                            type='file'
+                            accept='image/*'
+                            onChange={handleImageChange}
+                        />
+                        <Button variant="ghost" onPress={() => { changeProfilePhoto(); setShowImageModal(false); }}>Cambiar</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </div>
     )
 }

@@ -24,6 +24,7 @@ const setupSocket = require("./serverSocket");
 
 const web = require("./routes/web");
 
+
 const port = process.env.PORT || 5000;
 
 const app = express();
@@ -48,6 +49,8 @@ app.use(
 );
 
 app.use("/api", web);
+
+app.use('/uploads', express.static('uploads'));
 
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);

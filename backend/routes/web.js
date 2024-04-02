@@ -22,8 +22,11 @@ router.post("/user/logout", userController.logout)
 router.put("/user/set-busy", userController.setBusy)
 // Ruta cambiar a online
 router.put("/user/set-online", userController.setOnline)
-// Ruta para obtener datos del perfil
+// Ruta para cambiar datos del perfil
 router.post("/user/profile",userController.profile);
+// Ruta para cambiar la imagen del perfil
+router.post("/user/profile/image",userController.profilePhoto);
+
 
 // ------ Rutas de chats ------
 

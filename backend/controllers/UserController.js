@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const client = require("../Database/RedisClient");
 const upload = require("../upload");
+const multer = require("multer");
 
 async function createUser(req, res) {
   try {
@@ -262,19 +263,6 @@ async function profile(req, res) {
       user.name = userName;
     }
 
-  
-    // Subir la imagen de perfil si se proporciona un archivo
-    if (req.file) {
-      console.log("Hay foto");
-      upload.single("profilePhoto")(req, res, (err) => {
-        if (err) {
-          console.error("Error al subir la imagen:", err);
-          return res
-            .status(500)
-            .json({ message: "Error interno del servidor al subir la imagen" });
-        }
-      });
-    }
     let userData = {
       // id: existingUser.id,
       name: user.name,
@@ -298,6 +286,58 @@ async function profile(req, res) {
   }
 }
 
+async function profilePhoto(req, res) {
+  try {
+    // Subir la imagen de perfil si se proporciona un archivo, misma clave que en cliente
+    upload.single("profilePhoto")(req, res, async function (err) {
+      
+      if (err instanceof multer.MulterError) {
+        
+        return res
+          .status(500)
+          .json({ message: "Error interno del servidor al subir la imagen" });
+      } else if (err) {
+        
+        console.error("Error al subir la imagen:", err);
+        return res
+          .status(500)
+          .json({ message: "Error interno del servidor al subir la imagen" });
+      }
+
+      // Verificar si se proporcionó un archivo
+      if (!req.file) {
+        return res
+          .status(400)
+          .json({ message: "No se proporcionó ninguna imagen" });
+      }
+
+      const auth = req.headers.authorization.split(" ")[1]; // Obtener el token JWT del encabezado de autorización
+      const payload = jwt.decode(auth); // Decodificar el token
+
+      // Obtener el correo electrónico del usuario desde la información decodificada
+      const email = payload.userData.email;
+
+      // Insertar la ruta de la foto en el servidor al usuario
+      const imagePath ='http:/localhost:5000'+ req.file.path;
+      const userData = await client.hGet("users", email);
+      if (!userData) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+      const user = JSON.parse(userData);
+      user.profilePhoto = imagePath;
+
+      await client.hSet("users", email, JSON.stringify(user));
+
+      // Devolvemos el token con los datos del user
+      const token = jwt.sign({ userData }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+      res.status(200).json({ token });
+    });
+  } catch (error) {
+    console.log("Error al cambiar la foto de perfil: ", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -306,4 +346,5 @@ module.exports = {
   setBusy,
   setOnline,
   profile,
+  profilePhoto,
 };
