@@ -1,7 +1,10 @@
 import React from "react";
 
 const GlobalStateContext = React.createContext({
-  selectedChatId: null,
+  ChatIds: {
+    current: null,
+    previous: null,
+ },
   setSelectedChatId: () => {},
 });
 

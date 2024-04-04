@@ -58,7 +58,7 @@ async function openChat(req, res) {
 async function sendMessage(req, res) {
   try {
     const { sender, content, chat_ID } = req.body;
-
+    console.log(req.body);
     const messageData = { sender, content, chat_ID };
 
     const messageJSON = JSON.stringify(messageData);

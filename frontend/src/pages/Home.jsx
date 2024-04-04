@@ -4,10 +4,20 @@ import ChatCustom from "../components/home/ChatCustom";
 import GlobalStateContext from "../components/home/GlobalStateContext";
 
 const Home = () => {
-    const [selectedChatId, setSelectedChatId] = useState(null);
+    const [ChatIds, setChatIds] = useState({
+        current: null,
+        previous: null,
+    });
+
+    const setSelectedChatId = (newId) => {
+        setChatIds((prevChatIds) => ({
+            current: newId,
+            previous: prevChatIds.current,
+        }));
+    };
 
     return (
-        <GlobalStateContext.Provider value={{ selectedChatId, setSelectedChatId }}>
+        <GlobalStateContext.Provider value={{ ChatIds, setSelectedChatId }}>
             <>
                 <div className="flex gap-8 mb-8">
                     <CustomAside />
