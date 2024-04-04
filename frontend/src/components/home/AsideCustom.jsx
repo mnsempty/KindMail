@@ -99,7 +99,8 @@ export default function CustomAside() {
                   {chat.photo ? (
                     <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
                   ) : (
-                    <Avatar name={chat.name.charAt(0).toUpperCase() + chat.name.slice(1)} />
+                    // .charAt(0).toUpperCase() + chat.name.slice(1)
+                    <Avatar name={chat.name} />
                   )}
                   <div className="flex flex-col text-left">
                     <span className="text-small">{chat.name}</span>
