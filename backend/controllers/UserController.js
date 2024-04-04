@@ -105,8 +105,8 @@ async function login(req, res) {
       name: existingUser.name,
       // surname: existingUser.surname,
       email: existingUser.email,
-      // state: existingUser.state
-      // photo: existingUser.photo
+      state: existingUser.state,
+      profilePhoto: existingUser.profilePhoto
     };
     // Si las credenciales son correctas, devolver los datos del usuario.
     // Se envia en forma de token que tendra que ser descifrado con
@@ -268,8 +268,8 @@ async function profile(req, res) {
       name: user.name,
       // surname: existingUser.surname,
       email: user.email,
-      // state: existingUser.state
-      // photo: existingUser.photo
+      state: user.state,
+      profilePhoto: user.profilePhoto
     };
 
     // Convertir el objeto del usuario a una cadena JSON para guardarlo en Redis
@@ -318,18 +318,27 @@ async function profilePhoto(req, res) {
       const email = payload.userData.email;
 
       // Insertar la ruta de la foto en el servidor al usuario
-      const imagePath ='http:/localhost:5000'+ req.file.path;
-      const userData = await client.hGet("users", email);
-      if (!userData) {
+      const imagePath ='http://localhost:5000/'+ req.file.path.replace(/\\/g, '/');
+      const userJSON = await client.hGet("users", email);
+      if (!userJSON) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
-      const user = JSON.parse(userData);
+      const user = JSON.parse(userJSON);
       user.profilePhoto = imagePath;
+
+      let userData = {
+        // id: existingUser.id,
+        name: user.name,
+        // surname: existingUser.surname,
+        email: user.email,
+        state: user.state,
+        profilePhoto: user.profilePhoto
+      };
 
       await client.hSet("users", email, JSON.stringify(user));
 
       // Devolvemos el token con los datos del user
-      const token = jwt.sign({ userData }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+      const token = jwt.sign({userData} , "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
       res.status(200).json({ token });
     });
   } catch (error) {

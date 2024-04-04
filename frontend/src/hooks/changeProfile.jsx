@@ -31,7 +31,7 @@ const useChangeProfile = () => {
 
 
             await setAuthUser(data);
-            localStorage.setItem("chat-user", JSON.stringify(data));    
+            localStorage.setItem("chat-user", JSON.stringify(data));
 
             return data;
 
@@ -41,29 +41,30 @@ const useChangeProfile = () => {
             setIsLoading(false);
         }
     };
-    
+
     const changeProfileImage = async (imageFile) => {
         setIsLoading(true);
         try {
             const formData = new FormData();
-            formData.append("profilePhoto", imageFile); 
-    
+            formData.append("profilePhoto", imageFile);
+
             const res = await fetch("http://localhost:5000/api/user/profile/image", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${authUser.token}` 
+                    "Authorization": `Bearer ${authUser.token}`
                 },
                 body: formData
             });
-    
+
             if (!res.ok) {
                 const errorData = await res.json();
                 throw new Error(errorData.message || "Error al cambiar la imagen de perfil");
             }
-    
+
             const data = await res.json();
             setAuthUser(data);
-            localStorage.setItem("chat-user", JSON.stringify(data));    
+            localStorage.setItem("chat-user", JSON.stringify(data));
+            
             return data;
         } catch (error) {
             console.error(error);
@@ -71,8 +72,8 @@ const useChangeProfile = () => {
             setIsLoading(false);
         }
     };
-    
-    
+
+
 
 
     return { fetchData, changeProfileImage, isLoading };

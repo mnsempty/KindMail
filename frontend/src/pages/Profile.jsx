@@ -11,7 +11,7 @@ const Profile = () => {
     const [userName, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [profilePhoto, setProfilePhoto] = useState(null); 
+    const [profilePhoto, setProfilePhoto] = useState(null);
     const [showImageModal, setShowImageModal] = useState(false); // Estado para controlar la visibilidad de la ventana modal de la imagen
 
     // Función para obtener la información del usuario del localStorage
@@ -23,12 +23,16 @@ const Profile = () => {
         return decodedUserInfo.userData;
     };
 
+
+
     useEffect(() => {
         // Obtén la información del usuario del localStorage
         const userData = getUserDataLocalStorage();
         // Actualiza el estado con la información del usuario
         setUserInfo(userData);
     }, []); // Este useEffect se ejecuta una vez al cargar el componente
+
+
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -53,6 +57,7 @@ const Profile = () => {
     const handleImageChange = (e) => {
         try {
             const file = e.target.files[0];
+            console.log("Archivo: ", file)
             setProfilePhoto(file);
         } catch (e) {
             console.error(e);
@@ -73,19 +78,19 @@ const Profile = () => {
 
             const updatedDecodedUserData = jwtDecode(updatedUserData.token);
 
-            setUserInfo(updatedDecodedUserData.userData);
-            setProfilePhoto(updatedDecodedUserData.userData.profilePhoto);
+            console.log("datos devueltos tras cambiar la foto: ", updatedDecodedUserData.profilePhoto);
+
+            setUserInfo(updatedDecodedUserData);
+            setProfilePhoto(updatedDecodedUserData.profilePhoto);
+
+
 
             // Limpiar los campos después de una actualización exitosa
-            setUserName('');
-            setPassword('');
-            setNewPassword('');
-            setProfilePhoto(null);
+
         } catch (error) {
             console.error(error);
         }
     };
-
 
 
     return (
@@ -98,7 +103,7 @@ const Profile = () => {
                             alt="nextui logo"
                             radius="sm"
                             //! Cambiar ruta userInfo.profilePhoto, solo es para comprobar
-                            src={userInfo ? 'http://localhost:5000' + userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                            src={userInfo ? userInfo.profilePhoto : ""}
                             className='w-16 h-16'
                         />
                     </Button>
@@ -114,7 +119,7 @@ const Profile = () => {
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                    <p>Estado</p>
+                    <p>{userInfo ? userInfo.state : ""} </p>
                 </CardBody>
                 <Divider />
                 <CardFooter>
@@ -160,7 +165,7 @@ const Profile = () => {
                                         <Button color="danger" variant="flat" onPress={onClose}>
                                             Cerrar
                                         </Button>
-                                        <Button color="primary" onPress={() => { handleSubmit(); onClose(); }}>
+                                        <Button color="primary" onClick={() => { handleSubmit(); onClose(); }}>
                                             Confirmar
                                         </Button>
                                     </ModalFooter>
@@ -190,11 +195,11 @@ const Profile = () => {
                         <Input
                             label="Cambiar la foto de perfil"
                             placeholder='Nueva foto de perfil'
-                            type='file'
-                            accept='image/*'
+                            type="file"
+                            accept="image/*"
                             onChange={handleImageChange}
                         />
-                        <Button variant="ghost" onPress={() => { changeProfilePhoto(); setShowImageModal(false); }}>Cambiar</Button>
+                        <Button variant="ghost" onClick={() => { changeProfilePhoto(); setShowImageModal(false); }}>Cambiar</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
