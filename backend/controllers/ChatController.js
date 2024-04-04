@@ -45,7 +45,7 @@ async function getChatsFromUser(req, res) {
 async function openChat(req, res) {
   try {
     const { chat_ID } = req.body;
-    console.log("chat id func sad"+chat_ID);
+    console.log("chat id func sad" + chat_ID);
     const messagesFromChat = await getMessagesFromChat(chat_ID);
 
     res.status(200).json({ messagesFromChat });
@@ -161,9 +161,27 @@ async function getMessagesFromChat(chat_ID) {
   return messagesFromChat.length !== 0 ? messagesFromChat : null;
 }
 
+//Función calcular los chats
+async function getChats() {
+  const allChats = await client.lRange("chats_list", 0, -1);
+  const chats = allChats.map(chatJSON => JSON.parse(chatJSON));
+  return chats;
+}
+async function quantity(req, res) {
+  try {
+    const chats = await getChats();
+    const chatQuantity = chats.length;
+    res.status(200).json({ chatQuantity });
+    console.log("chats:", chatQuantity);
+  } catch (error) {
+    console.error("Error al obtener la cantidad de chats:", error);
+  }
+}
+
 module.exports = {
   create,
   getChatsFromUser,
   openChat,
-  sendMessage
+  sendMessage,
+  quantity
 };

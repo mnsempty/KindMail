@@ -242,6 +242,28 @@ async function setOnline(req, res) {
   }
 }
 
+async function getUsers() {
+  const userHashKey = "users";
+  const userQuantity = await client.hLen(userHashKey);
+  return userQuantity;
+}
+
+async function quantity(req, res) {
+  try {
+    const userQuantity = await getUsers();
+    console.log("usuarios:", userQuantity);
+    res.status(200).json({ userQuantity });
+  } catch (error) {
+    console.error("Error al obtener la cantidad de usuarios:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 module.exports = {
-  createUser, deleteUser, login, logout, setBusy, setOnline
+  createUser,
+  deleteUser,
+  login, logout,
+  setBusy,
+  setOnline,
+  quantity
 };

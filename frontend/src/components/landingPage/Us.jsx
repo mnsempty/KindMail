@@ -3,20 +3,20 @@ import { Image } from "@nextui-org/react";
 import image1 from "../../assets/IMG_6039.jpg";
 import image2 from "../../assets/IMG_6052.jpg";
 import image3 from "../../assets/IMG_6055.jpg";
-import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Typography,
-    Tooltip,
-} from "@material-tailwind/react";
+// import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
+// import {
+//     Card,
+//     CardHeader,
+//     CardBody,
+//     CardFooter,
+//     Typography,
+//     Tooltip,
+// } from "@material-tailwind/react";
 
 const Us = () => {
     return (
         <div className="flex justify-evenly">
-            <Card className="w-96">
+            {/* <Card className="w-96">
                 <CardHeader floated={false} className="h-96">
                     <Image isZoomed src={image1} alt="Álvaro" />
                 </CardHeader>
@@ -89,7 +89,7 @@ const Us = () => {
                         <FaInstagram className="text-azul" href="#" size={24} />
                     </Tooltip>
                 </CardFooter>
-            </Card>
+            </Card> */}
         </div >
     );
 };

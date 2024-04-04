@@ -22,6 +22,8 @@ router.post("/user/logout", userController.logout)
 router.put("/user/set-busy", userController.setBusy)
 // Ruta cambiar a online
 router.put("/user/set-online", userController.setOnline)
+// Cantidad de usuarios (landing page)
+router.get("/user/quantity", userController.quantity);
 
 // ------ Rutas de chats ------
 
@@ -33,5 +35,7 @@ router.post("/chats", chatController.getChatsFromUser);
 router.post("/chats/openChat", chatController.openChat);
 // Ruta para enviar mensajes
 router.post("/chats/sendMessage", chatController.sendMessage);
+// Cantidad de chats (landing page)
+router.get("/chats/quantity", chatController.quantity);
 
 module.exports = router;

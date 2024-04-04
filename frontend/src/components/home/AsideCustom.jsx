@@ -50,14 +50,14 @@ export default function CustomAside() {
   }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
   const handleSelectedChat = (id) => {
-      console.log(`Seleccionado chat con ID: ${id}`);
-      console.log("chatIds Data: "+ JSON.stringify(ChatIds));
-      if (ChatIds.previous !== null && ChatIds.previous !== undefined) {
-        // Si no es el primer chat, llama a switchChat(prevChat,nextChat)
-        switchChat(ChatIds.current, id);
-     }
-      setSelectedChatId(id);
+    console.log(`Seleccionado chat con ID: ${id}`);
+    console.log("chatIds Data: " + JSON.stringify(ChatIds));
+    if (ChatIds.previous !== null && ChatIds.previous !== undefined) {
+      // Si no es el primer chat, llama a switchChat(prevChat,nextChat)
+      switchChat(ChatIds.current, id);
     }
+    setSelectedChatId(id);
+  }
   return (
     <aside className="bg-dark border-2 rounded-lg border-primary text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
       {loading ? (
