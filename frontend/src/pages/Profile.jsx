@@ -78,9 +78,8 @@ const Profile = () => {
 
             const updatedDecodedUserData = jwtDecode(updatedUserData.token);
 
-            console.log("datos devueltos tras cambiar la foto: ", updatedDecodedUserData.profilePhoto);
-
-            setUserInfo(updatedDecodedUserData);
+            
+            setUserInfo(updatedDecodedUserData.userData);
             setProfilePhoto(updatedDecodedUserData.profilePhoto);
 
 
