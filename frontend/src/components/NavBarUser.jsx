@@ -31,7 +31,7 @@ export default function App() {
     };
 
     return (
-        <Navbar className="bg-azul">
+        <Navbar className="bg-azul-600">
             <NavbarBrand>
                 <a href="/home" className="block">
                     <img className="h-8 w-auto m-2" src={Logo} alt="KindMail" />
@@ -41,7 +41,7 @@ export default function App() {
             <NavbarContent as="div" justify="end">
                 <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
                     {/* TO DO: poner cantidad de mensajes total */}
-                    <Badge content="5" className="bg-rosa" placement="bottom-right">
+                    <Badge content="5" className="bg-rosa-400" placement="bottom-right">
                         <a href="/home">
                             <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
                         </a>

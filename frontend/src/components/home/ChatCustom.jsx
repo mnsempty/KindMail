@@ -12,7 +12,7 @@ export default function ChatCustom() {
   //guardamos los mensajes del socket que luego mostramos
   const [messages, setMessages] = useState([]);
   // Obtener el chatId del contexto global en lugar de localStorage
-  const { ChatIds  } = useContext(GlobalStateContext);
+  const { ChatIds } = useContext(GlobalStateContext);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false); // Nuevo estado
 
   useEffect(() => {
@@ -28,11 +28,12 @@ export default function ChatCustom() {
           console.error(err);
           return;
         }
+        console.log("msg front" + JSON.stringify(msg));
         setMessages((prevMessages) => {
-          // Verifica si el mensaje ya existe en la lista de mensajesprevios
-          const messageExists = prevMessages.some(m => m.msg === msg.content);
+          // Verifica si el mensaje ya existe en la lista de mensajes previos checking message_ID
+          const messageExists = prevMessages.some(m => m.message_ID === msg.message_ID);
           if (!messageExists) {
-            return [...prevMessages, { msg: msg.content, sender: msg.sender }];
+            return [...prevMessages, { msg: msg.content, sender: msg.sender, message_ID: msg.message_ID }];
           } else {
             return prevMessages;
           }
@@ -40,7 +41,7 @@ export default function ChatCustom() {
         setShouldScrollToBottom(true); // Indicamos que se debe desplazar al final
       });
     }
-  },[ChatIds] );// useEffect se activa de nuevo si el valor cambia
+  }, [ChatIds]);// useEffect se activa de nuevo si el valor cambia
 
   useEffect(() => {
     if (shouldScrollToBottom) {
@@ -68,7 +69,12 @@ export default function ChatCustom() {
       setShouldScrollToBottom(true); // Indicamos que se debe desplazar al final después de enviar un mensaje
     }
   };
-
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSendMessage();
+    }
+ };
   return (
     <div className={`flex flex-col w-full rounded-lg bg-gray-500 justify-end h-[calc(90vh-2.7rem)]`}>
       {ChatIds.current ? (
@@ -87,6 +93,7 @@ export default function ChatCustom() {
               type="text"
               className="w-full md:w-90 p-2 rounded border border-gray-300 flex-auto"
               placeholder="Escribe un mensaje..."
+              onKeyDown={handleKeyDown}
               disabled={!ChatIds.current}
             />
             <button

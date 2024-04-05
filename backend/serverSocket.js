@@ -1,3 +1,5 @@
+const { randomUUID } = require('crypto');
+
 const setupSocket = (io) => {
   // al crearse la conexión
   let socketSpace;
@@ -30,6 +32,9 @@ const setupSocket = (io) => {
       console.log(data);
       const { space, message } = data;
       console.log(`msg: ${message}, space: ${space}`);
+      let message_ID = randomUUID();
+      //añadimos un id al message aquí para evitar tener que hacer un fetch de los mensajes en el backend
+      message.message_ID = message_ID;
       io.to(space).emit("chat", message);
 
       //data a enviar
@@ -37,6 +42,7 @@ const setupSocket = (io) => {
         sender: message.sender,
         content: message.content,
         chat_ID: space,
+        message_ID:message.message_ID
       };
       // Llamar a la función asíncrona "/api/chats/sendMessage"
       sendMessageToAPI(requestBody);
