@@ -13,7 +13,7 @@ export const iniciateSocket = (space) => {
 // se actualiza cada vez que recibe un mensaje (useEffect)
 export const startChat = (cb) => {
   socket.on("chat", (msg) => {
-    console.log("msg recibido:========================= " +JSON.stringify(msg));
+    // console.log("msg recibido:========================= " +JSON.stringify(msg));
     return cb(null, msg);
   });
 };

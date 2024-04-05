@@ -23,7 +23,6 @@ export default function CustomAside() {
 
   useEffect(() => {
     const userEmail = getUserEmailFromLocalStorage();
-    console.log("userEmail" + userEmail);
     setUserInfo(userEmail); // Actualiza el estado con el email del usuario
 
     if (userEmail) {
@@ -78,8 +77,7 @@ export default function CustomAside() {
             list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
           }}
           aria-label="Users to chat list"
-          color='azul'
-          variant='bordered'
+          variant='undefined'
         >
           {filteredChats === null ? (
             <ListboxItem
@@ -92,9 +90,9 @@ export default function CustomAside() {
               <ListboxItem
                 key={index}
                 onClick={() => handleSelectedChat(chat.chat_ID)}
-                textValue={chat.name}
+                textValue={`${chat.name}`}
                 // hover:border hover:border-azulclaro-100
-                className={chat.chat_ID === ChatIds.current ? 'bg-primary-700' : ''}
+                className={chat.chat_ID === ChatIds.current ? 'bg-azulclaro text-negro' : 'hover:border-2 hover:border-azulclaro hover:text-azulclaro-500'}
               >
                 <div className="flex gap-2 items-center ">
                   {chat.photo ? (
@@ -104,8 +102,8 @@ export default function CustomAside() {
                     <Avatar name={chat.name} />
                   )}
                   <div className="flex flex-col text-left">
-                    <span className="text-small">{chat.name}</span>
-                    <span className="text-tiny text-default-400">{chat.email}</span>
+                    <span className="font-normal">{chat.name}</span>
+                    <span className={chat.chat_ID === ChatIds.current ?'text-tiny text-azulclaro-950' :'text-tiny text-default-400'}>{chat.email}</span>
                   </div>
                 </div>
               </ListboxItem>
