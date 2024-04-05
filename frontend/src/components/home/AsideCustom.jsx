@@ -23,7 +23,6 @@ export default function CustomAside() {
 
   useEffect(() => {
     const userEmail = getUserEmailFromLocalStorage();
-    console.log("userEmail" + userEmail);
     setUserInfo(userEmail); // Actualiza el estado con el email del usuario
 
     if (userEmail) {
@@ -59,7 +58,7 @@ export default function CustomAside() {
     setSelectedChatId(id);
   }
   return (
-    <aside className="bg-dark border-2 rounded-lg border-primary text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
+    <aside className="bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
       {loading ? (
         <div className="flex gap-3 p-1 items-center min-w-full">
           <div>
@@ -78,8 +77,7 @@ export default function CustomAside() {
             list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
           }}
           aria-label="Users to chat list"
-          color={'primary'}
-          variant={'bordered'}
+          variant='undefined'
         >
           {filteredChats === null ? (
             <ListboxItem
@@ -92,18 +90,20 @@ export default function CustomAside() {
               <ListboxItem
                 key={index}
                 onClick={() => handleSelectedChat(chat.chat_ID)}
-                textValue={chat.name}
-                className={chat.chat_ID === ChatIds.current ? 'bg-primary-700' : ''}
+                textValue={`${chat.name}`}
+                // hover:border hover:border-azulclaro-100
+                className={chat.chat_ID === ChatIds.current ? 'bg-azulclaro text-negro' : 'hover:border-2 hover:border-azulclaro hover:text-azulclaro-500'}
               >
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center ">
                   {chat.photo ? (
                     <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
                   ) : (
-                    <Avatar name={chat.name.charAt(0).toUpperCase() + chat.name.slice(1)} />
+                    // .charAt(0).toUpperCase() + chat.name.slice(1)
+                    <Avatar name={chat.name} />
                   )}
                   <div className="flex flex-col text-left">
-                    <span className="text-small">{chat.name}</span>
-                    <span className="text-tiny text-default-400">{chat.email}</span>
+                    <span className="font-normal">{chat.name}</span>
+                    <span className={chat.chat_ID === ChatIds.current ?'text-tiny text-azulclaro-950' :'text-tiny text-default-400'}>{chat.email}</span>
                   </div>
                 </div>
               </ListboxItem>

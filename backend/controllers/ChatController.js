@@ -1,4 +1,5 @@
 const client = require("../Database/RedisClient");
+const { randomUUID } = require('crypto');
 
 async function create(req, res) {
   try {
@@ -19,7 +20,10 @@ async function create(req, res) {
     }
 
     // Crear la sala de chat
-    const chatData = { user1_ID, user2_ID };
+    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
+    // datos el id generado pero al ser una app tan pequeña no es necesario
+    let chat_ID = randomUUID();
+    const chatData = { user1_ID, user2_ID, chat_ID};
     await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
 
     res.status(201).json({ message: "Chat creado correctamente" });
@@ -57,9 +61,10 @@ async function openChat(req, res) {
 
 async function sendMessage(req, res) {
   try {
-    const { sender, content, chat_ID } = req.body;
+    const { sender, content, chat_ID, message_ID } = req.body;
+
     console.log(req.body);
-    const messageData = { sender, content, chat_ID };
+    const messageData = { sender, content, chat_ID, message_ID };
 
     const messageJSON = JSON.stringify(messageData);
 

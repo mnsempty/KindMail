@@ -9,7 +9,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const Register = () => {
 
-    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro hover:text-azul";
+    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro-100 hover:text-azul-600";
 
     const navigate = useNavigate();
     const { loading, signup } = useSignUp((path) => navigate(path));
@@ -29,7 +29,7 @@ const Register = () => {
     return (
         <>
             <div className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-                <div className="bg-azul rounded-2xl shadow-2xl flex w-full max-w-4xl">
+                <div className="bg-azul-600 rounded-2xl shadow-2xl flex w-full max-w-4xl">
                     <div className="w-full p-5">
                         <div className="py-10">
                             <h2 className="text-3xl font-bold text-blanco mb-2">Registro</h2>
@@ -67,7 +67,7 @@ const Register = () => {
                                     <Link to="/login" className="text-xs">¿Ya tienes una cuenta?</Link>
                                 </div>
                                 {/* <input type="file" name="image" /> */}
-                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro hover:text-azul mb-10">Enviar</button>
+                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro-100 hover:text-azul-600 mb-10">Enviar</button>
                             </form>
                         </div>
                     </div>
