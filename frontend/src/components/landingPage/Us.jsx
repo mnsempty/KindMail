@@ -16,6 +16,9 @@ import image3 from "../../assets/IMG_6055.jpg";
 const Us = () => {
     return (
         <div className="flex justify-evenly">
+            <Image isZoomed src={image1} alt="Álvaro" className="h-96" />
+            <Image isZoomed src={image2} alt="Marta" className="h-96" />
+            <Image isZoomed src={image3} alt="Manuel" className="h-96" />
             {/* <Card className="w-96">
                 <CardHeader floated={false} className="h-96">
                     <Image isZoomed src={image1} alt="Álvaro" />
