@@ -23,6 +23,7 @@ module.exports = {
           800: "#264c66",
           900: "#244156",
           950: "#182a39",
+          DEFAULT: "#3878a4",
         },
         rosa: {
           50: "#fcf4f4",
@@ -36,6 +37,7 @@ module.exports = {
           800: "#852c45",
           900: "#72293f",
           950: "#3f121f",
+          DEFAULT: "#e3919d",
         },
         azulclaro: {
           50: "#eff9ff",
@@ -49,11 +51,15 @@ module.exports = {
           800: "#035989",
           900: "#094a71",
           950: "#062e4b",
+          DEFAULT: "#d8efff",
         },
         negro: "#060606",
         blanco: "#FBFBFB",
       },
     },
   },
-  plugins: [nextui()],
+  plugins: [nextui({
+      addCommonColors: true,
+    },
+  )],
 };

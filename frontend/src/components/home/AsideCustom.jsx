@@ -59,7 +59,7 @@ export default function CustomAside() {
     setSelectedChatId(id);
   }
   return (
-    <aside className="bg-dark border-2 rounded-lg border-primary text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
+    <aside className="bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
       {loading ? (
         <div className="flex gap-3 p-1 items-center min-w-full">
           <div>
@@ -78,8 +78,8 @@ export default function CustomAside() {
             list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
           }}
           aria-label="Users to chat list"
-          color={'primary'}
-          variant={'bordered'}
+          color='azul'
+          variant='bordered'
         >
           {filteredChats === null ? (
             <ListboxItem
@@ -93,9 +93,10 @@ export default function CustomAside() {
                 key={index}
                 onClick={() => handleSelectedChat(chat.chat_ID)}
                 textValue={chat.name}
+                // hover:border hover:border-azulclaro-100
                 className={chat.chat_ID === ChatIds.current ? 'bg-primary-700' : ''}
               >
-                <div className="flex gap-2 items-center">
+                <div className="flex gap-2 items-center ">
                   {chat.photo ? (
                     <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
                   ) : (
