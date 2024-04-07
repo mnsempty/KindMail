@@ -53,18 +53,22 @@ const Profile = () => {
         }
     }
 
-    // Cuando se inserta la imagen se guarda lista para enviar al servidor
     const handleImageChange = (e) => {
         try {
-            const file = e.target.files[0];
-            console.log("Archivo: ", file)
-            setProfilePhoto(file);
+            
+            if (e.target.files && e.target.files.length > 0) {
+                const file = e.target.files[0];
+                console.log("Archivo: ", file);
+                setProfilePhoto(file);
+            } else {
+                console.log("No se seleccionó ningún archivo.");
+                console.log("Valor de la foto de perfil: ",profilePhoto);
+            }
         } catch (e) {
             console.error(e);
         }
-
-
     };
+        
 
     // Llama al hook para cambiar la foto de perfil
     const changeProfilePhoto = async () => {
@@ -97,13 +101,13 @@ const Profile = () => {
             <Card className="w-full md:w-1/2 lg:w-1/3 xl:w-1/3">
                 <CardHeader className="flex gap-3">
                     {/* Boton para el modal de la imagen */}
-                    <Button onClick={() => setShowImageModal(true)} className="p-0 bg-transparent border-none w-16 h-16" >
+                    <Button onPress={() => setShowImageModal(true)} className="p-0 bg-transparent border-none w-32 h-32" >
                         <Image
                             alt="nextui logo"
                             radius="sm"
                             //! Cambiar ruta userInfo.profilePhoto, solo es para comprobar
-                            src={userInfo ? userInfo.profilePhoto : ""}
-                            className='w-16 h-16'
+                            src={userInfo ? userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                            className='w-32 h-32'
                         />
                     </Button>
                     <div className="flex flex-col">
@@ -118,12 +122,13 @@ const Profile = () => {
                 </CardHeader>
                 <Divider />
                 <CardBody>
+                    <h1 className='text-xl'>Estado</h1>
                     <p>{userInfo ? userInfo.state : ""} </p>
                 </CardBody>
                 <Divider />
                 <CardFooter>
                     {/* Modal del cambio de datos (nombre y contraseña) */}
-                    <Button onPress={onOpen} color="primary">Cambiar datos</Button>
+                    <Button onPress={onOpen} color="primary">Cambiar nombre y/o contraseña</Button>
                     <Modal
                         backdrop="blur"
                         isOpen={isOpen}
@@ -196,9 +201,10 @@ const Profile = () => {
                             placeholder='Nueva foto de perfil'
                             type="file"
                             accept="image/*"
+                            value={null}
                             onChange={handleImageChange}
                         />
-                        <Button variant="ghost" onClick={() => { changeProfilePhoto(); setShowImageModal(false); }}>Cambiar</Button>
+                        <Button variant="ghost" onPress={() => { changeProfilePhoto(); setShowImageModal(false); }}>Cambiar</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
