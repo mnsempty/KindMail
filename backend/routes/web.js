@@ -24,6 +24,11 @@ router.put("/user/set-busy", userController.setBusy)
 router.put("/user/set-online", userController.setOnline)
 // Cantidad de usuarios (landing page)
 router.get("/user/quantity", userController.quantity);
+// Ruta para cambiar datos del perfil
+router.post("/user/profile",userController.profile);
+// Ruta para cambiar la imagen del perfil
+router.post("/user/profile/image",userController.profilePhoto);
+
 
 // ------ Rutas de chats ------
 
