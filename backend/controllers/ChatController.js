@@ -102,7 +102,7 @@ async function findChatByUserIDs(user1_ID, user2_ID) {
   return null; // No se encontró ninguna sala de chat
 }
 
-// Función para agregar un chat a una lista
+// añadir un chat a una lista
 async function addChatToList(chat) {
   const chatJSON = JSON.stringify(chat);
 
@@ -164,6 +164,20 @@ async function getMessagesFromChat(chat_ID) {
     }
   }
   return messagesFromChat.length !== 0 ? messagesFromChat : null;
+}
+
+async function getUsers(User_ID) {
+  // coger todos los usuarios de la app menos el dado +
+  // comparar con chats para saber si tiene un chat abierto con el user
+  try {
+    let data = await client.hGetAll("users");
+    console.log("Sucess:" + data);
+
+  } catch (e) {
+    console.log("Error alobtener los datos de los usuarios" + e);
+  }
+
+
 }
 
 module.exports = {
