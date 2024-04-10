@@ -5,6 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import GlobalStateContext from './GlobalStateContext';
 import useGetChatDetails from '../../hooks/FetchChat';
 import { switchChat } from "../../socket";
+import ResearchCustom from './ResearchCustom';
 
 export default function CustomAside() {
   const { ChatIds, setSelectedChatId } = useContext(GlobalStateContext);
@@ -59,6 +60,7 @@ export default function CustomAside() {
     }
   return (
     <aside className="bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
+      <ResearchCustom/>
       {loading ? (
         <div className="flex gap-3 p-1 items-center min-w-full">
           <div>
