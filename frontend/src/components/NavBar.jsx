@@ -14,10 +14,10 @@ export default function App() {
 
             <NavbarContent justify="end">
                 <NavbarItem>
-                    <a href="/login" className="text-blanco px-3 py-2 text-sm font-medium">Login</a>
+                    <a href="/login" className="text-blanco px-3 py-2">Login</a>
                 </NavbarItem>
                 <NavbarItem>
-                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 px-3 border rounded-md py-2 text-sm font-medium">Sing Up</a>
+                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 px-3 border rounded-md py-2">Sing Up</a>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
