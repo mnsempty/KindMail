@@ -1,6 +1,6 @@
 const client = require("../Database/RedisClient");
 const { randomUUID } = require('crypto');
-
+// #region create
 async function create(req, res) {
   try {
     const { user1_ID, user2_ID } = req.body;
@@ -32,7 +32,7 @@ async function create(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region getChatsFromUser
 async function getChatsFromUser(req, res) {
   try {
     const { user_ID } = req.body;
@@ -45,7 +45,7 @@ async function getChatsFromUser(req, res) {
     console.log("Error al traer los chats del usuario:", err);
   }
 }
-
+// #region openChat
 async function openChat(req, res) {
   try {
     const { chat_ID } = req.body;
@@ -58,7 +58,7 @@ async function openChat(req, res) {
     console.log("Error al traer el chat del usuario:", err);
   }
 }
-
+// #region sendMessage
 async function sendMessage(req, res) {
   try {
     const { sender, content, chat_ID, message_ID } = req.body;
@@ -83,7 +83,7 @@ async function sendMessage(req, res) {
     console.log("Error al enviar mensaje:", err);
   }
 }
-
+// #region findChatByUserIDs
 async function findChatByUserIDs(user1_ID, user2_ID) {
   // Obtener todas las salas de chat
   const allChats = await client.lRange("chats_list", 0, -1);
@@ -101,12 +101,10 @@ async function findChatByUserIDs(user1_ID, user2_ID) {
 
   return null; // No se encontró ninguna sala de chat
 }
-
-// añadir un chat a una lista
+// #region addChatToList
 async function addChatToList(chat) {
   const chatJSON = JSON.stringify(chat);
 
-  // Agregar el chat al final de la lista
   await client.rPush("chats_list", chatJSON, (err, reply) => {
     if (err) {
       reject(err);
@@ -115,7 +113,7 @@ async function addChatToList(chat) {
     }
   });
 }
-
+// #region getUserChats
 async function getUserChats(user_ID) {
   // Obtener todas las salas de chat
   const allChats = await client.lRange("chats_list", 0, -1);
@@ -151,7 +149,7 @@ async function getUserChats(user_ID) {
 
   return allUserChats.length !== 0 ? allUserChats : null;
 }
-
+// #region getMesgsFromChat
 //Funcion para recoger los mensajes de un chat
 async function getMessagesFromChat(chat_ID) {
   const allMessages = await client.lRange("messages_list", 0, -1);
@@ -166,6 +164,7 @@ async function getMessagesFromChat(chat_ID) {
   return messagesFromChat.length !== 0 ? messagesFromChat : null;
 }
 
+// #region getChats,quantity
 //Función calcular los chats
 async function getChats() {
   const allChats = await client.lRange("chats_list", 0, -1);

@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const client = require("../Database/RedisClient");
 const upload = require("../upload");
 const multer = require("multer");
-
+// #region createUser
 async function createUser(req, res) {
   try {
     const { name, surname, email, birthday, role, password, state } = req.body; // Verificar si el usuario existe antes de crearlo
@@ -65,7 +65,7 @@ async function createUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region deleteUser
 async function deleteUser(req, res) {
   try {
     const { email } = req.body;
@@ -81,7 +81,7 @@ async function deleteUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region login
 async function login(req, res) {
   try {
     let { email, password } = req.body; // Verificar si el usuario existe en la base de datos
@@ -106,7 +106,7 @@ async function login(req, res) {
       // surname: existingUser.surname,
       email: existingUser.email,
       state: existingUser.state,
-      profilePhoto: existingUser.profilePhoto
+      profilePhoto: existingUser.profilePhoto,
     };
     // Si las credenciales son correctas, devolver los datos del usuario.
     // Se envia en forma de token que tendra que ser descifrado con
@@ -140,7 +140,7 @@ async function findUser(email) {
   const user = JSON.parse(userJson);
   return user;
 }
-
+// #region saveUser
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
   // Almacenar el nuevo usuario en Redis Cloud
@@ -161,7 +161,7 @@ async function saveUser(userData) {
 
   return true;
 }
-
+// #region delUser
 async function delUser(email) {
   try {
     // Eliminar el usuario de la base de datos
@@ -170,7 +170,7 @@ async function delUser(email) {
     console.log("Error al eliminar el usuario:", err);
   }
 }
-
+// #region setBusy
 async function setBusy(req, res) {
   try {
     const { busy } = req.body;
@@ -199,7 +199,7 @@ async function setBusy(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region setOnline
 async function setOnline(req, res) {
   try {
     const { online } = req.body;
@@ -228,13 +228,13 @@ async function setOnline(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region getUsers
 async function getUsers() {
   const userHashKey = "users";
   const userQuantity = await client.hLen(userHashKey);
   return userQuantity;
 }
-
+// #region quantity
 async function quantity(req, res) {
   try {
     const userQuantity = await getUsers();
@@ -245,6 +245,7 @@ async function quantity(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+// #region profile
 async function profile(req, res) {
   try {
     const { userName, password, newPassword } = req.body;
@@ -286,7 +287,7 @@ async function profile(req, res) {
       // surname: existingUser.surname,
       email: user.email,
       state: user.state,
-      profilePhoto: user.profilePhoto
+      profilePhoto: user.profilePhoto,
     };
 
     // Convertir el objeto del usuario a una cadena JSON para guardarlo en Redis
@@ -302,19 +303,16 @@ async function profile(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
+// #region profilePhoto
 async function profilePhoto(req, res) {
   try {
     // Subir la imagen de perfil si se proporciona un archivo, misma clave que en cliente
     upload.single("profilePhoto")(req, res, async function (err) {
-      
       if (err instanceof multer.MulterError) {
-        
         return res
           .status(500)
           .json({ message: "Error interno del servidor al subir la imagen" });
       } else if (err) {
-        
         console.error("Error al subir la imagen:", err);
         return res
           .status(500)
@@ -335,7 +333,8 @@ async function profilePhoto(req, res) {
       const email = payload.userData.email;
 
       // Insertar la ruta de la foto en el servidor al usuario
-      const imagePath ='http://localhost:5000/'+ req.file.path.replace(/\\/g, '/');
+      const imagePath =
+        "http://localhost:5000/" + req.file.path.replace(/\\/g, "/");
       const userJSON = await client.hGet("users", email);
       if (!userJSON) {
         return res.status(404).json({ message: "Usuario no encontrado" });
@@ -349,13 +348,13 @@ async function profilePhoto(req, res) {
         // surname: existingUser.surname,
         email: user.email,
         state: user.state,
-        profilePhoto: user.profilePhoto
+        profilePhoto: user.profilePhoto,
       };
 
       await client.hSet("users", email, JSON.stringify(user));
 
       // Devolvemos el token con los datos del user
-      const token = jwt.sign({userData} , "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+      const token = jwt.sign({ userData }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
       res.status(200).json({ token });
     });
   } catch (error) {
@@ -364,6 +363,50 @@ async function profilePhoto(req, res) {
   }
 }
 
+// #region searchUsers
+async function searchUsers(req, res) {
+  try {
+    let searchTerm = req.query.search;
+
+    // cogemos el hash users
+    let allUsers = await client.hGetAll("users");
+
+    // filtramos los usuarios basándose en el término de búsqueda y hacemos un array que envolverá a los objetos
+    let filteredUsers = Object.keys(allUsers)
+      .filter((email) => {
+        // Convierte el valor de cadena JSON a un objeto JavaScript
+        const user = JSON.parse(allUsers[email]);
+        // quitamos a partir del @ para evitar falsos research
+        let filteredEmail = user.email.split('@')[0];
+        // check name o email
+        return (
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          filteredEmail.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      })
+      .map((email) => {
+        // pasamos json a un objeto JavaScript
+        let user = JSON.parse(allUsers[email]);
+        return { ...user };
+      });
+
+    res.status(200).json(filteredUsers);
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 module.exports = {
-  createUser, deleteUser, login, logout, setBusy, setOnline,profile,quantity,profilePhoto
+  createUser,
+  deleteUser,
+  login,
+  logout,
+  setBusy,
+  setOnline,
+  profile,
+  quantity,
+  profilePhoto,
+  getUsers,
+  searchUsers,
 };

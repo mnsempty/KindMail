@@ -60,7 +60,7 @@ export default function CustomAside() {
   }
   return (
     <aside className="bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
-      <ResearchCustom/>
+      <ResearchCustom userEmail={getUserEmailFromLocalStorage()}/>
       {loading ? (
         <div className="flex gap-3 p-1 items-center min-w-full">
           <div>
@@ -97,11 +97,12 @@ export default function CustomAside() {
                 className={chat.chat_ID === ChatIds.current ? 'bg-azulclaro text-negro' : 'hover:border-2 hover:border-azulclaro hover:text-azulclaro-500'}
               >
                 <div className="flex gap-2 items-center ">
+                  {/* modificar photo por profilePhoto */}
                   {chat.photo ? (
-                    <Avatar alt={chat.name} className="flex-shrink-0" size="sm" src={chat.photo} />
+                    <Avatar alt={chat.name} className="flex-shrink-0" size="md" src={chat.photo} />
                   ) : (
                     // .charAt(0).toUpperCase() + chat.name.slice(1)
-                    <Avatar name={chat.name} />
+                    <Avatar name={chat.name} className="flex-shrink-0" size="md"/>
                   )}
                   <div className="flex flex-col text-left">
                     <span className="font-normal">{chat.name}</span>
