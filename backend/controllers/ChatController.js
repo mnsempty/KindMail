@@ -183,10 +183,39 @@ async function quantity(req, res) {
   }
 }
 
+async function sendEmail(req,res){
+
+try{
+
+  const { sender, content, chat_ID, message_ID } = req.body;
+
+  console.log(req.body);
+  const messageData = { sender,header, content, chat_ID, message_ID };
+
+  const messageJSON = JSON.stringify(messageData);
+
+  // Agregar el chat al final de la lista
+  await client.rPush("emails_list", messageJSON, (err, reply) => {
+    if (err) {
+      reject(err);
+    } else {
+      resolve(reply);
+    }
+  });
+
+  res.status(201).json({ message: "Email enviado correctamente" });
+} catch (err) {
+  res.status(500).json({ message: "Error interno del servidor" });
+  console.log("Error al enviar email:", err);
+
+}
+}
+
 module.exports = {
   create,
   getChatsFromUser,
   openChat,
   sendMessage,
-  quantity
+  quantity,
+  sendEmail
 };

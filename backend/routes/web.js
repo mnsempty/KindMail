@@ -42,5 +42,7 @@ router.post("/chats/openChat", chatController.openChat);
 router.post("/chats/sendMessage", chatController.sendMessage);
 // Cantidad de chats (landing page)
 router.get("/chats/quantity", chatController.quantity);
+// Ruta para enviar el email
+router.get("/chats/email",chatController.sendEmail);
 
 module.exports = router;
