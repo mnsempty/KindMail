@@ -1,5 +1,5 @@
-import React from "react";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
+import { useEffect, useState } from "react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Switch, cn } from "@nextui-org/react";
 import { ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
@@ -7,9 +7,12 @@ import useBusy from '../hooks/useBusy.jsx';
 import useOnline from '../hooks/useOnline.jsx';
 import { Badge } from "@nextui-org/react";
 
+import { SunIcon } from "../assets/icons/sunIcon";
+import { MoonIcon } from "../assets/icons/moonIcon";
+
 export default function App() {
 
-    const { loading, logout } = useLogOut();
+    const { logout } = useLogOut();
     const { busy } = useBusy();
     const { online } = useOnline();
 
@@ -30,6 +33,20 @@ export default function App() {
         }
     };
 
+    let [isDarkMode, setIsDarkMode] = useState(false);
+
+    // toggle darkmode
+    let toggleDarkMode = () => {
+        setIsDarkMode(!isDarkMode);
+    };
+
+    useEffect(() => {
+        let rootDiv = document.querySelector('#root');
+        if (rootDiv) {
+            rootDiv.className = isDarkMode ? 'dark' : 'light';
+        }
+    }, [isDarkMode]);
+
     return (
         <Navbar className="bg-azul-600">
             <NavbarBrand>
@@ -39,6 +56,23 @@ export default function App() {
             </NavbarBrand>
 
             <NavbarContent as="div" justify="end">
+                <Switch
+                    defaultSelected
+                    size="lg"
+                    classNames={{
+                        wrapper: "bg-red-400 group-data-[selected=true]:bg-green-400",
+                    }}
+                    onChange={toggleDarkMode}
+                    thumbIcon={({ isSelected, className }) =>
+                        isSelected ? (
+                            <SunIcon className={className} />
+                        ) : (
+                            <MoonIcon className={className} />
+                        )
+                    }
+                >
+                </Switch>
+
                 <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
                     {/* TO DO: poner cantidad de mensajes total */}
                     <Badge content="5" className="bg-rosa-400" placement="bottom-right">
