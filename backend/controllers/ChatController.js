@@ -23,7 +23,7 @@ async function create(req, res) {
     //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
     // datos el id generado pero al ser una app tan pequeña no es necesario
     let chat_ID = randomUUID();
-    const chatData = { user1_ID, user2_ID, chat_ID};
+    const chatData = { user1_ID, user2_ID, chat_ID };
     await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
 
     res.status(201).json({ message: "Chat creado correctamente" });
@@ -101,6 +101,25 @@ async function findChatByUserIDs(user1_ID, user2_ID) {
 
   return null; // No se encontró ninguna sala de chat
 }
+
+// denunciar usuarios
+async function reportUsers(req, res) {
+  try {
+
+    const { email1, email2 } = req.body;
+
+    // Guardar los IDs de usuario en la base de datos "report" en Redis
+    const reportData = JSON.stringify({ email1, email2 });
+    await client.rPush("report", reportData); // Guardar los datos en la lista "report" en Redis
+
+    res.status(201).json({ message: "Denuncia enviada correctamente" });
+  } catch (err) {
+    console.error("Error al enviar la denuncia:", err);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
+
 // #region addChatToList
 async function addChatToList(chat) {
   const chatJSON = JSON.stringify(chat);
@@ -187,5 +206,6 @@ module.exports = {
   getChatsFromUser,
   openChat,
   sendMessage,
-  quantity
+  quantity,
+  reportUsers
 };

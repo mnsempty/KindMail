@@ -2,6 +2,8 @@ import { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { motion } from 'framer-motion';
 import { iniciateSocket, startChat, sendMessage } from "../../socket";
 import GlobalStateContext from "./GlobalStateContext";
+import toast from "react-hot-toast";
+import useReport from "../../hooks/useReport";
 
 import { jwtDecode } from 'jwt-decode';
 
@@ -15,6 +17,7 @@ export default function ChatCustom() {
   // Obtener el chatId del contexto global en lugar de localStorage
   const { ChatIds } = useContext(GlobalStateContext);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const { report } = useReport();
 
   useEffect(() => {
     setMessages([]);
@@ -84,6 +87,14 @@ export default function ChatCustom() {
     }
   };
 
+  const handleReport = async () => {
+    try {
+      await report();
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const isSameSender = (currentMessage, previousMessage) => {
     if (!previousMessage) return false; // si no hay mensaje anterior es de "otro"
     return previousMessage.sender === currentMessage.sender;
@@ -143,6 +154,13 @@ export default function ChatCustom() {
               onKeyDown={handleKeyDown}
               disabled={!ChatIds.current}
             />
+            <button
+              onClick={handleReport}
+              className="ms-2.5 p-2 rounded bg-red-600 text-white"
+              disabled={!ChatIds.current}
+            >
+              Denunciar
+            </button>
             <button
               onClick={handleSendMessage}
               className="ms-2.5 p-2 rounded bg-blue-500 text-white "

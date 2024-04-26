@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState } from 'react';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 import { ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
 import useBusy from '../hooks/useBusy.jsx';
 import useOnline from '../hooks/useOnline.jsx';
-import { Badge } from "@nextui-org/react";
+// import { Badge } from "@nextui-org/react";
 
 export default function App() {
 
     const { loading, logout } = useLogOut();
     const { busy } = useBusy();
     const { online } = useOnline();
+    const [userInfo, setUserInfo] = useState(null); // Estado para almacenar la información del usuario actual
 
     const handleBusy = async () => {
         try {
@@ -40,12 +41,9 @@ export default function App() {
 
             <NavbarContent as="div" justify="end">
                 <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
-                    {/* TO DO: poner cantidad de mensajes total */}
-                    <Badge content="5" className="bg-rosa-400" placement="bottom-right">
-                        <a href="/home">
-                            <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
-                        </a>
-                    </Badge>
+                    <a href="/home">
+                        <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
+                    </a>
                 </NavbarItem>
                 <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
                     <a href="/profile">
@@ -53,19 +51,18 @@ export default function App() {
                     </a>
                 </NavbarItem>
                 <Dropdown placement="bottom-end" >
-                    {/* TO DO: condición de que cuando este online salga verde y cuando este ocupado salga amarillo */}
-                    <Badge content="" color="success" shape="circle" placement="bottom-right">
-                        <DropdownTrigger>
-                            <Avatar
-                                isBordered
-                                as="button"
-                                className="transition-transform"
-                                name="Jason Hughes"
-                                size="sm"
-                                src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-                            />
-                        </DropdownTrigger>
-                    </Badge>
+                    {/* <Badge content="" color="success" shape="circle" placement="bottom-right"> */}
+                    <DropdownTrigger>
+                        <Avatar
+                            isBordered
+                            as="button"
+                            className="transition-transform"
+                            name="Jason Hughes"
+                            size="sm"
+                            src={userInfo ? userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
+                        />
+                    </DropdownTrigger>
+                    {/* </Badge> */}
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
                         <DropdownItem key="online" color="success" onClick={handleOnline}>Online</DropdownItem>
                         <DropdownItem key="busy" color="warning" onClick={handleBusy}>Ocupado</DropdownItem>

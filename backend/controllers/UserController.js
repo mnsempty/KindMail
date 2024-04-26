@@ -104,6 +104,7 @@ async function login(req, res) {
       // id: existingUser.id,
       name: existingUser.name,
       // surname: existingUser.surname,
+      role: existingUser.role,
       email: existingUser.email,
       state: existingUser.state,
       profilePhoto: existingUser.profilePhoto,
@@ -164,12 +165,21 @@ async function saveUser(userData) {
 // #region delUser
 async function delUser(email) {
   try {
-    // Eliminar el usuario de la base de datos
+    // Eliminar el usuario de la base de datos 
     return await client.hDel("users", email);
   } catch (err) {
     console.log("Error al eliminar el usuario:", err);
   }
 }
+
+// Eliminar el usuario de la base de datos 
+let reportCounts = {};
+function handleReport(userEmail) {
+  if (reportCounts[userEmail] === 3) {
+    delUser(userEmail); // Llamar a la función para eliminar al usuario
+  }
+}
+
 // #region setBusy
 async function setBusy(req, res) {
   try {
@@ -397,6 +407,18 @@ async function searchUsers(req, res) {
   }
 }
 
+async function getUsers(req, res) {
+  try {
+    const allUsers = await client.hgetall("users");
+    // Si allUsers es null o undefined, devolver un arreglo vacío
+    const users = allUsers ? Object.values(allUsers) : [];
+    return users;
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    return [];
+  }
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -409,4 +431,5 @@ module.exports = {
   profilePhoto,
   getUsers,
   searchUsers,
+  getUsers
 };
