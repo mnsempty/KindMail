@@ -1,3 +1,4 @@
+const { error } = require("console");
 const client = require("../Database/RedisClient");
 const { randomUUID } = require('crypto');
 // #region create
@@ -32,6 +33,49 @@ async function create(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+// #region openchat/email
+// verificamos si los usuarios ya tienen un chat abierto, en caso de que no lo tengan
+// abrimos el email
+async function openChatOrEmail(req, res) {
+  try {
+    let { user1_ID, user2_ID } = req.body;
+
+    // Verificar si los usuarios ya están en una sala de chat juntos
+    let existingChatID = await findChatByUserIDs(user1_ID, user2_ID);
+    // si los users tienen ya abierto un chat devolvemos el id del chat para abrirlo
+    if (existingChatID) {
+      return res
+        .status(200)
+        .json({ chatID: existingChatID.chat_ID });
+    }
+
+    if (!user1_ID || !user2_ID) {
+      return res
+        .status(400)
+        .json({ message: "ID`s de dos usuarios obligatorios" });
+    }
+    /*
+    //verificamos que los usuarios se hayan enviado un email
+        let existingEmailID = await findEmailByUserIDs(user1_ID, user2_ID);
+    // si los users tienen ya abierto un chat devolvemos true para abrirlo
+    if (existingEmailID) {
+      return res
+        .status(200)
+        .json({ email: true });
+    }
+    */
+    /* // Crear la sala de email
+    let email_ID = randomUUID();
+    const emailData = { user1_ID, user2_ID, email_ID};
+    await addEmailToList(emailData); // Llamar a la función para agregar email a la BBDD
+    */
+    res.status(201).json({ message: "Email creado correctamente" });
+  } catch (error) {
+    console.error("Error al crear chat:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 // #region getChatsFromUser
 async function getChatsFromUser(req, res) {
   try {
@@ -184,6 +228,7 @@ async function quantity(req, res) {
 
 module.exports = {
   create,
+  openChatOrEmail,
   getChatsFromUser,
   openChat,
   sendMessage,
