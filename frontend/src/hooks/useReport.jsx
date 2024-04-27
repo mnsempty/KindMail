@@ -4,22 +4,21 @@ import GlobalStateContext from "../components/home/GlobalStateContext";
 import { jwtDecode } from "jwt-decode";
 
 const useReport = () => {
-
     const { ChatIds } = useContext(GlobalStateContext);
     const [loading, setLoading] = useState(false);
 
-    //sacar email del localstorage
+    // Obtener el email del usuario del local storage
     const getUserEmailFromLocalStorage = () => {
         const userInfo = localStorage.getItem('chat-user');
         if (!userInfo) return null;
 
-        const decodedUserInfo = jwtDecode(userInfo);
+        const decodedUserInfo = jwtDecode(userInfo); // Corregido aquí
         return decodedUserInfo.userData.email;
     };
 
+    // Función para reportar
     const report = async () => {
-        let email1 = getUserEmailFromLocalStorage();
-        let email2 = ChatIds.current;
+        const email1 = getUserEmailFromLocalStorage();
 
         try {
             setLoading(true);
@@ -28,16 +27,16 @@ const useReport = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ email1, email2 })
+                body: JSON.stringify({ email1, chatId: ChatIds.current }) 
             });
 
             const data = await res.json();
+        
             if (res.ok) {
                 toast.success("Usuario denunciado correctamente");
             } else {
                 throw new Error(data.message);
             }
-
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -45,7 +44,9 @@ const useReport = () => {
         }
     };
 
-    return { report };
+    return { report, loading };
 };
 
 export default useReport;
+
+

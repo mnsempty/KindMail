@@ -5,6 +5,7 @@ import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
 import useBusy from '../hooks/useBusy.jsx';
 import useOnline from '../hooks/useOnline.jsx';
+import toast from "react-hot-toast";
 // import { Badge } from "@nextui-org/react";
 
 import { SunIcon } from "../assets/icons/sunIcon";

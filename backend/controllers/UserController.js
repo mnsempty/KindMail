@@ -172,14 +172,6 @@ async function delUser(email) {
   }
 }
 
-// Eliminar el usuario de la base de datos 
-// let reportCounts = {};
-// function handleReport(userEmail) {
-//   if (reportCounts[userEmail] === 3) {
-//     delUser(userEmail); // Llamar a la función para eliminar al usuario
-//   }
-// }
-
 // #region setBusy
 async function setBusy(req, res) {
   try {

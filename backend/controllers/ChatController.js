@@ -146,15 +146,34 @@ async function findChatByUserIDs(user1_ID, user2_ID) {
   return null; // No se encontró ninguna sala de chat
 }
 
-// denunciar usuarios
+// denunciar al usuario
 async function reportUsers(req, res) {
   try {
+    const { email1, chatID } = req.body;
 
-    const { email1, email2 } = req.body;
+    // Obtener todos los chats desde Redis
+    const allChats = await client.lRange("chats_list", 0, -1);
+
+    // Buscar el chat correspondiente al chatID y email1
+    let email2 = null;
+    for (const chatJSON of allChats) {
+      const chat = JSON.parse(chatJSON);
+      if (chatID === chat.chatID && (chat.user1_ID === email1 || chat.user2_ID === email1)) {
+        email2 = (chat.user2_ID === email1) ? chat.user1_ID : chat.user2_ID; 
+        break;
+      }
+    }
+    //chat.user2_ID=emailmio
+    //email1=emailmio
+
+    // Verificar si se encontró el chat
+    if (!email2) {
+      return res.status(404).json({ message: "Chat no encontrado" });
+    }
 
     // Guardar los IDs de usuario en la base de datos "report" en Redis
     const reportData = JSON.stringify({ email1, email2 });
-    await client.rPush("report", reportData); // Guardar los datos en la lista "report" en Redis
+    await client.rPush("report", reportData);
 
     res.status(201).json({ message: "Denuncia enviada correctamente" });
   } catch (err) {
@@ -167,39 +186,13 @@ async function reportUsers(req, res) {
 async function getReports(req, res) {
   try {
     // Obtener todas las denuncias de la lista en Redis
-    const allReports = await client.lRange("reports", 0, -1);
-
-    // Convertir las denuncias en un array de objetos
-    const reportArray = allReports.map(report => JSON.parse(report));
-
-    // Objeto para almacenar el número de denuncias por usuario
-    const userReportCounts = {};
-
-    // Contar el número de denuncias por usuario
-    reportArray.forEach(report => {
-      const userEmail = report.userEmail;
-      if (userEmail in userReportCounts) {
-        userReportCounts[userEmail]++;
-      } else {
-        userReportCounts[userEmail] = 1;
-      }
-    });
-
-    // Obtener los datos de usuario y agregar el número de denuncias
-    const userDataWithReportCounts = Object.keys(userReportCounts).map(userEmail => {
-      return {
-        userEmail: userEmail,
-        reportCount: userReportCounts[userEmail]
-      };
-    });
-
-    res.status(200).json(userDataWithReportCounts);
+    const allReports = await client.lRange("report", 0, -1);
+    res.status(200).json({ allReports });
   } catch (error) {
     console.error("Error al obtener las denuncias:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
-
 
 // #region addChatToList
 async function addChatToList(chat) {
