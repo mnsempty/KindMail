@@ -1,8 +1,8 @@
 import React from "react";
 import { Image } from "@nextui-org/react";
-import image1 from "../../assets/IMG_6039.jpg";
-import image2 from "../../assets/IMG_6052.jpg";
-import image3 from "../../assets/IMG_6055.jpg";
+import image1 from "../../assets/6326055.png";
+// import image2 from "";
+// import image3 from "";
 // import { FaGithub, FaLinkedin, FaInstagram } from 'react-icons/fa';
 // import {
 //     Card,
@@ -17,8 +17,8 @@ const Us = () => {
     return (
         <div className="flex justify-evenly">
             <Image isZoomed src={image1} alt="Álvaro" className="h-96" />
-            <Image isZoomed src={image2} alt="Marta" className="h-96" />
-            <Image isZoomed src={image3} alt="Manuel" className="h-96" />
+            <Image isZoomed src={image1} alt="Marta" className="h-96" />
+            <Image isZoomed src={image1} alt="Manuel" className="h-96" />
             {/* <Card className="w-96">
                 <CardHeader floated={false} className="h-96">
                     <Image isZoomed src={image1} alt="Álvaro" />

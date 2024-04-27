@@ -14,6 +14,8 @@ router.use(express.json());
 router.post("/user", userController.createUser);
 // Ruta para eliminar un usuario
 router.delete("/user", userController.deleteUser);
+// Ruta recoger todos los datos de todos los usuarios para busqueda
+router.get("/users", userController.searchUsers);
 // Ruta login
 router.post("/user/login", userController.login);
 // Ruta logout
