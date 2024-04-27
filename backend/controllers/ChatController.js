@@ -163,6 +163,43 @@ async function reportUsers(req, res) {
   }
 }
 
+// recoger las denuncias de los usuarios
+async function getReports(req, res) {
+  try {
+    // Obtener todas las denuncias de la lista en Redis
+    const allReports = await client.lRange("reports", 0, -1);
+
+    // Convertir las denuncias en un array de objetos
+    const reportArray = allReports.map(report => JSON.parse(report));
+
+    // Objeto para almacenar el número de denuncias por usuario
+    const userReportCounts = {};
+
+    // Contar el número de denuncias por usuario
+    reportArray.forEach(report => {
+      const userEmail = report.userEmail;
+      if (userEmail in userReportCounts) {
+        userReportCounts[userEmail]++;
+      } else {
+        userReportCounts[userEmail] = 1;
+      }
+    });
+
+    // Obtener los datos de usuario y agregar el número de denuncias
+    const userDataWithReportCounts = Object.keys(userReportCounts).map(userEmail => {
+      return {
+        userEmail: userEmail,
+        reportCount: userReportCounts[userEmail]
+      };
+    });
+
+    res.status(200).json(userDataWithReportCounts);
+  } catch (error) {
+    console.error("Error al obtener las denuncias:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 
 // #region addChatToList
 async function addChatToList(chat) {
@@ -252,5 +289,6 @@ module.exports = {
   openChat,
   sendMessage,
   quantity,
+  getReports,
   reportUsers
 };

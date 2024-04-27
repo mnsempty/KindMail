@@ -173,12 +173,12 @@ async function delUser(email) {
 }
 
 // Eliminar el usuario de la base de datos 
-let reportCounts = {};
-function handleReport(userEmail) {
-  if (reportCounts[userEmail] === 3) {
-    delUser(userEmail); // Llamar a la función para eliminar al usuario
-  }
-}
+// let reportCounts = {};
+// function handleReport(userEmail) {
+//   if (reportCounts[userEmail] === 3) {
+//     delUser(userEmail); // Llamar a la función para eliminar al usuario
+//   }
+// }
 
 // #region setBusy
 async function setBusy(req, res) {
@@ -409,13 +409,16 @@ async function searchUsers(req, res) {
 
 async function getAllUsers(req, res) {
   try {
-    const allUsers = await client.hgetall("users");
-    // Si allUsers es null o undefined, devolver un arreglo vacío
-    const users = allUsers ? Object.values(allUsers) : [];
-    return users;
+    // Consulta todos los usuarios en Redis
+    const allUsers = await client.hGetAll("users");
+
+    // Convierte los usuarios en un array
+    const usersArray = Object.keys(allUsers).map(email => JSON.parse(allUsers[email]));
+
+    res.status(200).json(usersArray);
   } catch (error) {
     console.error("Error al obtener los usuarios:", error);
-    return [];
+    res.status(500).json({ message: "Error interno del servidor" });
   }
 }
 

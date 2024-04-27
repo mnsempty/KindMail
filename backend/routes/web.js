@@ -51,5 +51,7 @@ router.post("/chats/sendMessage", chatController.sendMessage);
 router.get("/chats/quantity", chatController.quantity);
 // Ruta denunciar
 router.post("/user/report", chatController.reportUsers);
+// Ruta traer cantidad denuncias por usuario
+router.get("/user/get-reports", chatController.getReports);
 
 module.exports = router;
