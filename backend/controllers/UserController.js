@@ -407,7 +407,7 @@ async function searchUsers(req, res) {
   }
 }
 
-async function getUsers(req, res) {
+async function getAllUsers(req, res) {
   try {
     const allUsers = await client.hgetall("users");
     // Si allUsers es null o undefined, devolver un arreglo vacío
@@ -430,6 +430,6 @@ module.exports = {
   quantity,
   profilePhoto,
   getUsers,
+  getAllUsers,
   searchUsers,
-  getUsers
 };

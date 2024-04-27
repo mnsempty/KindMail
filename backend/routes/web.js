@@ -17,7 +17,7 @@ router.delete("/user", userController.deleteUser);
 // Ruta recoger todos los datos de todos los usuarios para busqueda
 router.get("/users", userController.searchUsers);
 // Ruta recoger todos los datos de todos los usuarios
-router.get("/users", userController.getUsers);
+router.get("/user/get-users", userController.getAllUsers);
 // Ruta login
 router.post("/user/login", userController.login);
 // Ruta logout
