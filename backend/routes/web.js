@@ -16,6 +16,8 @@ router.post("/user", userController.createUser);
 router.delete("/user", userController.deleteUser);
 // Ruta recoger todos los datos de todos los usuarios para busqueda
 router.get("/users", userController.searchUsers);
+// Ruta recoger todos los datos de todos los usuarios
+router.get("/users", userController.getUsers);
 // Ruta login
 router.post("/user/login", userController.login);
 // Ruta logout
@@ -27,9 +29,10 @@ router.put("/user/set-online", userController.setOnline)
 // Cantidad de usuarios (landing page)
 router.get("/user/quantity", userController.quantity);
 // Ruta para cambiar datos del perfil
-router.post("/user/profile",userController.profile);
+router.post("/user/profile", userController.profile);
 // Ruta para cambiar la imagen del perfil
-router.post("/user/profile/image",userController.profilePhoto);
+router.post("/user/profile/image", userController.profilePhoto);
+
 
 
 // ------ Rutas de chats ------
@@ -46,5 +49,7 @@ router.post("/chats/openChatOrEmail",chatController.openChatOrEmail)
 router.post("/chats/sendMessage", chatController.sendMessage);
 // Cantidad de chats (landing page)
 router.get("/chats/quantity", chatController.quantity);
+// Ruta denunciar
+router.post("/user/report", chatController.reportUsers);
 
 module.exports = router;
