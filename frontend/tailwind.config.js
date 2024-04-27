@@ -105,7 +105,7 @@ module.exports = {
             DEFAULT: "#d8efff",
           },
           negro: "#FFEC9E",// el negro ahora es blanco
-          blanco: "#000119",// el blanco ahora es negro
+          blanco: "#182a39",// el blanco ahora es negro
         },
       },
     },

@@ -1,14 +1,25 @@
 import toast from "react-hot-toast";
 import { useState, useContext } from "react";
 import GlobalStateContext from "../components/home/GlobalStateContext";
+import { jwtDecode } from "jwt-decode";
 
 const useReport = () => {
 
     const { ChatIds } = useContext(GlobalStateContext);
     const [loading, setLoading] = useState(false);
+
+    //sacar email del localstorage
+    const getUserEmailFromLocalStorage = () => {
+        const userInfo = localStorage.getItem('chat-user');
+        if (!userInfo) return null;
+
+        const decodedUserInfo = jwtDecode(userInfo);
+        return decodedUserInfo.userData.email;
+    };
+
     const report = async () => {
-        let email1 = 1;
-        let email2 = 2;
+        let email1 = getUserEmailFromLocalStorage();
+        let email2 = ChatIds.current;
 
         try {
             setLoading(true);
