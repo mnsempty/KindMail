@@ -1,22 +1,34 @@
 import { Autocomplete, AutocompleteItem, Avatar } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
-
+import axios from 'axios';
 export default function ResearchCustom(userEmail) {
   let list = useAsyncList({
     async load({ signal, filterText }) {
-      // Asegúrate de que la URL coincida con la que usas en Postman
       let res = await fetch(`http://localhost:5000/api/users?search=${filterText}`, { signal });
       let data = await res.json();
       console.log("data" + data);
-      // dado un json lo pasamos a un array con objetos para utilizarlo en el return comodamente
-      const users = data.filter(user => user.email !== userEmail);
+      // filtramos los users para quitar el user "propio"
+      const users = data.filter(user => user.email !== userEmail.userEmail);
       console.log(users);
       return {
         items: users,
       };
     },
   });
-
+  function openChat(user2_ID,userEmail) {
+    console.log(user2_ID+"uemail"+userEmail);
+    axios.post('http://localhost:5000/api/chats/openChatOrEmail', {
+      user1_ID: userEmail, // user "propio"
+      user2_ID: user2_ID // user "destino"
+   })
+   .then(response => {
+      console.log(response.data);
+   })
+   .catch(error => {
+      console.error('Error al abrir el chat o enviar el correo electrónico:', error);
+   });
+  }
+  console.log("UserEmail"+JSON.stringify(userEmail))
   return (
     <Autocomplete
       className="max-w-xs"
@@ -30,7 +42,11 @@ export default function ResearchCustom(userEmail) {
     >
 
       {(item) => (
-        <AutocompleteItem key={item.email} textValue={item.name}>
+        <AutocompleteItem
+          key={item.email}
+          textValue={item.name}
+          onClick={() => openChat(item.email,userEmail.userEmail)}
+        >
           <div className="flex gap-2 items-center">
             {item.profilephoto ? (
               <Avatar alt={item.name} className="flex-shrink-0" size="sm" src={item.profilePhoto} />

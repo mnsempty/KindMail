@@ -43,6 +43,8 @@ router.post("/chats/create", chatController.create);
 router.post("/chats", chatController.getChatsFromUser);
 // Ruta para abrir una sala de chat
 router.post("/chats/openChat", chatController.openChat);
+//ruta para comprobar un chat/crear un email(Research users)
+router.post("/chats/openChatOrEmail",chatController.openChatOrEmail)
 // Ruta para enviar mensajes
 router.post("/chats/sendMessage", chatController.sendMessage);
 // Cantidad de chats (landing page)

@@ -96,7 +96,7 @@ export default function CustomAside() {
                 // hover:border hover:border-azulclaro-100
                 className={chat.chat_ID === ChatIds.current ? 'bg-azulclaro text-negro' : 'hover:border-2 hover:border-azulclaro hover:text-azulclaro-500'}
               >
-                <div className="flex gap-2 items-center ">
+                <div className="flex gap-2 items-center">
                   {/* modificar photo por profilePhoto */}
                   {chat.photo ? (
                     <Avatar alt={chat.name} className="flex-shrink-0" size="md" src={chat.photo} />

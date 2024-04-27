@@ -1,4 +1,3 @@
-import React from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, } from "@nextui-org/react";
 import Logo from "../assets/logoblanco.png";
 
@@ -13,6 +12,7 @@ export default function App() {
             </NavbarBrand>
 
             <NavbarContent justify="end">
+
                 <NavbarItem>
                     <a href="/login" className="text-blanco px-3 py-2">Login</a>
                 </NavbarItem>
