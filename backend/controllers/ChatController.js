@@ -182,14 +182,15 @@ async function quantity(req, res) {
   }
 }
 
+//#region SendEmail
 async function sendEmail(req,res){
 
 try{
 
-  const { sender, content, chat_ID, message_ID } = req.body;
+  const {header, content, sender, receiver } = req.body;
 
   console.log(req.body);
-  const messageData = { sender,header, content, chat_ID, message_ID };
+  const messageData = { sender,header, content, receiver };
 
   const messageJSON = JSON.stringify(messageData);
 
@@ -201,6 +202,15 @@ try{
       resolve(reply);
     }
   });
+
+  // Crear la sala de chat
+    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
+    // datos el id generado pero al ser una app tan pequeña no es necesario
+    let chat_ID = randomUUID();
+    const chatData = { sender, receiver, chat_ID};
+    await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
+
+
 
   res.status(201).json({ message: "Email enviado correctamente" });
 } catch (err) {

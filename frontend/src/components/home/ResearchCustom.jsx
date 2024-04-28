@@ -1,7 +1,13 @@
 import { Autocomplete, AutocompleteItem, Avatar } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function ResearchCustom(userEmail) {
+
+  const navigate = useNavigate();
+
+
   let list = useAsyncList({
     async load({ signal, filterText }) {
       // Asegúrate de que la URL coincida con la que usas en Postman
@@ -17,6 +23,25 @@ export default function ResearchCustom(userEmail) {
     },
   });
 
+  function firstMessage(user) {
+    console.log("Usuario seleccionado: ", user);
+
+    let userString = JSON.stringify(user);
+
+    
+
+    if(existingChat){
+
+    }else{
+
+      localStorage.setItem("selectedUser", userString);
+    console.log(localStorage.getItem('selectedUser'));
+
+      navigate('/first-message');
+    }
+
+  }
+
   return (
     <Autocomplete
       className="max-w-xs"
@@ -31,7 +56,9 @@ export default function ResearchCustom(userEmail) {
 
       {(item) => (
         <AutocompleteItem key={item.email} textValue={item.name}>
-          <div className="flex gap-2 items-center">
+
+          <div className="flex gap-2 items-center" onClick={() => firstMessage(item)}>
+           
             {item.profilephoto ? (
               <Avatar alt={item.name} className="flex-shrink-0" size="sm" src={item.profilePhoto} />
             ) : (
@@ -40,6 +67,7 @@ export default function ResearchCustom(userEmail) {
               <span className="text-small">{item.name}</span>
               <span className="truncate text-tiny text-default-400">{item.email}</span>
             </div>
+ 
           </div>
         </AutocompleteItem>
       )}
