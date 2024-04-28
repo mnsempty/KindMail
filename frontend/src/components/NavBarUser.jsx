@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar, Switch } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 import { ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
@@ -57,22 +57,12 @@ export default function App() {
             </NavbarBrand>
 
             <NavbarContent as="div" justify="end">
-                <Switch
-                    defaultSelected
-                    size="lg"
-                    classNames={{
-                        wrapper: "bg-red-400 group-data-[selected=true]:bg-green-400",
-                    }}
-                    onChange={toggleDarkMode}
-                    thumbIcon={({ isSelected, className }) =>
-                        isSelected ? (
-                            <SunIcon className={className} />
-                        ) : (
-                            <MoonIcon className={className} />
-                        )
-                    }
+                <button
+                    onClick={toggleDarkMode}
+                    className="flex items-center justify-center p-2 rounded-lg transition duration-200 "
                 >
-                </Switch>
+                    {isDarkMode ? (<SunIcon />) : (<MoonIcon />)}
+                </button>
 
                 <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
                     <a href="/home">

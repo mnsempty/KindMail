@@ -104,7 +104,7 @@ module.exports = {
             950: "#062e4b",
             DEFAULT: "#d8efff",
           },
-          negro: "#FFEC9E",// el negro ahora es blanco
+          negro: "#FBFBFB",// el negro ahora es blanco
           blanco: "#182a39",// el blanco ahora es negro
         },
       },
