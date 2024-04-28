@@ -13,7 +13,7 @@ router.use(express.json());
 // router.post("/user", upload.single('image'), userController.createUser);
 router.post("/user", userController.createUser);
 // Ruta para eliminar un usuario
-router.delete("/user", userController.deleteUser);
+router.delete("/user/:email", userController.deleteUser);
 // Ruta recoger todos los datos de todos los usuarios para busqueda
 router.get("/users", userController.searchUsers);
 // Ruta recoger todos los datos de todos los usuarios
@@ -32,8 +32,6 @@ router.get("/user/quantity", userController.quantity);
 router.post("/user/profile", userController.profile);
 // Ruta para cambiar la imagen del perfil
 router.post("/user/profile/image", userController.profilePhoto);
-
-
 
 // ------ Rutas de chats ------
 

@@ -3,36 +3,42 @@ import toast from "react-hot-toast";
 
 const useDelete = () => {
     const [loading, setLoading] = useState(false);
-    const [deletedUser, setDeletedUser] = useState(null); 
 
-    const deleteUser = async () => {
+    const delUser = async (email) => {
         try {
-            setLoading(true);
+            console.log("Eliminando usuario:", email);
 
-            // Llamada para eliminar el usuario
-            const res = await fetch("http://localhost:5000/api/user", {
-                method: "DELETE",
+            const res = await fetch(`http://localhost:5000/api/user/${email}`, {
+                method: 'DELETE',
                 headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({ email })
             });
-
-            // Verificar si la eliminación fue exitosa
+            
             if (!res.ok) {
-                throw new Error("Fallo al eliminar el usuario");
+                throw new Error(res);
             }
 
-            // Obtener el usuario eliminado
-            const deletedUserData = await res.json();
-            setDeletedUser(deletedUserData);
+            return { email };
         } catch (error) {
-            toast.error(error.message);
+            throw new Error("Error al eliminar usuario");
+        }
+    };
+
+    const deleteUser = async (email) => {
+        try {
+            setLoading(true);
+            const deletedUser = await delUser(email);
+            return deletedUser;
+        } catch (error) {
+            throw error;
         } finally {
             setLoading(false);
         }
     };
 
-    return { loading, deletedUser, deleteUser }; 
+    return { loading, deleteUser };
 };
 
 export default useDelete;

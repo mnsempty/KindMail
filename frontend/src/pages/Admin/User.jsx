@@ -1,18 +1,28 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip } from "@nextui-org/react";
-import { TrashIcon } from "@heroicons/react/24/outline"; // Importar el ícono de la papelera de Heroicons en 24 píxeles y variante "outline"
+import { TrashIcon } from "@heroicons/react/24/outline";
 import useData from "../../hooks/useData";
 import useDelete from "../../hooks/useDelete";
 import toast from "react-hot-toast";
+import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 const App = () => {
     const { data, reportData, fetchData } = useData();
-    const { deletedUser, deleteUser } = useDelete();
+    const { loading, deleteUser } = useDelete();
 
     useEffect(() => {
         fetchData();
-        deleteUser();
     }, []);
+
+    const handleDeleteUser = async (email) => {
+        try {
+            await deleteUser(email);
+            toast.success("Usuario eliminado correctamente");
+            fetchData();
+        } catch (error) {
+            toast.error(error.message);
+        }
+    };
 
     // Función para contar las denuncias de un usuario específico
     const getReportCount = (email) => {
@@ -40,15 +50,11 @@ const App = () => {
         return count; // Devolver el recuento de denuncias
     };
 
-    // Función para manejar la eliminación de un usuario
-    const handleDeleteUser = async (email) => {
-        try {
-            await deletedUser(email); 
-        } catch (error) {
-            toast.error(error.message);
-        }
+    // Función para determinar si se debe mostrar el ícono de advertencia
+    const showWarningIcon = (email) => {
+        const reportCount = getReportCount(email);
+        return reportCount > 3;
     };
-
 
     return (
         <Table aria-label="Tabla de usuarios con opciones de eliminar">
@@ -79,7 +85,15 @@ const App = () => {
                         </TableCell>
                         <TableCell>{getReportCount(user.email)}</TableCell>
                         <TableCell>
-                            <TrashIcon className="h-6 w-6" onClick={() => handleDeleteUser(user.email)} />
+                            <div className="flex items-center">
+                                <TrashIcon className="h-6 w-6 cursor-pointer" onClick={() => handleDeleteUser(user.email)} />
+                                {showWarningIcon(user.email) && (
+                                    <div className="flex items-center">
+                                        <ExclamationCircleIcon className="h-6 w-6 text-yellow-500 mr-2 cursor-pointer" />
+                                        <p className="text-yellow-500">{user.name} tiene más de 3 denuncias</p>
+                                    </div>
+                                )}
+                            </div>
                         </TableCell>
                     </TableRow>
                 ))}

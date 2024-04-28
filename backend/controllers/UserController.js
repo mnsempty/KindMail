@@ -65,6 +65,7 @@ async function createUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+
 // #region deleteUser
 async function deleteUser(req, res) {
   try {
@@ -81,6 +82,16 @@ async function deleteUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+// #region delUser
+async function delUser(email) {
+  try {
+    // Eliminar el usuario de la base de datos 
+    return await client.hDel("users", email);
+  } catch (err) {
+    console.log("Error al eliminar el usuario:", err);
+  }
+}
+
 // #region login
 async function login(req, res) {
   try {
@@ -135,12 +146,14 @@ async function logout(req, res) {
 
 async function findUser(email) {
   const userJson = await client.hGet("users", email); // Verificar si se encontró un usuario
+  console.log(userJson)
   if (!userJson) {
     return null; // Devuelve null si no se encuentra el usuario
   }
   const user = JSON.parse(userJson);
   return user;
 }
+
 // #region saveUser
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -161,15 +174,6 @@ async function saveUser(userData) {
   );
 
   return true;
-}
-// #region delUser
-async function delUser(email) {
-  try {
-    // Eliminar el usuario de la base de datos 
-    return await client.hDel("users", email);
-  } catch (err) {
-    console.log("Error al eliminar el usuario:", err);
-  }
 }
 
 // #region setBusy
