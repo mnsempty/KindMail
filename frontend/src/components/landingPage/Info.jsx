@@ -23,23 +23,25 @@ const Cart = () => {
                             <UserCircleIcon className="w-8 h-8" />
                         </div>
                         <h4 className="font-medium text-gray-700 text-lg mb-4">Usuarios</h4>
-                        <p className="font-normal text-gray-500 text-md">¡Contamos con {user} usuarios! ¿Por qué no te unes POR FAVOR?</p>
+                        <p className="font-normal text-gray-500 text-md">Únete a nuestra comunidad de {user} usuarios y descubre todo lo que tenemos para ofrecerte. ¡<a className="text-azul" href="/register">Regístrate</a> ahora y sé parte de nuestra familia! 🚀</p>
                     </div>
-                    <div className="bg-gray-50 px-8 py-10 border rounded-md">
-                        <div className={btn}>
-                            <ChatBubbleLeftRightIcon className="w-8 h-8" />
+                    <a href="/register">
+                        <div className="bg-gray-50 px-8 py-10 border rounded-md">
+                            <div className={btn}>
+                                <ChatBubbleLeftRightIcon className="w-8 h-8" />
+                            </div>
+                            <h4 className="font-medium text-gray-700 text-lg mb-4">Chats</h4>
+                            {/* Verifica si los chats están cargando */}
+                            {loading ? (
+                                <p>Cargando...</p>
+                            ) : (
+                                <p className="font-normal text-gray-500 text-md">¡Conéctate con {chats} conversaciones activas y sumérgete en nuevas experiencias! ¿Quieres unirte a la charla? ¡Haz clic aquí para participar!</p>
+                            )}
                         </div>
-                        <h4 className="font-medium text-gray-700 text-lg mb-4">Chats</h4>
-                        {/* Verifica si los chats están cargando */}
-                        {loading ? (
-                            <p>Cargando...</p>
-                        ) : (
-                            <p className="font-normal text-gray-500 text-md">¡Ya tenemos {chats} chats activos! Únete tu también y forma parte de nuestra creciente comunidad</p>
-                        )}
-                    </div>
+                    </a>
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 
