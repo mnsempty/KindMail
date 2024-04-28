@@ -1,21 +1,25 @@
-import { useContext, useEffect, useState } from 'react';
-import { Avatar, Listbox, ListboxItem, Skeleton } from '@nextui-org/react';
-import { jwtDecode } from 'jwt-decode';
+import { useContext, useEffect, useState } from "react";
+import { Avatar, Listbox, ListboxItem, Skeleton } from "@nextui-org/react";
+import { jwtDecode } from "jwt-decode";
 
-import GlobalStateContext from './GlobalStateContext';
-import useGetChatDetails from '../../hooks/FetchChat';
+import GlobalStateContext from "./GlobalStateContext";
+import VisibilityGlobalStateContext from "./VisibilityGlobalStateContext";
+import useGetChatDetails from "../../hooks/FetchChat";
 import { switchChat } from "../../socket";
-import ResearchCustom from './ResearchCustom';
+import ResearchCustom from "./ResearchCustom";
 
 export default function CustomAside() {
   const { ChatIds, setSelectedChatId } = useContext(GlobalStateContext);
+  const { isAsideVisible, toggleVisibility } = useContext(
+    VisibilityGlobalStateContext
+  );
   const { loading, chatDetails, getChatDetails } = useGetChatDetails(); // Utiliza el hook para obtener los datos de los chats
   const [filteredChats, setFilteredChats] = useState(null);
   const [UserInfo, setUserInfo] = useState(null); // state para almacenar el email del usuario actual
 
   //sacar email del localstorage
   const getUserEmailFromLocalStorage = () => {
-    const userInfo = localStorage.getItem('chat-user');
+    const userInfo = localStorage.getItem("chat-user");
     if (!userInfo) return null;
 
     const decodedUserInfo = jwtDecode(userInfo);
@@ -35,7 +39,7 @@ export default function CustomAside() {
 
   useEffect(() => {
     if (UserInfo && chatDetails) {
-      const filtered = chatDetails.map(chat => {
+      const filtered = chatDetails.map((chat) => {
         // Para cada chat, determina si el usuario actual es user1 o user2
         const isUser1 = chat.user1_ID === UserInfo;
         // Selecciona los datos del otro usuario
@@ -57,10 +61,21 @@ export default function CustomAside() {
       switchChat(ChatIds.current, id);
     }
     setSelectedChatId(id);
-  }
+    handleHideChat();
+  };
+  const handleHideChat = () => {
+    if (window.innerWidth <= 768) {
+      toggleVisibility();
+    }
+  };
+
   return (
-    <aside className="bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4">
-      <ResearchCustom userEmail={getUserEmailFromLocalStorage()}/>
+    <aside
+      className={` ${
+        isAsideVisible ? "" : "hidden"
+      } bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4`}
+    >
+      <ResearchCustom userEmail={getUserEmailFromLocalStorage()} />
       {loading ? (
         <div className="flex gap-3 p-1 items-center min-w-full">
           <div>
@@ -79,12 +94,10 @@ export default function CustomAside() {
             list: "max-h-[calc(90vh-5rem)] overflow-y-auto scroll-smooth",
           }}
           aria-label="Users to chat list"
-          variant='undefined'
+          variant="undefined"
         >
           {filteredChats === null ? (
-            <ListboxItem
-              textValue={"no chats"}
-            >
+            <ListboxItem textValue={"no chats"}>
               <div className="p-4 text-center">0 chats encontrados</div>
             </ListboxItem>
           ) : (
@@ -94,19 +107,40 @@ export default function CustomAside() {
                 onClick={() => handleSelectedChat(chat.chat_ID)}
                 textValue={`${chat.name}`}
                 // hover:border hover:border-azulclaro-100
-                className={chat.chat_ID === ChatIds.current ? 'bg-azulclaro text-negro' : 'hover:border-2 hover:border-azulclaro hover:text-azulclaro-500'}
+                className={
+                  chat.chat_ID === ChatIds.current
+                    ? "bg-azulclaro text-negro"
+                    : "hover:border-2 hover:border-azulclaro hover:text-azulclaro-500"
+                }
               >
                 <div className="flex gap-2 items-center">
                   {/* modificar photo por profilePhoto */}
                   {chat.photo ? (
-                    <Avatar alt={chat.name} className="flex-shrink-0" size="md" src={chat.photo} />
+                    <Avatar
+                      alt={chat.name}
+                      className="flex-shrink-0"
+                      size="md"
+                      src={chat.photo}
+                    />
                   ) : (
                     // .charAt(0).toUpperCase() + chat.name.slice(1)
-                    <Avatar name={chat.name} className="flex-shrink-0" size="md"/>
+                    <Avatar
+                      name={chat.name}
+                      className="flex-shrink-0"
+                      size="md"
+                    />
                   )}
                   <div className="flex flex-col text-left">
                     <span className="font-normal">{chat.name}</span>
-                    <span className={chat.chat_ID === ChatIds.current ?'text-tiny text-azulclaro-950' :'text-tiny text-default-400'}>{chat.email}</span>
+                    <span
+                      className={
+                        chat.chat_ID === ChatIds.current
+                          ? "text-tiny text-azulclaro-950"
+                          : "text-tiny text-default-400"
+                      }
+                    >
+                      {chat.email}
+                    </span>
                   </div>
                 </div>
               </ListboxItem>
