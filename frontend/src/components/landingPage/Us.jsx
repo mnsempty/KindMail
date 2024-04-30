@@ -1,5 +1,4 @@
 import React from "react";
-import { Image } from "@nextui-org/react";
 import image1 from "../../assets/manu.png";
 import image2 from "../../assets/marta.png";
 import image3 from "../../assets/manu.png";
