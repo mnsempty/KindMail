@@ -46,15 +46,16 @@ export default function ResearchCustom(userEmail) {
           key={item.email}
           textValue={item.name}
           onClick={() => openChat(item.email,userEmail.userEmail)}
+
         >
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2 items-center ">
             {item.profilephoto ? (
-              <Avatar alt={item.name} className="flex-shrink-0" size="sm" src={item.profilePhoto} />
+              <Avatar alt={item.name} className="flex-shrink-0 bg-red-500" size="sm" src={item.profilePhoto} />
             ) : (
               <Avatar name={item.name} className="flex-shrink-0" size="sm" />)}
             <div className="flex flex-col">
-              <span className="text-small">{item.name}</span>
-              <span className="truncate text-tiny text-default-400">{item.email}</span>
+              <span className="text-small dark:text-negro">{item.name}</span>
+              <span className="truncate text-tiny text-default-400 dark:text-negro">{item.email}</span>
             </div>
           </div>
         </AutocompleteItem>

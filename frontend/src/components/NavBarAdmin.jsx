@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
 import { UsersIcon, ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
 
+import { SunIcon } from "../assets/icons/sunIcon";
+import { MoonIcon } from "../assets/icons/moonIcon";
+
 export default function App() {
 
     const { loading, logout } = useLogOut();
     const [userInfo, setUserInfo] = useState(null); // Estado para almacenar la información del usuario actual
+
+    let [isDarkMode, setIsDarkMode] = useState(false);
+
+    // toggle darkmode
+    let toggleDarkMode = () => {
+        setIsDarkMode(!isDarkMode);
+    };
+
+    useEffect(() => {
+        let rootDiv = document.body;
+        if (rootDiv) {
+            rootDiv.className = isDarkMode ? 'dark' : 'light';
+        }
+    }, [isDarkMode]);
 
     return (
         <Navbar className="bg-azul-600">
@@ -18,17 +35,23 @@ export default function App() {
             </NavbarBrand>
 
             <NavbarContent as="div" justify="end">
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
+                <button
+                    onClick={toggleDarkMode}
+                    className="flex items-center justify-center p-2 rounded-lg transition duration-200 "
+                >
+                    {isDarkMode ? (<SunIcon />) : (<MoonIcon />)}
+                </button>
+                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
                     <a href="/user-admin">
                         <UsersIcon className="h-6 w-6" aria-hidden="true" />
                     </a>
                 </NavbarItem>
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
+                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
                     <a href="/home">
                         <ChatBubbleLeftRightIcon className="h-6 w-6" aria-hidden="true" />
                     </a>
                 </NavbarItem>
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
+                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
                     <a href="/profile">
                         <UserCircleIcon className="h-7 w-7" aria-hidden="true" />
                     </a>

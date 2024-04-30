@@ -43,7 +43,7 @@ export default function App() {
     };
 
     useEffect(() => {
-        let rootDiv = document.querySelector('#root');
+        let rootDiv = document.body;
         if (rootDiv) {
             rootDiv.className = isDarkMode ? 'dark' : 'light';
         }
@@ -65,12 +65,12 @@ export default function App() {
                     {isDarkMode ? (<SunIcon />) : (<MoonIcon />)}
                 </button>
 
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
+                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
                     <a href="/home">
                         <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
                     </a>
                 </NavbarItem>
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium">
+                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
                     <a href="/profile">
                         <UserCircleIcon className="h-8 w-8" aria-hidden="true" />
                     </a>

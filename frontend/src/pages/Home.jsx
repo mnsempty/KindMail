@@ -47,7 +47,7 @@ const Home = () => {
         <GlobalStateContext.Provider value={{ ChatIds, setSelectedChatId }}>
             <VisibilityGlobalStateContext.Provider value={{ isAsideVisible, isChatVisible, toggleVisibility }}>
             <>
-                <div className="flex justify-center gap-8 mb-8">
+                <div className="flex justify-center gap-8">
                     <CustomAside />
                     <ChatCustom />
                 </div>

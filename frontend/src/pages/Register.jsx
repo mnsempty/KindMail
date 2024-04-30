@@ -9,7 +9,7 @@ import { Link, NavLink } from "react-router-dom";
 
 const Register = () => {
 
-    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro-100 hover:text-azul-600";
+    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 ";
 
     const navigate = useNavigate();
     const { loading, signup } = useSignUp((path) => navigate(path));
@@ -65,7 +65,7 @@ const Register = () => {
                                     </label>
                                     <Link to="/login" className="text-xs">¿Ya tienes una cuenta?</Link>
                                 </div>
-                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro-100 hover:text-azul-600 mb-10">Enviar</button>
+                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 mb-10">Enviar</button>
                             </form>
                         </div>
                     </div>
