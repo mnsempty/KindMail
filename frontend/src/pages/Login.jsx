@@ -5,7 +5,7 @@ import useLogin from "../hooks/useLogin.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro-100 hover:text-azul-600";
+    const btn = "border-2 border-blanco rounded-full text-sm text-blanco p-3 mx-1 hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700";
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
@@ -48,7 +48,7 @@ const Login = () => {
                                     </label>
                                     <a href="#" className="text-xs">¿Has olvidado tu contraseña?</a>
                                 </div>
-                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro-100 hover:text-azul-600 mb-10">
+                                <button className="border-2 border-blanco text-blanco rounded-full px-12 py-2 inline-block font-semibold hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 mb-10">
                                     {loading ? "Cargando..." : "Acceder"}
                                 </button>
                             </form>

@@ -73,7 +73,7 @@ export default function CustomAside() {
     <aside
       className={` ${
         isAsideVisible ? "" : "hidden"
-      } bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4`}
+      } bg-dark border-2 rounded-lg border-azul-600 text-foreground min-w-64 max-w-64 min-h-[calc(90vh-2.7rem)] p-4 mb-5`}
     >
       <ResearchCustom userEmail={getUserEmailFromLocalStorage()} />
       {loading ? (
@@ -106,10 +106,9 @@ export default function CustomAside() {
                 key={index}
                 onClick={() => handleSelectedChat(chat.chat_ID)}
                 textValue={`${chat.name}`}
-                // hover:border hover:border-azulclaro-100
                 className={
                   chat.chat_ID === ChatIds.current
-                    ? "bg-azulclaro text-negro"
+                    ? "bg-azulclaro text-azul-900	"
                     : "hover:border-2 hover:border-azulclaro hover:text-azulclaro-500"
                 }
               >
@@ -126,7 +125,7 @@ export default function CustomAside() {
                     // .charAt(0).toUpperCase() + chat.name.slice(1)
                     <Avatar
                       name={chat.name}
-                      className="flex-shrink-0"
+                      className="flex-shrink-0 "
                       size="md"
                     />
                   )}
