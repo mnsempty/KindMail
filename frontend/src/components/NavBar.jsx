@@ -7,11 +7,17 @@ import { MoonIcon } from "../assets/icons/moonIcon";
 
 export default function App() {
 
-    let [isDarkMode, setIsDarkMode] = useState(false);
+    let [isDarkMode, setIsDarkMode] = useState(() => {
+        let savedDarkMode = localStorage.getItem('darkMode');
+        return savedDarkMode ? savedDarkMode === 'true' : false;
+    });
 
     // toggle darkmode
     let toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
+        let newDarkMode = !isDarkMode;
+        setIsDarkMode(newDarkMode);
+        // Guarda el nuevo estado en localStorage
+        localStorage.setItem('darkMode', newDarkMode.toString());
     };
 
     useEffect(() => {
