@@ -35,7 +35,7 @@ export default function ResearchCustom(userEmail) {
       inputValue={list.filterText}
       isLoading={list.isLoading}
       items={list.items}
-      label="Select a user"
+      label="Selecciona un usuario"
       placeholder="Type to search..."
       variant="bordered"
       onInputChange={list.setFilterText}
