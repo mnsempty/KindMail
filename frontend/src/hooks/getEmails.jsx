@@ -2,11 +2,12 @@ import { useAuthContext } from "../context/AuthContext";
 import { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
-const useSendFirstMessage = () => {
+
+const useGetEmails = () => {
     const { authUser, setAuthUser } = useAuthContext();
     const [isLoading, setIsLoading] = useState(false); 
 
-    const sendMessage = async ({ header, content, receiver }) => {
+    const getEmail = async () => {
         setIsLoading(true); // Inicia el estado de carga
 
         try {
@@ -15,13 +16,13 @@ const useSendFirstMessage = () => {
             const decodedAuthUser = jwtDecode(authUser.token);
             // console.log(decodedAuthUser.userData.email);
 
-            const res = await fetch("http://localhost:5000/api/chats/email", {
+            const res = await fetch("http://localhost:5000/api/chats/getEmails", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${authUser.token}`
                 },
-                body: JSON.stringify({ header, content, sender: decodedAuthUser.userData.email, receiver })
+                body: JSON.stringify({ receiverEmail:decodedAuthUser.userData.email })
             });
 
             if (!res.ok) {
@@ -30,8 +31,8 @@ const useSendFirstMessage = () => {
             }
 
             const data = await res.json();
-console.log(data);
-            return data;
+
+            return data.emails;
 
         } catch (error) {
             console.log(error);
@@ -40,7 +41,7 @@ console.log(data);
         }
     };
 
-    return { sendMessage, isLoading }; 
+    return { getEmail, isLoading }; 
 };
 
-export default useSendFirstMessage;
+export default useGetEmails;

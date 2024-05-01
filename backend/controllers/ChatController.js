@@ -314,17 +314,30 @@ async function getEmails(req, res) {
     const { receiverEmail } = req.body;
 
     console.log(req.body);
-    const emailData = { receiverEmail };
-
-    const emailJSON = JSON.stringify(emailData);
+    
 
     const allEmails = await client.lRange("emails_list", 0, -1);
 
     // Filtrar los correos electrónicos para el receptor especificado
-    const emailsForReceiver = allEmails.filter((email) => {
+    const emailsForReceiver = [];
+    for (const email of allEmails) {
       const emailObj = JSON.parse(email);
-      return emailObj.receiver === receiverEmail;
-    });
+      if (emailObj.receiver === receiverEmail) {
+        // Obtener detalles del sender
+        const senderDetails = await client.hGet("users", emailObj.sender);
+        const senderDetailsJSON = JSON.parse(senderDetails);
+       
+        // Incluir detalles del sender en el email
+        // El operador spread ... se utiliza en JavaScript para copiar las propiedades de un objeto a otro objeto nuevo o para añadir propiedades adicionales a un objeto existente.
+        const emailWithSenderDetails = {
+          name: senderDetailsJSON.name,
+          profilePhoto: senderDetailsJSON.profilePhoto,
+          ...emailObj
+        };
+        
+        emailsForReceiver.push(emailWithSenderDetails);
+      }
+    }
 
     console.log(
       "Correos electrónicos recibidos para",        
