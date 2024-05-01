@@ -6,13 +6,13 @@ const useLogin = (redirect) => {
     const [loading, setLoading] = useState(false);
     const { setAuthUser } = useAuthContext();
 
-    const login = async ({ email, password }) => {
+    const login = async ({ email, password, role }) => {
         setLoading(true);
         try {
             const res = await fetch("http://localhost:5000/api/user/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, role })
             });
 
             if (!res.ok) {

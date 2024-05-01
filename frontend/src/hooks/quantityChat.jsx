@@ -6,8 +6,8 @@ const useChats = () => {
     const [chats, setChats] = useState(0);
 
     const getChat = async () => {
-        setLoading(true);
         try {
+            setLoading(true);
             const res = await fetch("http://localhost:5000/api/chats/quantity");
             const data = await res.json();
             setChats(data.chatQuantity);

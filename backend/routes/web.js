@@ -11,11 +11,13 @@ router.use(express.json());
 
 // Ruta para crear un usuario
 // router.post("/user", upload.single('image'), userController.createUser);
-router.post("/user", userController.createUser);
+router.post("/create_user", userController.createUser);
 // Ruta para eliminar un usuario
-router.delete("/user", userController.deleteUser);
+router.delete("/user/:email", userController.deleteUser);
 // Ruta recoger todos los datos de todos los usuarios para busqueda
 router.get("/users", userController.searchUsers);
+// Ruta recoger todos los datos de todos los usuarios
+router.get("/user/get-users", userController.getAllUsers);
 // Ruta login
 router.post("/user/login", userController.login);
 // Ruta logout
@@ -27,10 +29,9 @@ router.put("/user/set-online", userController.setOnline)
 // Cantidad de usuarios (landing page)
 router.get("/user/quantity", userController.quantity);
 // Ruta para cambiar datos del perfil
-router.post("/user/profile",userController.profile);
+router.post("/user/profile", userController.profile);
 // Ruta para cambiar la imagen del perfil
-router.post("/user/profile/image",userController.profilePhoto);
-
+router.post("/user/profile/image", userController.profilePhoto);
 
 // ------ Rutas de chats ------
 
@@ -40,10 +41,16 @@ router.post("/chats/create", chatController.create);
 router.post("/chats", chatController.getChatsFromUser);
 // Ruta para abrir una sala de chat
 router.post("/chats/openChat", chatController.openChat);
+//ruta para comprobar un chat/crear un email(Research users)
+router.post("/chats/openChatOrEmail",chatController.openChatOrEmail)
 // Ruta para enviar mensajes
 router.post("/chats/sendMessage", chatController.sendMessage);
 // Cantidad de chats (landing page)
 router.get("/chats/quantity", chatController.quantity);
+// Ruta denunciar
+router.post("/user/report", chatController.reportUsers);
+// Ruta traer cantidad denuncias por usuario
+router.get("/user/get-reports", chatController.getReports);
 // Ruta para enviar el email
 router.post("/chats/email",chatController.sendEmail);
 
