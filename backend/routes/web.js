@@ -53,5 +53,7 @@ router.post("/user/report", chatController.reportUsers);
 router.get("/user/get-reports", chatController.getReports);
 // Ruta para enviar el email
 router.post("/chats/email",chatController.sendEmail);
+// Ruta para obtener los emails de un usuario
+router.post("/chats/getEmails",chatController.getEmails);
 
 module.exports = router;

@@ -17,6 +17,7 @@ import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
 import LandingPage from "./pages/LandingPage";
 import User from "./pages/Admin/User";
+import Inbox from "./pages/inbox";
 
 //Si eres usuario te mostrará unos datos y si eres administrador te mostrará otros
 function getByRole(role) {
@@ -56,6 +57,7 @@ function App() {
           <Route path="/landingPage" element={<LandingPage />}></Route>
           <Route path="/first-message" element={authUser ? <FirstMessage /> : <Navigate to={"/landingPage"} />}></Route>
           <Route path="/profile" element={authUser ? <Profile /> : <Navigate to={"/landingPage"} />}></Route>
+          <Route path="/inbox" element={authUser ? <Inbox /> : <Navigate to={"/landingPage"} />}></Route>
           {/* Admin */}
           <Route path="/user-admin" element={authUser ? <User /> : <Navigate to={"/landingPage"} />}></Route>
           {/* Error - resto de url */}

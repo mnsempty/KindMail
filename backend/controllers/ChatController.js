@@ -1,6 +1,6 @@
 const { error } = require("console");
 const client = require("../Database/RedisClient");
-const { randomUUID } = require('crypto');
+const { randomUUID } = require("crypto");
 // #region create
 async function create(req, res) {
   try {
@@ -21,7 +21,7 @@ async function create(req, res) {
     }
 
     // Crear la sala de chat
-    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
+    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de
     // datos el id generado pero al ser una app tan pequeña no es necesario
     let chat_ID = randomUUID();
     const chatData = { user1_ID, user2_ID, chat_ID };
@@ -44,9 +44,7 @@ async function openChatOrEmail(req, res) {
     let existingChatID = await findChatByUserIDs(user1_ID, user2_ID);
     // si los users tienen ya abierto un chat devolvemos el id del chat para abrirlo
     if (existingChatID) {
-      return res
-        .status(200)
-        .json({ chatID: existingChatID.chat_ID });
+      return res.status(200).json({ chatID: existingChatID.chat_ID });
     }
 
     if (!user1_ID || !user2_ID) {
@@ -158,8 +156,11 @@ async function reportUsers(req, res) {
     let email2 = null;
     for (const chatJSON of allChats) {
       const chat = JSON.parse(chatJSON);
-      if (chatID === chat.chatID && (chat.user1_ID === email1 || chat.user2_ID === email1)) {
-        email2 = (chat.user2_ID === email1) ? chat.user1_ID : chat.user2_ID; 
+      if (
+        chatID === chat.chatID &&
+        (chat.user1_ID === email1 || chat.user2_ID === email1)
+      ) {
+        email2 = chat.user2_ID === email1 ? chat.user1_ID : chat.user2_ID;
         break;
       }
     }
@@ -261,7 +262,7 @@ async function getMessagesFromChat(chat_ID) {
 //Función calcular los chats
 async function getChats() {
   const allChats = await client.lRange("chats_list", 0, -1);
-  const chats = allChats.map(chatJSON => JSON.parse(chatJSON));
+  const chats = allChats.map((chatJSON) => JSON.parse(chatJSON));
   return chats;
 }
 async function quantity(req, res) {
@@ -276,79 +277,66 @@ async function quantity(req, res) {
 }
 
 //#region SendEmail
-async function sendEmail(req,res){
+async function sendEmail(req, res) {
+  try {
+    const { header, content, sender, receiver } = req.body;
 
-try{
+    console.log(req.body);
+    const messageData = { sender, header, content, receiver };
 
-  const {header, content, sender, receiver } = req.body;
+    const messageJSON = JSON.stringify(messageData);
 
-  console.log(req.body);
-  const messageData = { sender,header, content, receiver };
+    // Agregar el chat al final de la lista
+    await client.rPush("emails_list", messageJSON, (err, reply) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(reply);
+      }
+    });
 
-  const messageJSON = JSON.stringify(messageData);
-
-  // Agregar el chat al final de la lista
-  await client.rPush("emails_list", messageJSON, (err, reply) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(reply);
-    }
-  });
-
-  // Crear la sala de chat
-    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
+    // Crear la sala de chat
+    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de
     // datos el id generado pero al ser una app tan pequeña no es necesario
     let chat_ID = randomUUID();
-    const chatData = { sender, receiver, chat_ID};
+    const chatData = { sender, receiver, chat_ID };
     await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
 
-
-
-  res.status(201).json({ message: "Email enviado correctamente" });
-} catch (err) {
-  res.status(500).json({ message: "Error interno del servidor" });
-  console.log("Error al enviar email:", err);
-
+    res.status(201).json({ message: "Email enviado correctamente" });
+  } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.log("Error al enviar email:", err);
+  }
 }
-}
+//#region getEmails
+async function getEmails(req, res) {
+  try {
+    const { receiverEmail } = req.body;
 
-//#region SendEmail
-async function sendEmail(req,res){
+    console.log(req.body);
+    const emailData = { receiverEmail };
 
-try{
+    const emailJSON = JSON.stringify(emailData);
 
-  const {header, content, sender, receiver } = req.body;
+    const allEmails = await client.lRange("emails_list", 0, -1);
 
-  console.log(req.body);
-  const messageData = { sender,header, content, receiver };
+    // Filtrar los correos electrónicos para el receptor especificado
+    const emailsForReceiver = allEmails.filter((email) => {
+      const emailObj = JSON.parse(email);
+      return emailObj.receiver === receiverEmail;
+    });
 
-  const messageJSON = JSON.stringify(messageData);
+    console.log(
+      "Correos electrónicos recibidos para",        
+      receiverEmail + ":",
+      emailsForReceiver
+    );
 
-  // Agregar el chat al final de la lista
-  await client.rPush("emails_list", messageJSON, (err, reply) => {
-    if (err) {
-      reject(err);
-    } else {
-      resolve(reply);
-    }
-  });
-
-  // Crear la sala de chat
-    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de 
-    // datos el id generado pero al ser una app tan pequeña no es necesario
-    let chat_ID = randomUUID();
-    const chatData = { sender, receiver, chat_ID};
-    await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
-
-
-
-  res.status(201).json({ message: "Email enviado correctamente" });
-} catch (err) {
-  res.status(500).json({ message: "Error interno del servidor" });
-  console.log("Error al enviar email:", err);
-
-}
+    res.status(200).json({ emails: emailsForReceiver }); // Envía los correos electrónicos filtrados como respuesta
+  } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.log("Error al obtener correos electrónicos:", err);
+  }
 }
 
 module.exports = {
@@ -360,5 +348,6 @@ module.exports = {
   quantity,
   getReports,
   reportUsers,
-  sendEmail
+  sendEmail,
+  getEmails
 };
