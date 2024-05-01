@@ -2,9 +2,13 @@ import { Autocomplete, AutocompleteItem, Avatar } from "@nextui-org/react";
 import { useAsyncList } from "@react-stately/data";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import GlobalStateContext from "./GlobalStateContext";
+import { useContext } from "react";
 
 
 export default function ResearchCustom(userEmail) {
+
+  const { setSelectedChatId } = useContext(GlobalStateContext);
 
   const navigate = useNavigate();
 
@@ -22,39 +26,33 @@ export default function ResearchCustom(userEmail) {
       };
     },
   });
-  function openChat(user2_ID,userEmail) {
-    console.log(user2_ID+"uemail"+userEmail);
+  let openChat = (user2_ID, userEmail, item) => {
+    console.log(user2_ID + " uemail prop:" + userEmail + "item?" + JSON.stringify(item));
     axios.post('http://localhost:5000/api/chats/openChatOrEmail', {
-      user1_ID: userEmail, // user "propio"
-      user2_ID: user2_ID // user "destino"
-   })
-   .then(response => {
-      console.log(response.data);
-   })
-   .catch(error => {
-      console.error('Error al abrir el chat o enviar el correo electrónico:', error);
-   });
-  }
-  console.log("UserEmail"+JSON.stringify(userEmail))
-  function firstMessage(user) {
-    console.log("Usuario seleccionado: ", user);
-
-    let userString = JSON.stringify(user);
-
-    
-
-    if(existingChat){
-
-    }else{
-
-      localStorage.setItem("selectedUser", userString);
-    console.log(localStorage.getItem('selectedUser'));
-
-      navigate('/first-message');
-    }
-
-  }
-
+       user1_ID: userEmail, // user "propio"
+       user2_ID: user2_ID // user "destino"
+    })
+    .then(response => {
+       console.log("response", response);
+       if (response.data) {
+         console.log(response.data);
+         if (response.data.chatID) {
+           // Si existe un chatID, seleccionamos el chat con el GlobalContext
+           console.log("response.data.chatID" + response.data.chatID);
+           setSelectedChatId(response.data.chatID);
+         } else if (response.data.firstEmail) {
+           // Si se devuelve firstEmail: true, navegamos a /firstmessage guardamos en local sotrage los datos del user seleccionado
+           let userString = JSON.stringify(item);
+           localStorage.setItem("selectedUser", userString);
+           navigate('/first-message');
+         }
+       }
+    })
+    .catch(error => {
+       console.error("Error al abrir chat o email:", error);
+       // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje al usuario
+    });
+   };
   return (
     <Autocomplete
       className="max-w-xs"
@@ -71,11 +69,11 @@ export default function ResearchCustom(userEmail) {
         <AutocompleteItem
           key={item.email}
           textValue={item.name}
-          onClick={() => openChat(item.email,userEmail.userEmail)}
+          onClick={() => openChat(item.email,userEmail.userEmail,item)}
 
         >
-
-          <div className="flex gap-2 items-center " onClick={() => firstMessage(item)}>
+{/* onClick={() => firstMessage(item)} */}
+          <div className="flex gap-2 items-center " >
            
             {item.profilephoto ? (
               <Avatar alt={item.name} className="flex-shrink-0 bg-red-500" size="sm" src={item.profilePhoto} />

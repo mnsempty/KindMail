@@ -52,22 +52,8 @@ async function openChatOrEmail(req, res) {
         .status(400)
         .json({ message: "ID`s de dos usuarios obligatorios" });
     }
-    /*
-    //verificamos que los usuarios se hayan enviado un email
-        let existingEmailID = await findEmailByUserIDs(user1_ID, user2_ID);
-    // si los users tienen ya abierto un chat devolvemos true para abrirlo
-    if (existingEmailID) {
-      return res
-        .status(200)
-        .json({ email: true });
-    }
-    */
-    /* // Crear la sala de email
-    let email_ID = randomUUID();
-    const emailData = { user1_ID, user2_ID, email_ID};
-    await addEmailToList(emailData); // Llamar a la función para agregar email a la BBDD
-    */
-    res.status(201).json({ message: "Email creado correctamente" });
+
+    res.status(201).json({ firstEmail: true });
   } catch (error) {
     console.error("Error al crear chat:", error);
     res.status(500).json({ message: "Error interno del servidor" });
@@ -273,39 +259,6 @@ async function quantity(req, res) {
     console.log("chats:", chatQuantity);
   } catch (error) {
     console.error("Error al obtener la cantidad de chats:", error);
-  }
-}
-
-//#region SendEmail
-async function sendEmail(req, res) {
-  try {
-    const { header, content, sender, receiver } = req.body;
-
-    console.log(req.body);
-    const messageData = { sender, header, content, receiver };
-
-    const messageJSON = JSON.stringify(messageData);
-
-    // Agregar el chat al final de la lista
-    await client.rPush("emails_list", messageJSON, (err, reply) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(reply);
-      }
-    });
-
-    // Crear la sala de chat
-    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de
-    // datos el id generado pero al ser una app tan pequeña no es necesario
-    let chat_ID = randomUUID();
-    const chatData = { sender, receiver, chat_ID };
-    await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
-
-    res.status(201).json({ message: "Email enviado correctamente" });
-  } catch (err) {
-    res.status(500).json({ message: "Error interno del servidor" });
-    console.log("Error al enviar email:", err);
   }
 }
 //#region getEmails
