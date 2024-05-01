@@ -47,7 +47,7 @@ async function createUser(req, res) {
         .json({ message: "La contraseña debe tener al menos 8 caracteres" });
     }
 
-    const userData = {
+    const userData2 = {
       name,
       surname,
       email,
@@ -57,9 +57,19 @@ async function createUser(req, res) {
       state: userState,
       // image: req.file ? req.file.filename : undefined
     };
-
-    await saveUser(userData);
-    res.status(201).json({ message: "Usuario creado correctamente" });
+    await saveUser(userData2);
+    //overwrite de userData para no pasar password
+    let userData = {
+      name: userData2.name,
+      role: userData2.role,
+      email: userData2.email,
+      state: userData2.state,
+    };
+    console.log("back user data"+JSON.stringify(userData));
+    // const token = jwt.sign({ userDataFiltered }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+    // res.status(200).json({ token });
+    const token = jwt.sign({ userData }, "admin ");
+    res.status(200).json({ token });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });

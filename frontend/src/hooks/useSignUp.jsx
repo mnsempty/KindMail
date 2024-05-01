@@ -8,24 +8,24 @@ const useSignUp = (redirect) => {
     const { authUser, setAuthUser } = useAuthContext();
 
     const signup = async ({ name, password, email }) => {
-
+        console.log("name" + name + "password" + password + "email" + email);
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:5000/api/user", {
+            const res = await fetch("http://localhost:5000/api/create_user", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ name, password, email })
             })
-            const data = await res.json();
-            if (data.error) {
-                throw new Error(data.error);
+            if (!res.ok) {
+                // Si la respuesta no es exitosa, lanza un error con el mensaje de error del servidor
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Error al crear usuario");
             }
-
+            const data = await res.json();
             //localstorage
             localStorage.setItem("chat-user", JSON.stringify(data));
             //context
             setAuthUser(data);
-            console.log("entro");
             redirect("/home");
 
         } catch (error) {

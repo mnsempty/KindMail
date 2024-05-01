@@ -11,7 +11,7 @@ router.use(express.json());
 
 // Ruta para crear un usuario
 // router.post("/user", upload.single('image'), userController.createUser);
-router.post("/user", userController.createUser);
+router.post("/create_user", userController.createUser);
 // Ruta para eliminar un usuario
 router.delete("/user/:email", userController.deleteUser);
 // Ruta recoger todos los datos de todos los usuarios para busqueda

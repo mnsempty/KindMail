@@ -46,7 +46,7 @@ export default function App() {
                     <a href="/login" className="text-blanco px-3 py-2 dark:text-negro">Login</a>
                 </NavbarItem>
                 <NavbarItem>
-                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 px-3 border rounded-md py-2 dark:text-negro">Sing Up</a>
+                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 px-3 border rounded-md py-2 dark:text-negro">Sign Up</a>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>
