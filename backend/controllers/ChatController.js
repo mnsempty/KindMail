@@ -286,7 +286,7 @@ async function sendEmail(req, res) {
     //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de
     // datos el id generado pero al ser una app tan pequeña no es necesario
     let chat_ID = randomUUID();
-    const chatData = { sender, receiver, chat_ID };
+    const chatData = { "user1_ID":sender, "user2_ID":receiver, chat_ID };
     await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
 
     res.status(201).json({ message: "Email enviado correctamente" });
