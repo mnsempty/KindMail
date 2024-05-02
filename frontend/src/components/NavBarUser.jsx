@@ -10,8 +10,11 @@ import toast from "react-hot-toast";
 
 import { SunIcon } from "../assets/icons/sunIcon";
 import { MoonIcon } from "../assets/icons/moonIcon";
+import EnvelopeIcon from "../assets/icons/envelop.jsx";
+import { useNavigate } from 'react-router-dom';
 
 export default function App() {
+    const navigate = useNavigate();
 
     const { logout } = useLogOut();
     const { busy } = useBusy();
@@ -55,6 +58,10 @@ export default function App() {
         }
     }, [isDarkMode]);
 
+    let isProfilePage = location.pathname === '/profile';
+    let navPath = isProfilePage ? '/home' : '/profile';
+    let navText = isProfilePage ? 'Home' : 'Perfíl';
+
     return (
         <Navbar className="bg-azul-600">
             <NavbarBrand>
@@ -71,16 +78,19 @@ export default function App() {
                     {isDarkMode ? (<SunIcon />) : (<MoonIcon />)}
                 </button>
 
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
-                    <a href="/home">
-                        <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
-                    </a>
-                </NavbarItem>
-                <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
-                    <a href="/profile">
-                        <UserCircleIcon className="h-8 w-8" aria-hidden="true" />
-                    </a>
-                </NavbarItem>
+                {location.pathname === '/inbox' ? (
+                    <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
+                        <a href="/home">
+                            <ChatBubbleLeftRightIcon className="h-7 w-7" aria-hidden="true" />
+                        </a>
+                    </NavbarItem>
+                ) : (
+                    <NavbarItem className="relative text-blanco px-3 py-2 text-sm font-medium dark:text-negro">
+                        <a href="/inbox">
+                            <EnvelopeIcon />
+                        </a>
+                    </NavbarItem>
+                )}
                 <Dropdown placement="bottom-end" >
                     {/* <Badge content="" color="success" shape="circle" placement="bottom-right"> */}
                     <DropdownTrigger>
@@ -95,9 +105,13 @@ export default function App() {
                     </DropdownTrigger>
                     {/* </Badge> */}
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
-                        <DropdownItem key="online" color="success" onClick={handleOnline}>Online</DropdownItem>
-                        <DropdownItem key="busy" color="warning" onClick={handleBusy}>Ocupado</DropdownItem>
-                        <DropdownItem key="logout" color="danger" onClick={logout}>Cerrar Sesión</DropdownItem>
+                        <DropdownItem key="profile" color="secondary" className="dark:text-negro dark:hover:text-purple-400" onClick={() => navigate(navPath)}
+                        >
+                            {navText}
+                        </DropdownItem>
+                        <DropdownItem key="online" color="success" className="dark:text-negro dark:hover:text-emerald-400" onClick={handleOnline}>Online</DropdownItem>
+                        <DropdownItem key="busy" color="warning" className="dark:text-negro dark:hover:text-yellow-400" onClick={handleBusy}>Ocupado</DropdownItem>
+                        <DropdownItem key="logout" color="danger" className="dark:text-negro dark:hover:text-red-400" onClick={logout}>Cerrar Sesión</DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
             </NavbarContent>

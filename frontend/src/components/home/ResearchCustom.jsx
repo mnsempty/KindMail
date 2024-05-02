@@ -50,7 +50,6 @@ export default function ResearchCustom(userEmail) {
     })
     .catch(error => {
        console.error("Error al abrir chat o email:", error);
-       // Aquí podrías manejar el error, por ejemplo, mostrando un mensaje al usuario
     });
    };
   return (
@@ -72,7 +71,6 @@ export default function ResearchCustom(userEmail) {
           onClick={() => openChat(item.email,userEmail.userEmail,item)}
 
         >
-{/* onClick={() => firstMessage(item)} */}
           <div className="flex gap-2 items-center " >
            
             {item.profilephoto ? (

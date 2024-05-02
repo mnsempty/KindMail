@@ -191,7 +191,7 @@ export default function ChatCustom() {
             <input
               id="messageInput"
               type="text"
-              className="w-full md:w-90 p-2 rounded border-2 border-gray-300 focus:outline-azul caret-azul flex-auto"
+              className="w-full md:w-90 p-2 rounded border-2 border-gray-300 focus:outline-azul caret-azul flex-auto dark:text-negro"
               placeholder="Escribe un mensaje..."
               onKeyDown={handleKeyDown}
               disabled={!ChatIds.current}

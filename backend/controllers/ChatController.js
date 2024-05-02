@@ -261,6 +261,41 @@ async function quantity(req, res) {
     console.error("Error al obtener la cantidad de chats:", error);
   }
 }
+
+
+//#region SendEmail
+async function sendEmail(req, res) {
+  try {
+    const { header, content, sender, receiver } = req.body;
+
+    console.log(req.body);
+    const messageData = { sender, header, content, receiver };
+
+    const messageJSON = JSON.stringify(messageData);
+
+    // Agregar el chat al final de la lista
+    await client.rPush("emails_list", messageJSON, (err, reply) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(reply);
+      }
+    });
+
+    // Crear la sala de chat
+    //generamos un id aleatorio con RandomUUID de node, deberiamos comprobar que no existe ya en la base de
+    // datos el id generado pero al ser una app tan pequeña no es necesario
+    let chat_ID = randomUUID();
+    const chatData = { sender, receiver, chat_ID };
+    await addChatToList(chatData); // Llamar a la función para agregar chat a la lista
+
+    res.status(201).json({ message: "Email enviado correctamente" });
+  } catch (err) {
+    res.status(500).json({ message: "Error interno del servidor" });
+    console.log("Error al enviar email:", err);
+  }
+}
+
 //#region getEmails
 async function getEmails(req, res) {
   try {
