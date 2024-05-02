@@ -17,7 +17,7 @@ import FirstMessage from "./pages/FirstMessage";
 import Profile from "./pages/Profile";
 import LandingPage from "./pages/LandingPage";
 import User from "./pages/Admin/User";
-import Inbox from "./pages/inbox";
+import Inbox from "./pages/Inbox";
 
 //Si eres usuario te mostrará unos datos y si eres administrador te mostrará otros
 function getByRole(role) {
