@@ -19,7 +19,7 @@ export default function App() {
     const { logout } = useLogOut();
     const { busy } = useBusy();
     const { online } = useOnline();
-    const [userInfo, setUserInfo] = useState(null); // Estado para almacenar la información del usuario actual
+    const [userInfo] = useState(null); // Estado para almacenar la información del usuario actual
 
     const handleBusy = async () => {
         try {

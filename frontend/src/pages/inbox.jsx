@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from '@nextui-org/react';
 import useGetEmails from '../hooks/getEmails';
 import EmailModal from '../components/emails/EmailModal';
 
 const Inbox = () => {
     const [emails, setEmails] = useState([]);
-    const { getEmail, isLoading } = useGetEmails();
+    const { getEmail } = useGetEmails();
     const [selectedEmail, setSelectedEmail] = useState(null); // Agregar estado para el email seleccionado
     const [modalOpen, setModalOpen] = useState(false); // Agregar estado para controlar la apertura/cierre del modal
 
