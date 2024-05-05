@@ -77,8 +77,8 @@ export default function ChatCustom() {
     let spacesNeeded = Math.floor(currentMessage.length / 13);
 
     for (let i = 0; i < spacesNeeded; i++) {
-        let insertIndex = (i + 1) * 13;
-        currentMessage = currentMessage.slice(0, insertIndex) + ' ' + currentMessage.slice(insertIndex);
+      let insertIndex = (i + 1) * 13;
+      currentMessage = currentMessage.slice(0, insertIndex) + ' ' + currentMessage.slice(insertIndex);
     }
 
     // dejamos en el state el mensaje que luego cogemos "sin espacios" y lo enviamos al socket
@@ -86,9 +86,9 @@ export default function ChatCustom() {
     if (currentMessage.trim() && ChatIds.current) {
       sendMessage(ChatIds.current, { content: currentMessage, sender: senderId });
       document.getElementById('messageInput').value = '';
-      console.log("scrollToBottom pre enviar" + shouldScrollToBottom);
+      // console.log("scrollToBottom pre enviar" + shouldScrollToBottom);
       setShouldScrollToBottom(true);
-      console.log("scrollToBottom post enviar" + shouldScrollToBottom);
+      // console.log("scrollToBottom post enviar" + shouldScrollToBottom);
 
     }
   };
@@ -150,17 +150,26 @@ export default function ChatCustom() {
         <>
 
           <div id="chatContainer" className="relative overflow-y-auto p-4">
-          {isButtonVisible && (
+            {isButtonVisible && (
+              <button
+                aria-label="Toggle sidebar"
+                onClick={handleHideAside}
+                className='sticky top-0 ms-2 mt-2 px-3 py-2  w-10 inset-0 backdrop-blur-sm bg-transparent  text-negro dark:text-negro transition-colors duration-200 hover:bg-blanco hover:border-azul dark:hover:bg-azul-950 border rounded-lg gap-x-2'>
+                <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+                </svg>
+              </button>
+            )}
             <button
-              aria-label="Toggle sidebar"
-              onClick={handleHideAside}
-              className='sticky top-0 ms-2 mt-2 px-3 py-2  w-1/12 inset-0 backdrop-blur-sm bg-transparent  text-negro dark:text-negro transition-colors duration-200 hover:bg-blanco hover:border-azul dark:hover:bg-azul-950 border rounded-lg gap-x-2'>
-              <svg className="w-5 h-5 rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75L3 12m0 0l3.75-3.75M3 12h18" />
+              aria-label="Report"
+              onClick={handleReport}
+              disabled={!ChatIds.current}
+              className='sticky top-0 ms-2 mt-2 px-3 py-2 w-11 inset-0 backdrop-blur-sm bg-red-600 text-negro dark:text-negro transition-colors duration-200 hover:bg-red-700 dark:hover:bg-red-800 rounded-lg gap-x-2'>
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 fill-white" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12 12 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A20 20 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a20 20 0 0 0 1.349-.476l.019-.007.004-.002h.001M14 1.221c-.22.078-.48.167-.766.255-.81.252-1.872.523-2.734.523-.886 0-1.592-.286-2.203-.534l-.008-.003C7.662 1.21 7.139 1 6.5 1c-.669 0-1.606.229-2.415.478A21 21 0 0 0 3 1.845v6.433c.22-.078.48-.167.766-.255C4.576 7.77 5.638 7.5 6.5 7.5c.847 0 1.548.28 2.158.525l.028.01C9.32 8.29 9.86 8.5 10.5 8.5c.668 0 1.606-.229 2.415-.478A21 21 0 0 0 14 7.655V1.222z" />
               </svg>
             </button>
-          )}
-          
+
             {messages.map((message, index) => {
               let isSentByUser = message.sender === senderId;
               // msg prev del mismo sender true/false
@@ -197,13 +206,6 @@ export default function ChatCustom() {
               disabled={!ChatIds.current}
             />
             <button
-              onClick={handleReport}
-              className="ms-2.5 p-2 rounded bg-red-600 text-white"
-              disabled={!ChatIds.current}
-            >
-              Denunciar
-            </button>
-            <button
               onClick={handleSendMessage}
               className="ms-2.5 p-2 rounded bg-blue-500 text-white "
               disabled={!ChatIds.current}
@@ -213,8 +215,8 @@ export default function ChatCustom() {
           </div>
         </>
       ) :
-        <div className="p-4 h-full bg-gray-800 flex justify-center items-center">
-          <div className="text-white">
+        <div className="p-4 h-full bg-gray-800 dark:bg-gray-800 flex justify-center items-center rounded-lg">
+          <div className="text-blanco dark:text-negro">
             <h5>Selecciona un chat</h5>
           </div>
         </div>}

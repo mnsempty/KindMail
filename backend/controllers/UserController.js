@@ -65,7 +65,7 @@ async function createUser(req, res) {
       email: userData2.email,
       state: userData2.state,
     };
-    console.log("back user data"+JSON.stringify(userData));
+    // console.log("back user data"+JSON.stringify(userData));
     // const token = jwt.sign({ userDataFiltered }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
     // res.status(200).json({ token });
     const token = jwt.sign({ userData }, "admin ");
@@ -114,7 +114,7 @@ async function login(req, res) {
       password,
       existingUser.hashedPassword
     );
-    console.log(passwordMatch);
+    // console.log(passwordMatch);
     if (!passwordMatch) {
       return res
         .status(401)
@@ -156,7 +156,7 @@ async function logout(req, res) {
 
 async function findUser(email) {
   const userJson = await client.hGet("users", email); // Verificar si se encontró un usuario
-  console.log(userJson)
+  // console.log(userJson)
   if (!userJson) {
     return null; // Devuelve null si no se encuentra el usuario
   }
@@ -254,7 +254,7 @@ async function getUsers() {
 async function quantity(req, res) {
   try {
     const userQuantity = await getUsers();
-    console.log("usuarios:", userQuantity);
+    // console.log("usuarios:", userQuantity);
     res.status(200).json({ userQuantity });
   } catch (error) {
     console.error("Error al obtener la cantidad de usuarios:", error);
@@ -278,10 +278,10 @@ async function profile(req, res) {
     }
 
     const user = JSON.parse(userJSON);
-    console.log(user);
+    // console.log(user);
 
     if (password && newPassword) {
-      console.log(user);
+      // console.log(user);
 
       const isMatch = await bcrypt.compare(newPassword, user.hashedPassword);
 

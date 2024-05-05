@@ -5,10 +5,10 @@ import { useAuthContext } from "../context/AuthContext";
 const useSignUp = (redirect) => {
 
     const [loading, setLoading] = useState(false);
-    const { authUser, setAuthUser } = useAuthContext();
+    const { setAuthUser } = useAuthContext();
 
     const signup = async ({ name, password, email }) => {
-        console.log("name" + name + "password" + password + "email" + email);
+        // console.log("name" + name + "password" + password + "email" + email);
         setLoading(true);
         try {
             const res = await fetch("http://localhost:5000/api/create_user", {

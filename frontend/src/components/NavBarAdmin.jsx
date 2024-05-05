@@ -40,7 +40,7 @@ export default function App() {
                 </a>
             </NavbarBrand>
 
-            <NavbarContent as="div" justify="end">
+            <NavbarContent justify="end">
                 <button
                     onClick={toggleDarkMode}
                     className="flex items-center justify-center p-2 rounded-lg transition duration-200 "
@@ -66,7 +66,7 @@ export default function App() {
                     <DropdownTrigger>
                         <Avatar
                             isBordered
-                            as="button"
+                            isFocusable
                             className="transition-transform"
                             name="Jason Hughes"
                             size="sm"

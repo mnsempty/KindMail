@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { UserCircleIcon, ChatBubbleLeftRightIcon } from '@heroicons/react/24/outline';
 import useChats from "../../hooks/quantityChat";
 import useUser from "../../hooks/quantityUser";

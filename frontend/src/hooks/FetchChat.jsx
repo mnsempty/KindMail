@@ -21,7 +21,7 @@ const useGetChatDetails = () => {
             }
 
             const data = await res.json();
-            console.log("Data fetch"+JSON.stringify(data.userChats));
+            // console.log("Data fetch"+JSON.stringify(data.userChats));
             // Si la respuesta es exitosa, almacenar los detalles del chat
             setChatDetails(data.userChats);
         } catch (error) {

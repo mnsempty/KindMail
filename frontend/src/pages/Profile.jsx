@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { jwtDecode } from 'jwt-decode'; // Importa la librería para decodificar JWT
 import { Card, CardHeader, CardBody, CardFooter, Divider, Button, Image } from "@nextui-org/react";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Input } from "@nextui-org/react";
@@ -58,7 +58,7 @@ const Profile = () => {
             
             if (e.target.files && e.target.files.length > 0) {
                 const file = e.target.files[0];
-                console.log("Archivo: ", file);
+                // console.log("Archivo: ", file);
                 setProfilePhoto(file);
             } else {
                 console.log("No se seleccionó ningún archivo.");
@@ -128,7 +128,7 @@ const Profile = () => {
                 <Divider />
                 <CardFooter>
                     {/* Modal del cambio de datos (nombre y contraseña) */}
-                    <Button onPress={onOpen} color="primary">Cambiar nombre y/o contraseña</Button>
+                    <Button onPress={onOpen} className='px-3 py-2' color="primary">Cambiar nombre y/o contraseña</Button>
                     <Modal
                         backdrop="blur"
                         isOpen={isOpen}
@@ -166,10 +166,10 @@ const Profile = () => {
                                         />
                                     </ModalBody>
                                     <ModalFooter>
-                                        <Button color="danger" variant="flat" onPress={onClose}>
+                                        <Button className='px-3 py-2' color="danger" variant="flat" onPress={onClose}>
                                             Cerrar
                                         </Button>
-                                        <Button color="primary" onClick={() => { handleSubmit(); onClose(); }}>
+                                        <Button className='px-3 py-2' color="primary" onClick={() => { handleSubmit(); onClose(); }}>
                                             Confirmar
                                         </Button>
                                     </ModalFooter>

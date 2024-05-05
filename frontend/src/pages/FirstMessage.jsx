@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Divider, Textarea, Input, Button } from "@nextui-org/react";
 import { SendIcon } from "../assets/icons/SendIcon";
@@ -9,7 +9,7 @@ const FirstMessage = () => {
     const [message, setMessage] = useState('');
     const [messageHeader, setMessageHeader] = useState('');
     const navigate = useNavigate();
-    const { sendMessage, isLoading } = useSendFirstMessage();
+    const { sendMessage} = useSendFirstMessage();
 
     useEffect(() => {
         const userData = getUserDataLocalStorage();

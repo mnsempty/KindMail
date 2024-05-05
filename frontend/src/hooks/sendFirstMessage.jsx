@@ -3,14 +3,14 @@ import { useState } from 'react';
 import { jwtDecode } from 'jwt-decode';
 
 const useSendFirstMessage = () => {
-    const { authUser, setAuthUser } = useAuthContext();
-    const [isLoading, setIsLoading] = useState(false); 
+    const { authUser } = useAuthContext();
+    const [isLoading, setIsLoading] = useState(false);
 
     const sendMessage = async ({ header, content, receiver }) => {
         setIsLoading(true); // Inicia el estado de carga
 
         try {
-            console.log("Localstorage: " + localStorage.getItem("chat-user"));
+            // console.log("Localstorage: " + localStorage.getItem("chat-user"));
             // console.log(authUser);
             const decodedAuthUser = jwtDecode(authUser.token);
             // console.log(decodedAuthUser.userData.email);
@@ -30,17 +30,17 @@ const useSendFirstMessage = () => {
             }
 
             const data = await res.json();
-console.log(data);
+            // console.log(data);
             return data;
 
         } catch (error) {
             console.log(error);
         } finally {
-            setIsLoading(false); 
+            setIsLoading(false);
         }
     };
 
-    return { sendMessage, isLoading }; 
+    return { sendMessage, isLoading };
 };
 
 export default useSendFirstMessage;

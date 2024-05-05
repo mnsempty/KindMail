@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar } from "@nextui-org/react";
-import { ChatBubbleLeftRightIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { ChatBubbleLeftRightIcon} from "@heroicons/react/24/outline";
 import Logo from "../assets/logoblanco.png";
 import useLogOut from '../hooks/useLogOut.jsx';
 import useBusy from '../hooks/useBusy.jsx';
@@ -70,7 +70,7 @@ export default function App() {
                 </a>
             </NavbarBrand>
 
-            <NavbarContent as="div" justify="end">
+            <NavbarContent justify="end">
                 <button
                     onClick={toggleDarkMode}
                     className="flex items-center justify-center p-2 rounded-lg transition duration-200 "
@@ -92,18 +92,16 @@ export default function App() {
                     </NavbarItem>
                 )}
                 <Dropdown placement="bottom-end" >
-                    {/* <Badge content="" color="success" shape="circle" placement="bottom-right"> */}
                     <DropdownTrigger>
                         <Avatar
                             isBordered
-                            as="button"
-                            className="transition-transform"
+                            isFocusable
+                            className="transition-transform cursor-pointer"
                             name="Jason Hughes"
                             size="sm"
                             src={userInfo ? userInfo.profilePhoto : "https://avatars.githubusercontent.com/u/86160567?s=200&v=4"}
                         />
                     </DropdownTrigger>
-                    {/* </Badge> */}
                     <DropdownMenu aria-label="Profile Actions" variant="flat">
                         <DropdownItem key="profile" color="secondary" className="dark:text-negro dark:hover:text-purple-400" onClick={() => navigate(navPath)}
                         >
