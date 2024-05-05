@@ -77,7 +77,7 @@ async function getChatsFromUser(req, res) {
 async function openChat(req, res) {
   try {
     const { chat_ID } = req.body;
-    console.log("chat id func sad" + chat_ID);
+    // console.log("chat id func sad" + chat_ID);
     const messagesFromChat = await getMessagesFromChat(chat_ID);
 
     res.status(200).json({ messagesFromChat });
@@ -91,7 +91,7 @@ async function sendMessage(req, res) {
   try {
     const { sender, content, chat_ID, message_ID } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
     const messageData = { sender, content, chat_ID, message_ID };
 
     const messageJSON = JSON.stringify(messageData);
@@ -256,7 +256,7 @@ async function quantity(req, res) {
     const chats = await getChats();
     const chatQuantity = chats.length;
     res.status(200).json({ chatQuantity });
-    console.log("chats:", chatQuantity);
+    // console.log("chats:", chatQuantity);
   } catch (error) {
     console.error("Error al obtener la cantidad de chats:", error);
   }
@@ -268,7 +268,7 @@ async function sendEmail(req, res) {
   try {
     const { header, content, sender, receiver } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
     const messageData = { sender, header, content, receiver };
 
     const messageJSON = JSON.stringify(messageData);
@@ -301,8 +301,7 @@ async function getEmails(req, res) {
   try {
     const { receiverEmail } = req.body;
 
-    console.log(req.body);
-    
+    // console.log(req.body);    
 
     const allEmails = await client.lRange("emails_list", 0, -1);
 
@@ -327,11 +326,7 @@ async function getEmails(req, res) {
       }
     }
 
-    console.log(
-      "Correos electrónicos recibidos para",        
-      receiverEmail + ":",
-      emailsForReceiver
-    );
+    // console.log("Correos electrónicos recibidos para",receiverEmail + ":",emailsForReceiver);
 
     res.status(200).json({ emails: emailsForReceiver }); // Envía los correos electrónicos filtrados como respuesta
   } catch (err) {

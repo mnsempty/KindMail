@@ -54,8 +54,8 @@ export default function CustomAside() {
   }, [chatDetails, UserInfo]); // Este useEffect se ejecuta cuando chatDetails o UserInfo cambian
 
   const handleSelectedChat = (id) => {
-    console.log(`Seleccionado chat con ID: ${id}`);
-    console.log("chatIds Data: " + JSON.stringify(ChatIds));
+    // console.log(`Seleccionado chat con ID: ${id}`);
+    // console.log("chatIds Data: " + JSON.stringify(ChatIds));
     if (ChatIds.previous !== null && ChatIds.previous !== undefined) {
       // Si no es el primer chat, llama a switchChat(prevChat,nextChat)
       switchChat(ChatIds.current, id);
@@ -130,8 +130,8 @@ export default function CustomAside() {
                     />
                   )}
                   <div className="flex flex-col text-left">
-                    <span className="font-normal">{chat.name}</span>
-                    <span
+                    <p className="font-normal">{chat.name}</p>
+                    <p
                       className={
                         chat.chat_ID === ChatIds.current
                           ? "text-tiny text-azulclaro-950"
@@ -139,7 +139,7 @@ export default function CustomAside() {
                       }
                     >
                       {chat.email}
-                    </span>
+                    </p>
                   </div>
                 </div>
               </ListboxItem>

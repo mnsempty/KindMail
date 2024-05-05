@@ -1,14 +1,5 @@
-import React from "react";
 
-export const SendIcon = ({
- fill = 'currentColor',
- filled,
- size,
- height,
- width,
- label,
- ...props
-}) => { 
+export const SendIcon = () => { 
     return (
         <svg width="1.5em" height="1.5em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#00000">
             <g id="SVGRepo_bgCarrier" strokeWidth="0"/>

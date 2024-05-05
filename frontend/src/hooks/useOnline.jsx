@@ -3,9 +3,9 @@ import toast from "react-hot-toast";
 import { useAuthContext } from "../context/AuthContext";
 
 const useOnline = () => {
-    const [loading, setLoading] = useState(false);
+    const [setLoading] = useState(false);
     const { authUser, setAuthUser } = useAuthContext();
-    console.log("authUser:", authUser);
+    // console.log("authUser:", authUser);
 
     const online = async () => {
         setLoading(true);

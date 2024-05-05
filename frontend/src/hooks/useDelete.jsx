@@ -1,12 +1,11 @@
 import { useState } from "react";
-import toast from "react-hot-toast";
 
 const useDelete = () => {
     const [loading, setLoading] = useState(false);
 
     const delUser = async (email) => {
         try {
-            console.log("Eliminando usuario:", email);
+            // console.log("Eliminando usuario:", email);
 
             const res = await fetch(`http://localhost:5000/api/user/${email}`, {
                 method: 'DELETE',
