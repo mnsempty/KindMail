@@ -15,11 +15,11 @@ const setupSocket = (io) => {
       
       getMessageFromChat(space)
         .then((data) => {
-          console.log("message from chat:" + data);
+          // console.log("message from chat:" + data);
           // Accede al array messagesFromChat dentro del objeto data
           const messages = data.messagesFromChat;
           messages.forEach((message) => {
-            console.log(message);
+            // console.log(message);
             // Emite el evento "chat" para cada mensaje
             io.to(space).emit("chat", message);
           });
@@ -29,9 +29,9 @@ const setupSocket = (io) => {
     });
     // "chat como tal, que contiene mensajes y el space en que se encuentra"
     socket.on("chat", (data) => {
-      console.log(data);
+      // console.log(data);
       const { space, message } = data;
-      console.log(`msg: ${message}, space: ${space}`);
+      // console.log(`msg: ${message}, space: ${space}`);
       let message_ID = randomUUID();
       //añadimos un id al message aquí para evitar tener que hacer un fetch de los mensajes en el backend
       message.message_ID = message_ID;
@@ -49,7 +49,7 @@ const setupSocket = (io) => {
     });
     socket.on('switch chat', (data) => {
       const { prevSpace, nextSpace } = data;
-      console.log("data of switch: " + prevSpace, nextSpace);
+      // console.log("data of switch: " + prevSpace, nextSpace);
       if (prevSpace) socket.leave(prevSpace);
       if (nextSpace) socket.join(nextSpace);
       socketSpace = nextSpace;
@@ -90,7 +90,7 @@ async function sendMessageToAPI(requestBody) {
     }
 
     const data = await response.json();
-    console.log("Success:", data);
+    // console.log("Success:", data);
   } catch (error) {
     console.error("Error:", error);
   }
@@ -114,7 +114,7 @@ async function getMessageFromChat(chat_ID) {
     }
 
     const data = await response.json();
-    console.log("Success:", data);
+    // console.log("Success:", data);
     return data;
   } catch (error) {
     console.error("Error:", error);

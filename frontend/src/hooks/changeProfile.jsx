@@ -11,6 +11,9 @@ const useChangeProfile = () => {
 
         try {
             console.log("Localstorage: " + localStorage.getItem("chat-user"));
+            // console.log(authUser);
+            const decodedAuthUser = jwtDecode(authUser.token);
+            // console.log(decodedAuthUser.userData.email);
 
             const res = await fetch("http://localhost:5000/api/user/profile", {
                 method: "POST",
@@ -18,7 +21,7 @@ const useChangeProfile = () => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${authUser.token}`
                 },
-                body: JSON.stringify({ email: authUser.email, userName, password, newPassword })
+                body: JSON.stringify({ email: decodedAuthUser.userData.email, userName, password, newPassword })
             });
 
             if (!res.ok) {

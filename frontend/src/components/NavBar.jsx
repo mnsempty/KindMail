@@ -1,9 +1,31 @@
-import React from "react";
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, } from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 import Logo from "../assets/logoblanco.png";
+import { useEffect, useState } from "react";
+
+import { SunIcon } from "../assets/icons/sunIcon";
+import { MoonIcon } from "../assets/icons/moonIcon";
 
 export default function App() {
 
+    let [isDarkMode, setIsDarkMode] = useState(() => {
+        let savedDarkMode = localStorage.getItem('darkMode');
+        return savedDarkMode ? savedDarkMode === 'true' : false;
+    });
+
+    // toggle darkmode
+    let toggleDarkMode = () => {
+        let newDarkMode = !isDarkMode;
+        setIsDarkMode(newDarkMode);
+        // Guarda el nuevo estado en localStorage
+        localStorage.setItem('darkMode', newDarkMode.toString());
+    };
+
+    useEffect(() => {
+        let rootDiv = document.body;
+        if (rootDiv) {
+            rootDiv.className = isDarkMode ? 'dark' : 'light';
+        }
+    }, [isDarkMode]);
     return (
         <Navbar shouldHideOnScroll className="bg-azul-600">
             <NavbarBrand>
@@ -13,11 +35,18 @@ export default function App() {
             </NavbarBrand>
 
             <NavbarContent justify="end">
+
+                <button
+                    onClick={toggleDarkMode}
+                    className="flex items-center justify-center p-2 rounded-lg transition duration-200 "
+                >
+                    {isDarkMode ? (<SunIcon/>):(<MoonIcon/>)}
+                </button>
                 <NavbarItem>
-                    <a href="/login" className="text-blanco px-3 py-2">Login</a>
+                    <a href="/login" className="text-blanco px-3 py-2 dark:text-negro">Login</a>
                 </NavbarItem>
                 <NavbarItem>
-                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 px-3 border rounded-md py-2">Sing Up</a>
+                    <a href="/register" className="text-blanco hover:bg-azulclaro-100 hover:text-azul-600 dark:hover:text-azul-700 px-3 border rounded-md py-2 dark:text-negro">Sign Up</a>
                 </NavbarItem>
             </NavbarContent>
         </Navbar>

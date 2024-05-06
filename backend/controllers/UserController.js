@@ -47,7 +47,7 @@ async function createUser(req, res) {
         .json({ message: "La contraseña debe tener al menos 8 caracteres" });
     }
 
-    const userData = {
+    const userData2 = {
       name,
       surname,
       email,
@@ -57,14 +57,25 @@ async function createUser(req, res) {
       state: userState,
       // image: req.file ? req.file.filename : undefined
     };
-
-    await saveUser(userData);
-    res.status(201).json({ message: "Usuario creado correctamente" });
+    await saveUser(userData2);
+    //overwrite de userData para no pasar password
+    let userData = {
+      name: userData2.name,
+      role: userData2.role,
+      email: userData2.email,
+      state: userData2.state,
+    };
+    // console.log("back user data"+JSON.stringify(userData));
+    // const token = jwt.sign({ userDataFiltered }, "admin "); //! esto se tiene que sacar de .env y ser algo así jajnswefasd.BDSA153fmeskmfsjnlngrsnrgo123.1ia
+    // res.status(200).json({ token });
+    const token = jwt.sign({ userData }, "admin ");
+    res.status(200).json({ token });
   } catch (error) {
     console.error("Error al crear usuario:", error);
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+
 // #region deleteUser
 async function deleteUser(req, res) {
   try {
@@ -81,6 +92,16 @@ async function deleteUser(req, res) {
     res.status(500).json({ message: "Error interno del servidor" });
   }
 }
+// #region delUser
+async function delUser(email) {
+  try {
+    // Eliminar el usuario de la base de datos 
+    return await client.hDel("users", email);
+  } catch (err) {
+    console.log("Error al eliminar el usuario:", err);
+  }
+}
+
 // #region login
 async function login(req, res) {
   try {
@@ -93,7 +114,7 @@ async function login(req, res) {
       password,
       existingUser.hashedPassword
     );
-    console.log(passwordMatch);
+    // console.log(passwordMatch);
     if (!passwordMatch) {
       return res
         .status(401)
@@ -104,6 +125,7 @@ async function login(req, res) {
       // id: existingUser.id,
       name: existingUser.name,
       // surname: existingUser.surname,
+      role: existingUser.role,
       email: existingUser.email,
       state: existingUser.state,
       profilePhoto: existingUser.profilePhoto,
@@ -134,12 +156,14 @@ async function logout(req, res) {
 
 async function findUser(email) {
   const userJson = await client.hGet("users", email); // Verificar si se encontró un usuario
+  // console.log(userJson)
   if (!userJson) {
     return null; // Devuelve null si no se encuentra el usuario
   }
   const user = JSON.parse(userJson);
   return user;
 }
+
 // #region saveUser
 async function saveUser(userData) {
   const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -161,15 +185,7 @@ async function saveUser(userData) {
 
   return true;
 }
-// #region delUser
-async function delUser(email) {
-  try {
-    // Eliminar el usuario de la base de datos
-    return await client.hDel("users", email);
-  } catch (err) {
-    console.log("Error al eliminar el usuario:", err);
-  }
-}
+
 // #region setBusy
 async function setBusy(req, res) {
   try {
@@ -238,7 +254,7 @@ async function getUsers() {
 async function quantity(req, res) {
   try {
     const userQuantity = await getUsers();
-    console.log("usuarios:", userQuantity);
+    // console.log("usuarios:", userQuantity);
     res.status(200).json({ userQuantity });
   } catch (error) {
     console.error("Error al obtener la cantidad de usuarios:", error);
@@ -262,10 +278,10 @@ async function profile(req, res) {
     }
 
     const user = JSON.parse(userJSON);
-    console.log(user);
+    // console.log(user);
 
     if (password && newPassword) {
-      console.log(user);
+      // console.log(user);
 
       const isMatch = await bcrypt.compare(newPassword, user.hashedPassword);
 
@@ -397,6 +413,21 @@ async function searchUsers(req, res) {
   }
 }
 
+async function getAllUsers(req, res) {
+  try {
+    // Consulta todos los usuarios en Redis
+    const allUsers = await client.hGetAll("users");
+
+    // Convierte los usuarios en un array
+    const usersArray = Object.keys(allUsers).map(email => JSON.parse(allUsers[email]));
+
+    res.status(200).json(usersArray);
+  } catch (error) {
+    console.error("Error al obtener los usuarios:", error);
+    res.status(500).json({ message: "Error interno del servidor" });
+  }
+}
+
 module.exports = {
   createUser,
   deleteUser,
@@ -408,5 +439,6 @@ module.exports = {
   quantity,
   profilePhoto,
   getUsers,
+  getAllUsers,
   searchUsers,
 };

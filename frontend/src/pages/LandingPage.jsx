@@ -5,7 +5,7 @@ import Box from "../components/landingPage/Box";
 
 const LandingPage = () => {
 
-    const title = "text-center text-gray-700 my-5";
+    const title = "text-center text-gray-700 my-5 dark:text-negro";
 
     return (
         <>
