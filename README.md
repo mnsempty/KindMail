@@ -26,11 +26,13 @@ Para poner en marcha KindMail de forma local es necesario seguir los pasos descr
 
 5. **Poner en marcha frontend desde la consola**:
 
+   ```cd kindmail```
+
+
    ```npm run dev```
 
 6. **Poner en marcha backend desde la consola**:
 
-   ```cd kindmail```
 
    ```cd backend```
 
